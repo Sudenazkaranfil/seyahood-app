@@ -84,7 +84,8 @@ class _JournalDetailScreenState extends State<JournalDetailScreen> {
 
   Future<void> _uploadCover() async {
     final picker = ImagePicker();
-    final image = await picker.pickImage(source: ImageSource.gallery);
+    final image = await picker.pickImage(
+        source: ImageSource.gallery, imageQuality: 80, maxWidth: 1200);
     if (image == null) return;
     try {
       // Seçilen dosyayı kalıcı klasöre kopyala — bulutta yedeklenmiş
