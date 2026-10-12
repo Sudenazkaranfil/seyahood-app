@@ -723,6 +723,19 @@ class _HomeScreenState extends State<HomeScreen> {
               builder: (context) => JournalDetailScreen(journal: journal)));
           if (updated == true) await _loadJournals();
         },
+        onLongPress: () async {
+          final shouldDelete = await _showDeleteConfirmDialog();
+          if (shouldDelete != true) return;
+          final idx = _myJournals.indexWhere((j) => j.id == journal.id);
+          if (idx == -1) return;
+          final removed = _myJournals[idx];
+          setState(() => _myJournals.removeAt(idx));
+          try {
+            await JournalService.deleteJournal(journal.id);
+          } catch (e) {
+            setState(() => _myJournals.insert(idx, removed));
+          }
+        },
         child: Container(
           width: 175,
           margin: const EdgeInsets.only(right: 12),
