@@ -151,11 +151,13 @@ class _PictureEditingBoxState extends State<PictureEditingBox> {
                             imageUrl: widget.pictureModel.stringUrl,
                             height: 50,
                             width: 50,
+                            fit: BoxFit.cover,
                           )
                         : Image.file(
                             File(widget.pictureModel.stringUrl),
                             height: 50,
                             width: 50,
+                            fit: BoxFit.cover,
                           ),
                   ),
                 ),
