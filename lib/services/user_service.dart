@@ -1,9 +1,10 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import '../config/api_config.dart';
 import 'storage_service.dart';
 
 class UserService {
-  static const String baseUrl = 'https://memorylane-wk1y.onrender.com';
+  static const String baseUrl = ApiConfig.baseUrl;
 
   static Future<List<Map<String, dynamic>>> searchUsers(String query) async {
     final token = await StorageService.getToken();

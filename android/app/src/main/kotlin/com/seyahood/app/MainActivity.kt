@@ -1,4 +1,4 @@
-package com.example.memorylane_app
+package com.seyahood.app
 
 import io.flutter.embedding.android.FlutterActivity
 

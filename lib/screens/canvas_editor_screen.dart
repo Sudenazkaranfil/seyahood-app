@@ -9,7 +9,16 @@ import '../theme/app_theme.dart';
 import '../models/entry.dart';
 import '../services/entry_service.dart';
 import '../services/photo_service.dart';
+import '../services/subscription_service.dart';
+import '../services/interstitial_ad_service.dart';
+import '../widgets/limit_reached_sheet.dart';
+import 'premium_screen.dart';
 import 'package:google_fonts/google_fonts.dart';
+
+const Set<String> kFreeCanvasFonts = {
+  'Plus Jakarta Sans', 'Playfair Display', 'Caveat', 'Dancing Script',
+  'Roboto Mono', 'Lora', 'Josefin Sans', 'Raleway',
+};
 
 class _StickerItem {
   dynamic model;
@@ -111,6 +120,7 @@ class _CanvasEditorScreenState extends State<CanvasEditorScreen> {
   _StickerItem? _clipboard;
   final List<Map<String, dynamic>> _legacyElements = [];
   int? _selectedStickerIndex;
+  bool _isPro = false;
 
   @override
   void initState() {
@@ -118,6 +128,25 @@ class _CanvasEditorScreenState extends State<CanvasEditorScreen> {
     if (widget.entry?.canvasData != null) {
       _loadCanvasData(widget.entry!.canvasData!);
     }
+    _loadSubscription();
+  }
+
+  Future<void> _loadSubscription() async {
+    try {
+      final status = await SubscriptionService.instance.getStatus();
+      setState(() => _isPro = status.isPro);
+    } catch (e) {}
+  }
+
+  void _showProFontLockedMessage() {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: const Text('Bu font PRO üyelere özel ✨'),
+      action: SnackBarAction(
+        label: "PRO'ya Geç",
+        onPressed: () => Navigator.push(context, MaterialPageRoute(
+            builder: (context) => const PremiumScreen())),
+      ),
+    ));
   }
 
   void _loadCanvasData(String canvasData) {
@@ -274,6 +303,8 @@ class _CanvasEditorScreenState extends State<CanvasEditorScreen> {
         ...entryData, 'canvasData': canvasData,
       });
 
+      InterstitialAdService.instance.onPageSaved();
+
       if (mounted) {
         setState(() => _isLoading = false);
         Navigator.pop(context);
@@ -281,6 +312,11 @@ class _CanvasEditorScreenState extends State<CanvasEditorScreen> {
           content: Text('Sayfa başarıyla kaydedildi! 🌿'),
           backgroundColor: Color(0xFF1C110A),
         ));
+      }
+    } on LimitReachedException catch (_) {
+      if (mounted) {
+        setState(() => _isLoading = false);
+        showLimitReachedSheet(context, limitType: 'page');
       }
     } catch (e) {
       if (mounted) {
@@ -302,15 +338,79 @@ class _CanvasEditorScreenState extends State<CanvasEditorScreen> {
       if (image == null) return;
       final appDir = await getApplicationDocumentsDirectory();
       final fileName = '${DateTime.now().millisecondsSinceEpoch}.jpg';
-      final savedFile = await File(image.path).copy('${appDir.path}/$fileName');
+      // XFile.readAsBytes() picker'ın platforma özgü güvenli okuma
+      // yolunu kullanır; ham File(image.path) bazı cihazlarda henüz
+      // tam oluşmamış/okunamaz bir yol döndürüp PathNotFoundException'a
+      // yol açabiliyor.
+      final bytes = await image.readAsBytes();
+      final savedFile = await File('${appDir.path}/$fileName').writeAsBytes(bytes);
       setState(() {
         _stickers.add(_StickerItem(
           model: PictureModel.fromUrl(savedFile.path, scale: 1.5),
           type: 'image', content: savedFile.path,
         ));
       });
+
+      // 1. katman: fotoğrafın EXIF'inde GPS varsa ücretsiz ve anında ekle.
+      final gps = await PhotoService.extractExifGps(savedFile.path);
+      if (gps != null) {
+        final name = await PhotoService.reverseGeocode(gps['lat']!, gps['lng']!);
+        if (name != null) {
+          if (mounted) {
+            setState(() => _locations.add(_LocationItem(
+                name: name, lat: gps['lat'], lng: gps['lng'])));
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                content: Text('📍 "$name" fotoğraftan otomatik eklendi')));
+          }
+          return;
+        }
+      }
+
+      // 2-3. katman (Google Vision + Claude fallback) EXIF yoksa PRO'ya sunulur.
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: const Text('📍 Bu fotoğrafın konumunu tahmin edeyim mi?'),
+          duration: const Duration(seconds: 6),
+          action: SnackBarAction(
+            label: 'Tahmin Et',
+            onPressed: () => _isPro
+                ? _estimateLocationFromPhoto(savedFile.path)
+                : _showAiLocationLockedMessage(),
+          ),
+        ));
+      }
     } finally {
       _isPickingImage = false;
+    }
+  }
+
+  void _showAiLocationLockedMessage() {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: const Text('AI konum tahmini PRO üyelere özel ✨'),
+      action: SnackBarAction(
+        label: "PRO'ya Geç",
+        onPressed: () => Navigator.push(context, MaterialPageRoute(
+            builder: (context) => const PremiumScreen())),
+      ),
+    ));
+  }
+
+  Future<void> _estimateLocationFromPhoto(String filePath) async {
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+      content: Text('🔍 Konum tahmin ediliyor...'),
+      duration: Duration(seconds: 3),
+    ));
+    try {
+      final guess = await PhotoService.estimateLocation(filePath);
+      if (!mounted) return;
+      setState(() => _locations.add(
+          _LocationItem(name: guess.name, lat: guess.lat, lng: guess.lng)));
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('📍 "${guess.name}" eklendi')));
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text('Konum tahmin edilemedi, tekrar dene.')));
     }
   }
 
@@ -390,8 +490,13 @@ class _CanvasEditorScreenState extends State<CanvasEditorScreen> {
                     {'name': 'Amatic SC', 'label': 'El Baskı'},
                     {'name': 'Josefin Sans', 'label': 'Minimal'},
                     {'name': 'Raleway', 'label': 'Şık'},
-                  ].map((font) => GestureDetector(
-                    onTap: () => setSheetState(() => selectedFont = font['name']!),
+                  ].map((font) {
+                    final isLocked = !_isPro &&
+                        !kFreeCanvasFonts.contains(font['name']);
+                    return GestureDetector(
+                    onTap: () => isLocked
+                        ? _showProFontLockedMessage()
+                        : setSheetState(() => selectedFont = font['name']!),
                     child: Container(
                       margin: const EdgeInsets.only(right: 8),
                       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
@@ -403,13 +508,23 @@ class _CanvasEditorScreenState extends State<CanvasEditorScreen> {
                             color: selectedFont == font['name']
                                 ? const Color(0xFFC4956A) : const Color(0xFFEADBCE)),
                       ),
-                      child: Text(font['label']!,
-                          style: GoogleFonts.getFont(font['name']!,
-                              fontSize: 13, fontWeight: FontWeight.w600,
-                              color: selectedFont == font['name']
-                                  ? Colors.white : const Color(0xFF1C110A))),
+                      child: Row(mainAxisSize: MainAxisSize.min, children: [
+                        if (isLocked) ...[
+                          const Icon(Icons.lock_rounded,
+                              size: 11, color: Color(0xFF9E8E81)),
+                          const SizedBox(width: 4),
+                        ],
+                        Text(font['label']!,
+                            style: GoogleFonts.getFont(font['name']!,
+                                fontSize: 13, fontWeight: FontWeight.w600,
+                                color: isLocked
+                                    ? const Color(0xFF9E8E81)
+                                    : selectedFont == font['name']
+                                        ? Colors.white
+                                        : const Color(0xFF1C110A))),
+                      ]),
                     ),
-                  )).toList()),
+                  );}).toList()),
                 ),
 
                 const SizedBox(height: 14),
@@ -636,7 +751,7 @@ class _CanvasEditorScreenState extends State<CanvasEditorScreen> {
                   try {
                     final response = await http.get(
                       Uri.parse('https://nominatim.openstreetmap.org/search?q=${Uri.encodeComponent(value)}&format=json&limit=5&accept-language=tr'),
-                      headers: {'User-Agent': 'MemoryLane/1.0'},
+                      headers: {'User-Agent': 'Seyahood/1.0'},
                     );
                     if (response.statusCode == 200) {
                       final data = jsonDecode(response.body) as List;
@@ -984,11 +1099,11 @@ class _CanvasEditorScreenState extends State<CanvasEditorScreen> {
                             boundHeight: constraints.maxHeight,
                             data: item.model,
                             closeIcon: const Icon(Icons.close,
-                                color: Colors.white, size: 9),
+                                color: Colors.black, size: 8),
                             resizeIcon: const Icon(Icons.open_in_full,
-                                color: Colors.white, size: 9),
+                                color: Colors.black, size: 8),
                             rotateIcon: const Icon(Icons.rotate_right,
-                                color: Colors.white, size: 9),
+                                color: Colors.black, size: 8),
                             onCancel: () => setState(() {
                               _stickers.removeAt(idx);
                               if (_selectedStickerIndex == idx) {

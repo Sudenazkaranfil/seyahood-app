@@ -3,10 +3,12 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 import '../models/journal.dart';
+import '../config/api_config.dart';
 import 'storage_service.dart';
+import 'subscription_service.dart';
 
 class JournalService {
-  static const String baseUrl = 'https://memorylane-wk1y.onrender.com';
+  static const String baseUrl = ApiConfig.baseUrl;
 
   static Future<List<Journal>> getJournals() async {
     final token = await StorageService.getToken();
@@ -116,6 +118,9 @@ class JournalService {
     );
     if (response.statusCode == 200) {
       return Journal.fromJson(jsonDecode(response.body));
+    } else if (response.statusCode == 403 &&
+        jsonDecode(response.body)['error'] == 'JOURNAL_LIMIT_REACHED') {
+      throw const LimitReachedException('journal');
     } else {
       throw Exception('Ajanda oluşturulamadı');
     }

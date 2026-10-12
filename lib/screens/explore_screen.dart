@@ -10,10 +10,12 @@ import '../theme/app_theme.dart';
 import 'user_profile_screen.dart';
 import '../widgets/skeleton_loader.dart';
 import '../widgets/error_view.dart';
+import '../widgets/ad_banner.dart';
 import 'user_profile_screen.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../services/storage_service.dart';
+import '../services/interstitial_ad_service.dart';
 
 class ExploreScreen extends StatefulWidget {
   const ExploreScreen({super.key});
@@ -422,6 +424,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
                 if (index == 0 && _searchController.text.isEmpty) {
                   return Column(children: [
                     _buildPopularUsers(),
+                    const AdBanner(),
                     _buildFeaturedCard(_journals[0]),
                   ]);
                 }
@@ -813,9 +816,20 @@ class _ExploreJournalScreenState extends State<ExploreJournalScreen> {
     }
   }
 
+  void _exit() {
+    InterstitialAdService.instance.onJournalViewed();
+    Navigator.pop(context);
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) {
+        if (didPop) return;
+        _exit();
+      },
+      child: Scaffold(
       backgroundColor: AppTheme.navDark,
       appBar: AppBar(
         backgroundColor: AppTheme.navDark,
@@ -828,7 +842,7 @@ class _ExploreJournalScreenState extends State<ExploreJournalScreen> {
             child: const Icon(Icons.arrow_back_ios_new_rounded,
                 color: Color(0xFFFAF7F2), size: 16),
           ),
-          onPressed: () => Navigator.pop(context),
+          onPressed: _exit,
         ),
         title: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Text(widget.journal.title,
@@ -856,6 +870,7 @@ class _ExploreJournalScreenState extends State<ExploreJournalScreen> {
         Expanded(child: _buildPageView()),
         _buildThumbnailList(),
       ]),
+      ),
     );
   }
 
@@ -1051,11 +1066,11 @@ class _ExploreJournalScreenState extends State<ExploreJournalScreen> {
               angle: angle,
               child: Transform.scale(
                 scale: stickerScale * scale,
-                alignment: Alignment.topLeft,
                 child: url.startsWith('http')
-                    ? Image.network(url, width: 160, fit: BoxFit.contain,
+                    ? Image.network(url, width: 50, height: 50,
+                    fit: BoxFit.cover,
                     errorBuilder: (_, __, ___) =>
-                    const SizedBox(width: 160))
+                    const SizedBox(width: 50, height: 50))
                     : const SizedBox(),
               ),
             ),

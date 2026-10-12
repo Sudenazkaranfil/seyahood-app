@@ -11,14 +11,19 @@ import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 import '../services/storage_service.dart';
 import '../services/journal_service.dart';
+import '../services/subscription_service.dart';
 import '../models/journal.dart';
 import '../theme/app_theme.dart';
+import '../config/api_config.dart';
 import 'edit_profile_screen.dart';
 import 'help_screen.dart';
 import 'follow_list_screen.dart';
 import 'journal_detail_screen.dart';
+import 'premium_screen.dart';
 import '../widgets/skeleton_loader.dart';
 import '../widgets/error_view.dart';
+import '../widgets/plan_badge.dart';
+import '../widgets/ad_banner.dart';
 
 class ProfileScreen extends StatefulWidget {
   final VoidCallback? onProfileUpdated;
@@ -44,8 +49,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
   String? _coverImagePath;
   final GlobalKey _profileCardKey = GlobalKey();
   bool _hasError = false;
+  bool _isPlus = false;
+  bool _isPro = false;
 
-  static const String baseUrl = 'https://memorylane-wk1y.onrender.com';
+  static const String baseUrl = ApiConfig.baseUrl;
 
   final List<Map<String, dynamic>> _coverColors = [
     {'color': const Color(0xFFF5EFE8), 'label': 'Krem'},
@@ -130,13 +137,25 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Future<void> _loadProfile() async {
     final username = await StorageService.getUsername();
     final token = await StorageService.getToken();
-    final journals = await JournalService.getJournals();
+
+    List<Journal> journals = [];
+    try {
+      journals = await JournalService.getJournals();
+    } catch (e) {
+      debugPrint('❌ PROFILE ERROR (journals): $e');
+      setState(() {
+        _isLoading = false;
+        _hasError = true;
+      });
+      return;
+    }
 
     try {
       final response = await http.get(
         Uri.parse('$baseUrl/auth/profile'),
         headers: {'Authorization': 'Bearer $token'},
       );
+      debugPrint('PROFILE /auth/profile status: ${response.statusCode}');
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         setState(() {
@@ -146,13 +165,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
           _profileImageUrl = data['profileImageUrl'];
           _location = data['location'];
           // Ekle:
-          if (data['coverColor'] != null) {
+          if (data['coverColor'] != null &&
+              (data['coverColor'] as String).isNotEmpty) {
             _coverColor = Color(int.parse(
                 data['coverColor'].replaceFirst('#', '0xFF')));
           }
         });
+      } else {
+        debugPrint('❌ PROFILE ERROR (auth/profile body): ${response.body}');
+        setState(() {
+          _isLoading = false;
+          _hasError = true;
+        });
       }
     } catch (e) {
+      debugPrint('❌ PROFILE ERROR (auth/profile): $e');
       setState(() {
         _isLoading = false;
         _hasError = true;
@@ -171,6 +198,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
           _followingCount = data['followingCount'] ?? 0;
         });
       }
+    } catch (e) {}
+
+    try {
+      final subscription = await SubscriptionService.instance.getStatus();
+      setState(() {
+        _isPlus = subscription.isPlus;
+        _isPro = subscription.isPro;
+      });
     } catch (e) {}
 
     setState(() {
@@ -225,6 +260,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
     if (shouldLogout == true) {
       await StorageService.clearAll();
+      SubscriptionService.instance.clear();
       if (mounted) Navigator.pushReplacementNamed(context, '/login');
     }
   }
@@ -262,7 +298,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   final image = await picker.pickImage(
                       source: ImageSource.gallery, imageQuality: 80);
                   if (image != null) {
-                    setState(() => _coverImagePath = image.path);
+                    final appDir = await getApplicationDocumentsDirectory();
+                    final fileName =
+                        'cover_${DateTime.now().millisecondsSinceEpoch}.jpg';
+                    final bytes = await image.readAsBytes();
+                    final savedFile = await File('${appDir.path}/$fileName')
+                        .writeAsBytes(bytes);
+                    setState(() => _coverImagePath = savedFile.path);
                   }
                 },
                 child: Container(
@@ -758,7 +800,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
             _buildStats(),
             const SizedBox(height: 14),
             _buildLevelCard(),
-            const SizedBox(height: 18),
+            const SizedBox(height: 14),
+            const AdBanner(),
+            const SizedBox(height: 4),
             _buildJournalGrid(),
             const SizedBox(height: 24),
             _buildMenu(),
@@ -912,6 +956,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           color: _getLevelInfo(_journalCount)['color'] as Color)),
                 ]),
               ),
+              if (_isPlus || _isPro) ...[
+                const SizedBox(width: 6),
+                PlanBadge(isPlus: _isPlus, isPro: _isPro),
+              ],
             ]),
 
             const SizedBox(height: 3),
@@ -976,6 +1024,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
                 ),
               ),
+              if (!_isPlus && !_isPro) ...[
+                const SizedBox(width: 10),
+                GestureDetector(
+                  onTap: () => Navigator.push(context, MaterialPageRoute(
+                      builder: (context) => const PremiumScreen())),
+                  child: Container(
+                    width: 46, height: 46,
+                    decoration: BoxDecoration(
+                      color: AppTheme.terracotta,
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: const Center(
+                        child: Text('👑', style: TextStyle(fontSize: 18))),
+                  ),
+                ),
+              ],
               const SizedBox(width: 10),
               GestureDetector(
                 onTap: _showShareOptions,
@@ -1134,6 +1198,43 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
+  void _showDeleteJournalDialog(Journal journal) async {
+    final shouldDelete = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: AppTheme.background,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+        title: Text('Ajandayı sil',
+            style: GoogleFonts.playfairDisplay(
+                fontSize: 18, fontWeight: FontWeight.w700,
+                color: AppTheme.textPrimary)),
+        content: Text(
+            '"${journal.title}" ve içerisindeki tüm sayfalar kalıcı olarak silinecek.',
+            style: AppTheme.sansBody(size: 14, color: AppTheme.textSecondary)),
+        actions: [
+          TextButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: const Text('Vazgeç')),
+          TextButton(
+              onPressed: () => Navigator.pop(context, true),
+              child: const Text('Sil', style: TextStyle(color: Colors.red))),
+        ],
+      ),
+    );
+    if (shouldDelete != true) return;
+    final idx = _journals.indexWhere((j) => j.id == journal.id);
+    if (idx == -1) return;
+    final removed = _journals[idx];
+    setState(() => _journals.removeAt(idx));
+    try {
+      await JournalService.deleteJournal(journal.id);
+    } catch (e) {
+      setState(() => _journals.insert(idx, removed));
+      if (mounted) ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Ajanda silinemedi, tekrar dene.')));
+    }
+  }
+
   Widget _buildJournalGrid() {
     if (_journals.isEmpty) {
       return Container(
@@ -1203,6 +1304,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         JournalDetailScreen(journal: journal)));
                 _loadProfile();
               },
+              onLongPress: () => _showDeleteJournalDialog(journal),
               child: Column(crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Expanded(
@@ -1308,6 +1410,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
             blurRadius: 12, offset: const Offset(0, 2))],
       ),
       child: Column(children: [
+        _buildMenuItem(Icons.workspace_premium_rounded,
+            'Seyahood Premium', () {
+              Navigator.push(context, MaterialPageRoute(
+                  builder: (context) => const PremiumScreen()));
+            }),
+        _buildMenuDivider(),
         _buildMenuItem(Icons.notifications_active_outlined,
             'Bildirimler & Hatırlatıcılar', () {
               ScaffoldMessenger.of(context)

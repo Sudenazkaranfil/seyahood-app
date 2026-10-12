@@ -8,6 +8,8 @@ import 'explore_screen.dart';
 import 'follow_list_screen.dart';
 import '../widgets/skeleton_loader.dart';
 import '../widgets/error_view.dart';
+import '../widgets/plan_badge.dart';
+import '../widgets/ad_banner.dart';
 
 class UserProfileScreen extends StatefulWidget {
   final String username;
@@ -146,6 +148,9 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
               : SingleChildScrollView(
             child: Column(children: [
               _buildHeader(),
+              const SizedBox(height: 8),
+              const AdBanner(),
+              const SizedBox(height: 4),
               _buildJournalGrid(),
             ]),
           ),
@@ -238,6 +243,9 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                             color: levelColor)),
                       ]),
                     ),
+                    PlanBadge(
+                        isPlus: _user?['isPlus'] ?? false,
+                        isPro: _user?['isPro'] ?? false),
                   ],
                 ),
 

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import '../theme/app_theme.dart';
+import '../config/api_config.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -65,7 +66,7 @@ class _SplashScreenState extends State<SplashScreen>
 
         try {
           final response = await http.get(
-            Uri.parse('https://memorylane-wk1y.onrender.com/auth/profile'),
+            Uri.parse('${ApiConfig.baseUrl}/auth/profile'),
             headers: {'Authorization': 'Bearer $token'},
           );
           if (response.statusCode == 200) {

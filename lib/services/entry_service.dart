@@ -1,10 +1,12 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../models/entry.dart';
+import '../config/api_config.dart';
 import 'storage_service.dart';
+import 'subscription_service.dart';
 
 class EntryService {
-  static const String baseUrl = 'https://memorylane-wk1y.onrender.com';
+  static const String baseUrl = ApiConfig.baseUrl;
 
   static Future<List<Entry>> getEntries(int journalId) async {
     final token = await StorageService.getToken();
@@ -37,6 +39,9 @@ class EntryService {
 
     if (response.statusCode == 200) {
       return Entry.fromJson(jsonDecode(response.body));
+    } else if (response.statusCode == 403 &&
+        jsonDecode(response.body)['error'] == 'PAGE_LIMIT_REACHED') {
+      throw const LimitReachedException('page');
     } else {
       throw Exception('Giriş oluşturulamadı');
     }

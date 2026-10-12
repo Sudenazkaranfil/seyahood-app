@@ -5,6 +5,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:path_provider/path_provider.dart';
+import '../screens/premium_screen.dart';
 
 /// Kart Şablon Tipleri
 enum CardTemplate {
@@ -33,6 +34,7 @@ class ShareStoryModal extends StatefulWidget {
   final int pageIndex;
   final int totalPages;
   final bool initialIsPro;
+  final bool initialIsPlus;
 
   const ShareStoryModal({
     Key? key,
@@ -45,6 +47,7 @@ class ShareStoryModal extends StatefulWidget {
     this.pageIndex = 0,
     this.totalPages = 1,
     this.initialIsPro = false,
+    this.initialIsPlus = false,
   }) : super(key: key);
 
   static Future<void> show(
@@ -58,6 +61,7 @@ class ShareStoryModal extends StatefulWidget {
         int pageIndex = 0,
         int totalPages = 1,
         bool isPro = false,
+        bool isPlus = false,
       }) {
     return showModalBottomSheet(
       context: context,
@@ -73,6 +77,7 @@ class ShareStoryModal extends StatefulWidget {
         pageIndex: pageIndex,
         totalPages: totalPages,
         initialIsPro: isPro,
+        initialIsPlus: isPlus,
       ),
     );
   }
@@ -83,6 +88,7 @@ class ShareStoryModal extends StatefulWidget {
 
 class _ShareStoryModalState extends State<ShareStoryModal> {
   late bool _isPro;
+  late bool _isPlus;
   ShareFormat _format = ShareFormat.story;
   CardTemplate _selectedTemplate = CardTemplate.classicParchment;
   bool _showWatermark = true;
@@ -96,7 +102,8 @@ class _ShareStoryModalState extends State<ShareStoryModal> {
   void initState() {
     super.initState();
     _isPro = widget.initialIsPro;
-    _showWatermark = !_isPro;
+    _isPlus = widget.initialIsPlus;
+    _showWatermark = !(_isPro || _isPlus);
   }
 
   bool _isTemplatePro(CardTemplate template) {
@@ -185,20 +192,12 @@ class _ShareStoryModalState extends State<ShareStoryModal> {
                   elevation: 0,
                 ),
                 onPressed: () {
-                  setState(() {
-                    _isPro = true;
-                    _showWatermark = false;
-                  });
                   Navigator.pop(ctx);
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('🎉 Gezgin Kulübü (PRO) aktif edildi!'),
-                      backgroundColor: Color(0xFFC46B4E),
-                    ),
-                  );
+                  Navigator.push(context, MaterialPageRoute(
+                      builder: (context) => const PremiumScreen()));
                 },
                 child: const Text(
-                  "PRO'yu Ücretsiz Dene (Simüle)",
+                  "PRO'ya Geç",
                   style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 13),
                 ),
               ),
@@ -222,7 +221,8 @@ class _ShareStoryModalState extends State<ShareStoryModal> {
         setState(() => _isProcessing = false);
         return;
       }
-      final image = await boundary.toImage(pixelRatio: 3.0);
+      final pixelRatio = _isPro ? 3.0 : (_isPlus ? 2.0 : 1.0);
+      final image = await boundary.toImage(pixelRatio: pixelRatio);
       final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
       final bytes = byteData!.buffer.asUint8List();
       final dir = await getTemporaryDirectory();
@@ -286,10 +286,9 @@ class _ShareStoryModalState extends State<ShareStoryModal> {
                 ),
                 GestureDetector(
                   onTap: () {
-                    setState(() {
-                      _isPro = !_isPro;
-                      if (_isPro) _showWatermark = false;
-                    });
+                    if (_isPro || _isPlus) return;
+                    Navigator.push(context, MaterialPageRoute(
+                        builder: (context) => const PremiumScreen()));
                   },
                   child: Container(
                     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
@@ -308,7 +307,7 @@ class _ShareStoryModalState extends State<ShareStoryModal> {
                         ),
                         const SizedBox(width: 4),
                         Text(
-                          _isPro ? 'PRO Aktif' : 'Ücretsiz Mod',
+                          _isPro ? 'PRO Aktif' : (_isPlus ? 'Plus Aktif' : 'Ücretsiz Mod'),
                           style: TextStyle(
                             fontSize: 11,
                             fontWeight: FontWeight.bold,
@@ -497,11 +496,13 @@ class _ShareStoryModalState extends State<ShareStoryModal> {
                   _buildToggleTile(
                     icon: Icons.auto_awesome_rounded,
                     title: 'Seyahood Filigranı',
-                    subtitle: _isPro ? 'PRO ile kaldırılabilir' : 'Kaldırmak için PRO gereklidir 🔒',
+                    subtitle: (_isPro || _isPlus)
+                        ? 'Plus/PRO ile kaldırılabilir'
+                        : 'Kaldırmak için Plus veya PRO gereklidir 🔒',
                     value: _showWatermark,
-                    isLocked: !_isPro,
+                    isLocked: !(_isPro || _isPlus),
                     onChanged: (val) {
-                      if (!_isPro) {
+                      if (!(_isPro || _isPlus)) {
                         _showProUpgradeDialog();
                         return;
                       }
