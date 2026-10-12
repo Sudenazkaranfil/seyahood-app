@@ -1066,7 +1066,6 @@ class _ExploreJournalScreenState extends State<ExploreJournalScreen> {
               angle: angle,
               child: Transform.scale(
                 scale: stickerScale * scale,
-                alignment: Alignment.topLeft,
                 child: url.startsWith('http')
                     ? Image.network(url, width: 50, height: 50,
                     fit: BoxFit.cover,

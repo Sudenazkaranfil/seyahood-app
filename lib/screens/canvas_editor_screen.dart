@@ -1099,11 +1099,11 @@ class _CanvasEditorScreenState extends State<CanvasEditorScreen> {
                             boundHeight: constraints.maxHeight,
                             data: item.model,
                             closeIcon: const Icon(Icons.close,
-                                color: Colors.white, size: 9),
+                                color: Colors.black, size: 12),
                             resizeIcon: const Icon(Icons.open_in_full,
-                                color: Colors.white, size: 9),
+                                color: Colors.black, size: 12),
                             rotateIcon: const Icon(Icons.rotate_right,
-                                color: Colors.white, size: 9),
+                                color: Colors.black, size: 12),
                             onCancel: () => setState(() {
                               _stickers.removeAt(idx);
                               if (_selectedStickerIndex == idx) {
