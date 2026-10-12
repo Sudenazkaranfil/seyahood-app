@@ -1198,6 +1198,43 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
+  void _showDeleteJournalDialog(Journal journal) async {
+    final shouldDelete = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: AppTheme.background,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+        title: Text('Ajandayı sil',
+            style: GoogleFonts.playfairDisplay(
+                fontSize: 18, fontWeight: FontWeight.w700,
+                color: AppTheme.textPrimary)),
+        content: Text(
+            '"${journal.title}" ve içerisindeki tüm sayfalar kalıcı olarak silinecek.',
+            style: AppTheme.sansBody(size: 14, color: AppTheme.textSecondary)),
+        actions: [
+          TextButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: const Text('Vazgeç')),
+          TextButton(
+              onPressed: () => Navigator.pop(context, true),
+              child: const Text('Sil', style: TextStyle(color: Colors.red))),
+        ],
+      ),
+    );
+    if (shouldDelete != true) return;
+    final idx = _journals.indexWhere((j) => j.id == journal.id);
+    if (idx == -1) return;
+    final removed = _journals[idx];
+    setState(() => _journals.removeAt(idx));
+    try {
+      await JournalService.deleteJournal(journal.id);
+    } catch (e) {
+      setState(() => _journals.insert(idx, removed));
+      if (mounted) ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Ajanda silinemedi, tekrar dene.')));
+    }
+  }
+
   Widget _buildJournalGrid() {
     if (_journals.isEmpty) {
       return Container(
@@ -1267,6 +1304,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         JournalDetailScreen(journal: journal)));
                 _loadProfile();
               },
+              onLongPress: () => _showDeleteJournalDialog(journal),
               child: Column(crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Expanded(
