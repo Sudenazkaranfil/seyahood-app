@@ -1068,9 +1068,10 @@ class _ExploreJournalScreenState extends State<ExploreJournalScreen> {
                 scale: stickerScale * scale,
                 alignment: Alignment.topLeft,
                 child: url.startsWith('http')
-                    ? Image.network(url, width: 160, fit: BoxFit.contain,
+                    ? Image.network(url, width: 50, height: 50,
+                    fit: BoxFit.cover,
                     errorBuilder: (_, __, ___) =>
-                    const SizedBox(width: 160))
+                    const SizedBox(width: 50, height: 50))
                     : const SizedBox(),
               ),
             ),
