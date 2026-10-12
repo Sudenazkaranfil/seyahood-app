@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
@@ -87,9 +89,9 @@ class _PictureEditingBoxState extends State<PictureEditingBox> {
                       tap.rotation - widget.pictureModel.angle;
 
                   if ((tap.scale - lastScale!).isNegative) {
-                    widget.pictureModel.scale -= 0.015;
+                    widget.pictureModel.scale -= 0.04;
                   } else {
-                    widget.pictureModel.scale += 0.015;
+                    widget.pictureModel.scale += 0.04;
                   }
 
                   // widget.pictureModel.scale = tap.scale;
@@ -150,8 +152,8 @@ class _PictureEditingBoxState extends State<PictureEditingBox> {
                             height: 50,
                             width: 50,
                           )
-                        : Image.asset(
-                            widget.pictureModel.stringUrl,
+                        : Image.file(
+                            File(widget.pictureModel.stringUrl),
                             height: 50,
                             width: 50,
                           ),
@@ -223,10 +225,10 @@ class _PictureEditingBoxState extends State<PictureEditingBox> {
                     onPanUpdate: (tap) {
                       if (tap.delta.dx.isNegative &&
                           widget.pictureModel.scale > .5) {
-                        setState(() => widget.pictureModel.scale -= 0.02);
+                        setState(() => widget.pictureModel.scale -= 0.05);
                       } else if (!tap.delta.dx.isNegative &&
                           widget.pictureModel.scale < 5) {
-                        setState(() => widget.pictureModel.scale += 0.02);
+                        setState(() => widget.pictureModel.scale += 0.05);
                       }
                     },
                     child: widget.pictureModel.isSelected
