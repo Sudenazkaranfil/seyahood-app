@@ -174,7 +174,7 @@ class _PictureEditingBoxState extends State<PictureEditingBox> {
                     },
                     child: widget.pictureModel.isSelected
                         ? Container(
-                            padding: const EdgeInsets.all(2),
+                            padding: const EdgeInsets.all(1),
                             decoration: BoxDecoration(
                               border: Border.all(color: Colors.black, width: 1),
                               shape: BoxShape.circle,
@@ -203,7 +203,7 @@ class _PictureEditingBoxState extends State<PictureEditingBox> {
                     },
                     child: widget.pictureModel.isSelected
                         ? Container(
-                            padding: const EdgeInsets.all(2),
+                            padding: const EdgeInsets.all(1),
                             decoration: BoxDecoration(
                               border: Border.all(color: Colors.black, width: 1),
                               shape: BoxShape.circle,
@@ -235,7 +235,7 @@ class _PictureEditingBoxState extends State<PictureEditingBox> {
                     },
                     child: widget.pictureModel.isSelected
                         ? Container(
-                            padding: const EdgeInsets.all(2),
+                            padding: const EdgeInsets.all(1),
                             decoration: BoxDecoration(
                               border: Border.all(color: Colors.black, width: 1),
                               color: Colors.white,
