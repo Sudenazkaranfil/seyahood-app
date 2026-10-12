@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
 import 'dart:convert';
+import 'dart:io';
 import '../theme/app_theme.dart';
 import '../models/journal.dart';
 import '../models/entry.dart';
@@ -85,13 +87,21 @@ class _JournalDetailScreenState extends State<JournalDetailScreen> {
     final image = await picker.pickImage(source: ImageSource.gallery);
     if (image == null) return;
     try {
-      final url = await JournalService.uploadCover(widget.journal.id, image.path);
+      // Seçilen dosyayı kalıcı klasöre kopyala — bulutta yedeklenmiş
+      // (henüz cihaza tam inmemiş) galeri fotoğraflarında picker'ın
+      // döndürdüğü ham yol bazen anlık/okunamaz oluyor.
+      final appDir = await getApplicationDocumentsDirectory();
+      final fileName = 'cover_${DateTime.now().millisecondsSinceEpoch}.jpg';
+      final savedFile = await File(image.path).copy('${appDir.path}/$fileName');
+
+      final url = await JournalService.uploadCover(widget.journal.id, savedFile.path);
       setState(() => _coverImageUrl = url);
       if (mounted) ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Kapak fotoğrafı güncellendi!')));
     } catch (e) {
-      if (mounted) ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Kapak fotoğrafı yüklenemedi!')));
+      if (mounted) ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text('Kapak fotoğrafı yüklenemedi, bulutta yedekli bir '
+              'fotoğraf olabilir — galeriden tam indirip tekrar dene.')));
     }
   }
 
