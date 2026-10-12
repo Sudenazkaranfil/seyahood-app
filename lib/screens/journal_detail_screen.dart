@@ -100,9 +100,8 @@ class _JournalDetailScreenState extends State<JournalDetailScreen> {
       if (mounted) ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Kapak fotoğrafı güncellendi!')));
     } catch (e) {
-      if (mounted) ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text('Kapak fotoğrafı yüklenemedi, bulutta yedekli bir '
-              'fotoğraf olabilir — galeriden tam indirip tekrar dene.')));
+      if (mounted) ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Kapak fotoğrafı yüklenemedi: $e')));
     }
   }
 
