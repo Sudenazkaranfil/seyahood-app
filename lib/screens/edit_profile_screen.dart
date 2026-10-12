@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
 import 'dart:io';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
@@ -80,7 +81,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     final picker = ImagePicker();
     final image = await picker.pickImage(
         source: ImageSource.gallery, imageQuality: 80);
-    if (image != null) setState(() => _localImagePath = image.path);
+    if (image == null) return;
+    final appDir = await getApplicationDocumentsDirectory();
+    final fileName = 'profile_${DateTime.now().millisecondsSinceEpoch}.jpg';
+    final bytes = await image.readAsBytes();
+    final savedFile = await File('${appDir.path}/$fileName').writeAsBytes(bytes);
+    setState(() => _localImagePath = savedFile.path);
   }
 
   Future<String?> _uploadProfileImage(String filePath) async {

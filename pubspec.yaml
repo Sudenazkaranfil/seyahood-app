@@ -35,6 +35,13 @@ dev_dependencies:
     sdk: flutter
   flutter_lints: ^6.0.0
 
+# sticker_widget'ın büyütme/küçültme hassasiyetini düşürmek için
+# projeye vendor edildi (packages/sticker_widget) — paketin kendisi
+# bu adımı dışarıdan ayarlamaya izin vermiyor.
+dependency_overrides:
+  sticker_widget:
+    path: packages/sticker_widget
+
 flutter:
   uses-material-design: true
   assets:

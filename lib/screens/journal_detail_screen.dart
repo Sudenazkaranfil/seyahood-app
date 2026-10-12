@@ -92,7 +92,8 @@ class _JournalDetailScreenState extends State<JournalDetailScreen> {
       // döndürdüğü ham yol bazen anlık/okunamaz oluyor.
       final appDir = await getApplicationDocumentsDirectory();
       final fileName = 'cover_${DateTime.now().millisecondsSinceEpoch}.jpg';
-      final savedFile = await File(image.path).copy('${appDir.path}/$fileName');
+      final bytes = await image.readAsBytes();
+      final savedFile = await File('${appDir.path}/$fileName').writeAsBytes(bytes);
 
       final url = await JournalService.uploadCover(widget.journal.id, savedFile.path);
       setState(() => _coverImageUrl = url);

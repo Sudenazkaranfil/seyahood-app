@@ -298,7 +298,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   final image = await picker.pickImage(
                       source: ImageSource.gallery, imageQuality: 80);
                   if (image != null) {
-                    setState(() => _coverImagePath = image.path);
+                    final appDir = await getApplicationDocumentsDirectory();
+                    final fileName =
+                        'cover_${DateTime.now().millisecondsSinceEpoch}.jpg';
+                    final bytes = await image.readAsBytes();
+                    final savedFile = await File('${appDir.path}/$fileName')
+                        .writeAsBytes(bytes);
+                    setState(() => _coverImagePath = savedFile.path);
                   }
                 },
                 child: Container(

@@ -338,7 +338,12 @@ class _CanvasEditorScreenState extends State<CanvasEditorScreen> {
       if (image == null) return;
       final appDir = await getApplicationDocumentsDirectory();
       final fileName = '${DateTime.now().millisecondsSinceEpoch}.jpg';
-      final savedFile = await File(image.path).copy('${appDir.path}/$fileName');
+      // XFile.readAsBytes() picker'ın platforma özgü güvenli okuma
+      // yolunu kullanır; ham File(image.path) bazı cihazlarda henüz
+      // tam oluşmamış/okunamaz bir yol döndürüp PathNotFoundException'a
+      // yol açabiliyor.
+      final bytes = await image.readAsBytes();
+      final savedFile = await File('${appDir.path}/$fileName').writeAsBytes(bytes);
       setState(() {
         _stickers.add(_StickerItem(
           model: PictureModel.fromUrl(savedFile.path, scale: 1.5),
