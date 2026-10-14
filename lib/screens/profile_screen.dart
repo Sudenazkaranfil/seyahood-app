@@ -23,6 +23,7 @@ import 'premium_screen.dart';
 import '../widgets/skeleton_loader.dart';
 import '../widgets/error_view.dart';
 import '../widgets/plan_badge.dart';
+import 'notifications_screen.dart';
 import '../widgets/ad_banner.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -1417,9 +1418,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
             }),
         _buildMenuDivider(),
         _buildMenuItem(Icons.notifications_active_outlined,
-            'Bildirimler & Hatırlatıcılar', () {
-              ScaffoldMessenger.of(context)
-                  .showSnackBar(const SnackBar(content: Text('Yakında!')));
+            'Bildirimler', () {
+              Navigator.push(context, MaterialPageRoute(
+                  builder: (context) => const NotificationsScreen()));
             }),
         _buildMenuDivider(),
         _buildMenuItem(Icons.help_center_outlined, 'Yardım', () {

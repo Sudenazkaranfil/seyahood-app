@@ -18,6 +18,8 @@ import 'premium_screen.dart';
 import '../widgets/skeleton_loader.dart';
 import '../widgets/error_view.dart';
 import '../widgets/ad_banner.dart';
+import '../services/notification_service.dart';
+import 'notifications_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -36,6 +38,7 @@ class _HomeScreenState extends State<HomeScreen> {
   bool _isLoading = true;
   bool _hasError = false;
   bool _isFreePlan = true;
+  int _unreadNotificationCount = 0;
 
   static const String baseUrl = ApiConfig.baseUrl;
 
@@ -43,6 +46,14 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     _loadData();
+    _loadUnreadNotificationCount();
+  }
+
+  Future<void> _loadUnreadNotificationCount() async {
+    try {
+      final count = await NotificationService.getUnreadCount();
+      if (mounted) setState(() => _unreadNotificationCount = count);
+    } catch (e) {}
   }
 
   Future<void> _loadData() async {
@@ -431,22 +442,39 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               const SizedBox(width: 8),
             ],
-            Container(
-              width: 40, height: 40,
-              decoration: BoxDecoration(
-                color: AppTheme.navDark,
-                shape: BoxShape.circle,
-                boxShadow: [BoxShadow(
-                    color: Colors.black.withOpacity(0.12),
-                    blurRadius: 8, offset: const Offset(0, 2))],
+            Stack(children: [
+              Container(
+                width: 40, height: 40,
+                decoration: BoxDecoration(
+                  color: AppTheme.navDark,
+                  shape: BoxShape.circle,
+                  boxShadow: [BoxShadow(
+                      color: Colors.black.withOpacity(0.12),
+                      blurRadius: 8, offset: const Offset(0, 2))],
+                ),
+                child: IconButton(
+                  icon: const Icon(Icons.notifications_none_rounded,
+                      color: Color(0xFFEADBCE), size: 20),
+                  onPressed: () async {
+                    await Navigator.push(context, MaterialPageRoute(
+                        builder: (context) => const NotificationsScreen()));
+                    _loadUnreadNotificationCount();
+                  },
+                ),
               ),
-              child: IconButton(
-                icon: const Icon(Icons.notifications_none_rounded,
-                    color: Color(0xFFEADBCE), size: 20),
-                onPressed: () => ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Henüz bildirim yok.'))),
-              ),
-            ),
+              if (_unreadNotificationCount > 0)
+                Positioned(
+                  right: 2, top: 2,
+                  child: Container(
+                    width: 10, height: 10,
+                    decoration: BoxDecoration(
+                      color: AppTheme.terracotta,
+                      shape: BoxShape.circle,
+                      border: Border.all(color: AppTheme.navDark, width: 1.5),
+                    ),
+                  ),
+                ),
+            ]),
           ]),
         ],
       ),
