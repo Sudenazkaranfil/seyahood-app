@@ -228,6 +228,26 @@ const Map<String, String> stringsTr = {
   'editProfile.favoriteDestination.hint':
       'En unutamadığın rota (örn: Kapadokya)',
 
+  // Map screen
+  'map.title': 'Harita',
+  'map.subtitle': 'Gezdiğin ve keşfedilen yerler',
+  'map.tab.mine': 'Haritam',
+  'map.tab.explore': 'Keşfet',
+  'map.myMap.empty.title': 'Henüz Rota Eklenmedi',
+  'map.myMap.empty.subtitle':
+      'Ajandana sayfa eklerken konum eklediğinde seyahat rotan otomatik olarak burada haritalanır.',
+  'map.unknownLocationChip': 'Konum {index}',
+  'map.travelPointsCount': '{count} Seyahat Noktası',
+  'map.locationInfoFallback': 'Konum Bilgisi',
+  'map.backToMap': 'Haritaya Dön',
+  'map.goToJournal': 'Ajandaya Git',
+  'map.explore.empty.title': 'Henüz Paylaşılan Rota Yok',
+  'map.explore.empty.subtitle':
+      'Gezginlerin paylaştığı ajandalar herkese açık konumlara dönüştüğünde burada listelenecek.',
+  'map.discoveryRouteCount': '{count} Keşif Rotası',
+  'map.discoveredLocationFallback': 'Keşfedilen Konum',
+  'map.unknownUsername': 'gezgin',
+
   // Home
   'home.greeting.morning': 'Günaydın,',
   'home.greeting.afternoon': 'İyi günler,',

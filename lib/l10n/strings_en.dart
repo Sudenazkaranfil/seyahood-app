@@ -228,6 +228,26 @@ const Map<String, String> stringsEn = {
   'editProfile.favoriteDestination.hint':
       'Your most unforgettable route (e.g. Cappadocia)',
 
+  // Map screen
+  'map.title': 'Map',
+  'map.subtitle': 'Places you traveled and discovered',
+  'map.tab.mine': 'My Map',
+  'map.tab.explore': 'Explore',
+  'map.myMap.empty.title': 'No Routes Added Yet',
+  'map.myMap.empty.subtitle':
+      'When you add a location while creating a page, your travel route is automatically mapped here.',
+  'map.unknownLocationChip': 'Location {index}',
+  'map.travelPointsCount': '{count} Travel Points',
+  'map.locationInfoFallback': 'Location Info',
+  'map.backToMap': 'Back to Map',
+  'map.goToJournal': 'Go to Journal',
+  'map.explore.empty.title': 'No Shared Routes Yet',
+  'map.explore.empty.subtitle':
+      "Journals that travelers make public will be listed here once they're shared.",
+  'map.discoveryRouteCount': '{count} Discovery Routes',
+  'map.discoveredLocationFallback': 'Discovered Location',
+  'map.unknownUsername': 'traveler',
+
   // Home
   'home.greeting.morning': 'Good morning,',
   'home.greeting.afternoon': 'Good afternoon,',
