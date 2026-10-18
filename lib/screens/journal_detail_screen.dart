@@ -104,7 +104,7 @@ class _JournalDetailScreenState extends State<JournalDetailScreen> {
     } catch (e) {
       if (mounted) ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(context.trf('journal.coverUploadFailed',
-              {'error': e.toString()}))));
+              {'error': context.trError(e)}))));
     }
   }
 

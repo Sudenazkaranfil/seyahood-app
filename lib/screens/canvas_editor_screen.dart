@@ -290,7 +290,7 @@ class _CanvasEditorScreenState extends State<CanvasEditorScreen> {
           } catch (e) {
             ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(content: Text(context.trf('canvas.photoUploadError',
-                    {'error': e.toString()}))));
+                    {'error': context.trError(e)}))));
           }
         }
       }
@@ -358,7 +358,8 @@ class _CanvasEditorScreenState extends State<CanvasEditorScreen> {
       // 1. katman: fotoğrafın EXIF'inde GPS varsa ücretsiz ve anında ekle.
       final gps = await PhotoService.extractExifGps(savedFile.path);
       if (gps != null) {
-        final name = await PhotoService.reverseGeocode(gps['lat']!, gps['lng']!);
+        final name = await PhotoService.reverseGeocode(gps['lat']!, gps['lng']!,
+            languageCode: Localizations.localeOf(context).languageCode);
         if (name != null) {
           if (mounted) {
             setState(() => _locations.add(_LocationItem(

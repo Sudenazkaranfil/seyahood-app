@@ -122,7 +122,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
       if (!mounted) return;
       setState(() => _isRedeemingCode = false);
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text(e.toString().replaceFirst('Exception: ', ''))));
+          content: Text(context.trError(e))));
     }
   }
 

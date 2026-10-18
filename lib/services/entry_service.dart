@@ -4,6 +4,7 @@ import '../models/entry.dart';
 import '../config/api_config.dart';
 import 'storage_service.dart';
 import 'subscription_service.dart';
+import 'api_exception.dart';
 
 class EntryService {
   static const String baseUrl = ApiConfig.baseUrl;
@@ -22,7 +23,7 @@ class EntryService {
       final List<dynamic> data = jsonDecode(response.body);
       return data.map((json) => Entry.fromJson(json)).toList();
     } else {
-      throw Exception('Girişler yüklenemedi');
+      throw const ApiException('apiError.entriesLoadFailed');
     }
   }
 
@@ -43,7 +44,7 @@ class EntryService {
         jsonDecode(response.body)['error'] == 'PAGE_LIMIT_REACHED') {
       throw const LimitReachedException('page');
     } else {
-      throw Exception('Giriş oluşturulamadı');
+      throw const ApiException('apiError.entryCreateFailed');
     }
   }
 
@@ -72,7 +73,7 @@ class EntryService {
     if (response.statusCode == 200) {
       return Entry.fromJson(jsonDecode(response.body));
     } else {
-      throw Exception('Giriş güncellenemedi');
+      throw const ApiException('apiError.entryUpdateFailed');
     }
   }
 }

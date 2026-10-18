@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 import '../config/api_config.dart';
 import '../models/app_notification.dart';
 import 'storage_service.dart';
+import 'api_exception.dart';
 
 class NotificationService {
   static const String baseUrl = ApiConfig.baseUrl;
@@ -17,7 +18,7 @@ class NotificationService {
       final List<dynamic> data = jsonDecode(response.body);
       return data.map((json) => AppNotification.fromJson(json)).toList();
     } else {
-      throw Exception('Bildirimler yüklenemedi');
+      throw const ApiException('apiError.notificationsLoadFailed');
     }
   }
 

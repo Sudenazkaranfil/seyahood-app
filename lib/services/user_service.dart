@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../config/api_config.dart';
 import 'storage_service.dart';
+import 'api_exception.dart';
 
 class UserService {
   static const String baseUrl = ApiConfig.baseUrl;
@@ -28,7 +29,7 @@ class UserService {
     if (response.statusCode == 200) {
       return jsonDecode(response.body);
     }
-    throw Exception('Kullanıcı bulunamadı');
+    throw const ApiException('apiError.userNotFound');
   }
 
   static Future<Map<String, dynamic>> getFollowStatus(String username) async {
@@ -52,7 +53,7 @@ class UserService {
     if (response.statusCode == 200) {
       return jsonDecode(response.body)['following'];
     }
-    throw Exception('İşlem başarısız');
+    throw const ApiException('apiError.actionFailed');
   }
 
   static Future<List<Map<String, dynamic>>> getFollowers(String username) async {

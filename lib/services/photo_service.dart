@@ -5,6 +5,7 @@ import 'package:exif_reader/exif_reader.dart';
 import 'dart:convert';
 import '../config/api_config.dart';
 import 'storage_service.dart';
+import 'api_exception.dart';
 
 class LocationEstimationException implements Exception {
   final String code;
@@ -45,7 +46,7 @@ class PhotoService {
       final data = jsonDecode(responseBody);
       return data['url'];
     } else {
-      throw Exception('Fotoğraf yüklenemedi');
+      throw const ApiException('apiError.photoUploadFailed');
     }
   }
 
@@ -60,7 +61,7 @@ class PhotoService {
       final data = jsonDecode(body);
       return data['secure_url'];
     }
-    throw Exception('Cloudinary yükleme başarısız');
+    throw const ApiException('apiError.cloudinaryUploadFailed');
   }
 
   static Future<LocationGuess> estimateLocation(String filePath) async {
@@ -121,11 +122,12 @@ class PhotoService {
   }
 
   /// Koordinatı Nominatim ile insan-okunur bir yer adına çevirir.
-  static Future<String?> reverseGeocode(double lat, double lng) async {
+  static Future<String?> reverseGeocode(double lat, double lng,
+      {String languageCode = 'tr'}) async {
     try {
       final response = await http.get(
         Uri.parse('https://nominatim.openstreetmap.org/reverse'
-            '?lat=$lat&lon=$lng&format=json&accept-language=tr'),
+            '?lat=$lat&lon=$lng&format=json&accept-language=$languageCode'),
         headers: {'User-Agent': 'Seyahood/1.0'},
       );
       if (response.statusCode != 200) return null;
