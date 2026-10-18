@@ -5,6 +5,7 @@ import '../services/user_service.dart';
 import '../services/storage_service.dart';
 import '../widgets/error_view.dart';
 import 'user_profile_screen.dart';
+import '../l10n/app_strings.dart';
 
 class FollowListScreen extends StatefulWidget {
   final String username;
@@ -59,7 +60,9 @@ class _FollowListScreenState extends State<FollowListScreen> {
   @override
   Widget build(BuildContext context) {
     final isFollowers = widget.type == 'followers';
-    final title = isFollowers ? 'Yol Arkadaşları' : 'Takip Edilen Gezginler';
+    final title = isFollowers
+        ? context.tr('followList.titleFollowers')
+        : context.tr('followList.titleFollowing');
 
     return Scaffold(
       backgroundColor: AppTheme.background,
@@ -140,16 +143,16 @@ class _FollowListScreenState extends State<FollowListScreen> {
           const SizedBox(height: 20),
           Text(
               isFollowers
-                  ? 'Henüz Yol Arkadaşı Yok'
-                  : 'Henüz Kimse Takip Edilmiyor',
+                  ? context.tr('followList.emptyFollowersTitle')
+                  : context.tr('followList.emptyFollowingTitle'),
               style: GoogleFonts.playfairDisplay(
                   fontSize: 18, fontWeight: FontWeight.w800,
                   color: AppTheme.textPrimary)),
           const SizedBox(height: 8),
           Text(
               isFollowers
-                  ? 'Gezgin bu yolculukta kendi rotasını oluşturuyor.'
-                  : 'Yeni seyahat hikayeleri keşfetmek için Keşfet sekmesine göz at.',
+                  ? context.tr('followList.emptyFollowersSubtitle')
+                  : context.tr('followList.emptyFollowingSubtitle'),
               textAlign: TextAlign.center,
               style: AppTheme.sansBody(
                   size: 13, color: AppTheme.textSecondary)),
@@ -235,7 +238,9 @@ class _FollowListScreenState extends State<FollowListScreen> {
                           ? AppTheme.terracotta : AppTheme.terracottaLight,
                       borderRadius: BorderRadius.circular(6),
                     ),
-                    child: Text(isMe ? 'Sen' : 'Gezgin',
+                    child: Text(isMe
+                        ? context.tr('followList.you')
+                        : context.tr('common.travelerFallback'),
                         style: AppTheme.sansBody(
                             size: 9, weight: FontWeight.w600,
                             color: isMe

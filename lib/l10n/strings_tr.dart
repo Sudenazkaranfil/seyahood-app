@@ -300,6 +300,17 @@ const Map<String, String> stringsTr = {
   'userProfile.journalsByName': '{name} Ajandaları',
   'userProfile.journalCountBadge': '{count} ajanda',
 
+  // Follow list
+  'followList.titleFollowers': 'Yol Arkadaşları',
+  'followList.titleFollowing': 'Takip Edilen Gezginler',
+  'followList.emptyFollowersTitle': 'Henüz Yol Arkadaşı Yok',
+  'followList.emptyFollowingTitle': 'Henüz Kimse Takip Edilmiyor',
+  'followList.emptyFollowersSubtitle':
+      'Gezgin bu yolculukta kendi rotasını oluşturuyor.',
+  'followList.emptyFollowingSubtitle':
+      'Yeni seyahat hikayeleri keşfetmek için Keşfet sekmesine göz at.',
+  'followList.you': 'Sen',
+
   // Home
   'home.greeting.morning': 'Günaydın,',
   'home.greeting.afternoon': 'İyi günler,',

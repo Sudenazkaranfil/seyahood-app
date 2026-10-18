@@ -300,6 +300,17 @@ const Map<String, String> stringsEn = {
   'userProfile.journalsByName': "{name}'s Journals",
   'userProfile.journalCountBadge': '{count} journals',
 
+  // Follow list
+  'followList.titleFollowers': 'Travel Companions',
+  'followList.titleFollowing': 'Travelers You Follow',
+  'followList.emptyFollowersTitle': 'No Travel Companions Yet',
+  'followList.emptyFollowingTitle': 'Not Following Anyone Yet',
+  'followList.emptyFollowersSubtitle':
+      'This traveler is charting their own route on this journey.',
+  'followList.emptyFollowingSubtitle':
+      'Check out the Explore tab to discover new travel stories.',
+  'followList.you': 'You',
+
   // Home
   'home.greeting.morning': 'Good morning,',
   'home.greeting.afternoon': 'Good afternoon,',
