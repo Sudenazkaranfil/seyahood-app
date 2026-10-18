@@ -9,6 +9,7 @@ import '../theme/app_theme.dart';
 import '../config/api_config.dart';
 import '../services/storage_service.dart';
 import '../widgets/error_view.dart';
+import '../l10n/app_strings.dart';
 
 class EditProfileScreen extends StatefulWidget {
   const EditProfileScreen({super.key});
@@ -130,18 +131,19 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       );
       if (response.statusCode == 200) {
         if (mounted) {
+          final message = context.tr('editProfile.updateSuccess');
           Navigator.pop(context, true);
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
             backgroundColor: AppTheme.navDark,
             behavior: SnackBarBehavior.floating,
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12)),
-            content: const Row(children: [
-              Icon(Icons.check_circle_outline_rounded,
+            content: Row(children: [
+              const Icon(Icons.check_circle_outline_rounded,
                   color: AppTheme.terracotta, size: 20),
-              SizedBox(width: 10),
-              Text('Profil başarıyla güncellendi!',
-                  style: TextStyle(fontWeight: FontWeight.w600)),
+              const SizedBox(width: 10),
+              Text(message,
+                  style: const TextStyle(fontWeight: FontWeight.w600)),
             ]),
           ));
         }
@@ -155,11 +157,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           behavior: SnackBarBehavior.floating,
           shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12)),
-          content: const Row(children: [
-            Icon(Icons.error_outline_rounded, color: Colors.white, size: 20),
-            SizedBox(width: 10),
-            Text('Güncellenemedi, tekrar deneyin.',
-                style: TextStyle(fontWeight: FontWeight.w600)),
+          content: Row(children: [
+            const Icon(Icons.error_outline_rounded, color: Colors.white, size: 20),
+            const SizedBox(width: 10),
+            Text(context.tr('editProfile.updateFailed'),
+                style: const TextStyle(fontWeight: FontWeight.w600)),
           ]),
         ));
       }
@@ -200,11 +202,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 Expanded(child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Profili Düzenle',
+                      Text(context.tr('editProfile.header.title'),
                           style: GoogleFonts.playfairDisplay(
                               fontSize: 17, fontWeight: FontWeight.w800,
                               color: Colors.white, letterSpacing: -0.3)),
-                      Text('Gezgin Kimliği & Tercihler',
+                      Text(context.tr('editProfile.header.subtitle'),
                           style: AppTheme.sansBody(
                               size: 11, weight: FontWeight.w600,
                               color: AppTheme.terracotta)),
@@ -225,7 +227,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           color: AppTheme.terracotta.withOpacity(0.3),
                           blurRadius: 8, offset: const Offset(0, 3))],
                     ),
-                    child: Text('Kaydet', style: AppTheme.sansBody(
+                    child: Text(context.tr('editProfile.saveButton'), style: AppTheme.sansBody(
                         size: 13, weight: FontWeight.w800,
                         color: Colors.white)),
                   ),
@@ -295,7 +297,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               const SizedBox(height: 10),
               GestureDetector(
                 onTap: _pickImage,
-                child: Text('Fotoğrafı Değiştir',
+                child: Text(context.tr('editProfile.changePhoto'),
                     style: AppTheme.sansBody(
                         size: 13, weight: FontWeight.w700,
                         color: AppTheme.terracotta)),
@@ -315,25 +317,25 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Row(children: [
-                        Expanded(child: _buildField('Ad',
-                            _firstNameController, 'Adınız',
+                        Expanded(child: _buildField(context.tr('editProfile.firstName.label'),
+                            _firstNameController, context.tr('editProfile.firstName.hint'),
                             Icons.badge_outlined)),
                         const SizedBox(width: 14),
-                        Expanded(child: _buildField('Soyad',
-                            _lastNameController, 'Soyadınız',
+                        Expanded(child: _buildField(context.tr('editProfile.lastName.label'),
+                            _lastNameController, context.tr('editProfile.lastName.hint'),
                             Icons.badge_outlined)),
                       ]),
-                      _buildField('Hakkında', _bioController,
-                          'Gezgin hikayenden bahset...',
+                      _buildField(context.tr('editProfile.bio.label'), _bioController,
+                          context.tr('editProfile.bio.hint'),
                           Icons.edit_note_rounded, maxLines: 3),
-                      _buildField('Konum', _locationController,
-                          'Şehir, Ülke (örn: İstanbul, TR)',
+                      _buildField(context.tr('editProfile.location.label'), _locationController,
+                          context.tr('editProfile.location.hint'),
                           Icons.location_on_outlined),
-                      _buildField('Web Sitesi', _websiteController,
+                      _buildField(context.tr('editProfile.website.label'), _websiteController,
                           'https://...', Icons.language_outlined),
-                      _buildField('Favori Destinasyon',
+                      _buildField(context.tr('editProfile.favoriteDestination.label'),
                           _favoriteDestinationController,
-                          'En unutamadığın rota (örn: Kapadokya)',
+                          context.tr('editProfile.favoriteDestination.hint'),
                           Icons.flight_takeoff_rounded),
                     ]),
               ),

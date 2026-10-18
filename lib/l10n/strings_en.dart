@@ -208,6 +208,26 @@ const Map<String, String> stringsEn = {
   'help.privacyPolicy.title': 'Privacy Policy',
   'help.privacyPolicy.subtitle': 'Personal data protection and retention rules',
 
+  // Edit profile screen
+  'editProfile.updateSuccess': 'Profile updated successfully!',
+  'editProfile.updateFailed': "Couldn't update, try again.",
+  'editProfile.header.title': 'Edit Profile',
+  'editProfile.header.subtitle': 'Traveler Identity & Preferences',
+  'editProfile.saveButton': 'Save',
+  'editProfile.changePhoto': 'Change Photo',
+  'editProfile.firstName.label': 'First Name',
+  'editProfile.firstName.hint': 'Your first name',
+  'editProfile.lastName.label': 'Last Name',
+  'editProfile.lastName.hint': 'Your last name',
+  'editProfile.bio.label': 'About',
+  'editProfile.bio.hint': 'Tell your traveler story...',
+  'editProfile.location.label': 'Location',
+  'editProfile.location.hint': 'City, Country (e.g. Istanbul, TR)',
+  'editProfile.website.label': 'Website',
+  'editProfile.favoriteDestination.label': 'Favorite Destination',
+  'editProfile.favoriteDestination.hint':
+      'Your most unforgettable route (e.g. Cappadocia)',
+
   // Home
   'home.greeting.morning': 'Good morning,',
   'home.greeting.afternoon': 'Good afternoon,',

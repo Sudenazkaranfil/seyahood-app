@@ -208,6 +208,26 @@ const Map<String, String> stringsTr = {
   'help.privacyPolicy.title': 'Gizlilik Politikası',
   'help.privacyPolicy.subtitle': 'Kişisel veri koruma ve saklama kuralları',
 
+  // Edit profile screen
+  'editProfile.updateSuccess': 'Profil başarıyla güncellendi!',
+  'editProfile.updateFailed': 'Güncellenemedi, tekrar deneyin.',
+  'editProfile.header.title': 'Profili Düzenle',
+  'editProfile.header.subtitle': 'Gezgin Kimliği & Tercihler',
+  'editProfile.saveButton': 'Kaydet',
+  'editProfile.changePhoto': 'Fotoğrafı Değiştir',
+  'editProfile.firstName.label': 'Ad',
+  'editProfile.firstName.hint': 'Adınız',
+  'editProfile.lastName.label': 'Soyad',
+  'editProfile.lastName.hint': 'Soyadınız',
+  'editProfile.bio.label': 'Hakkında',
+  'editProfile.bio.hint': 'Gezgin hikayenden bahset...',
+  'editProfile.location.label': 'Konum',
+  'editProfile.location.hint': 'Şehir, Ülke (örn: İstanbul, TR)',
+  'editProfile.website.label': 'Web Sitesi',
+  'editProfile.favoriteDestination.label': 'Favori Destinasyon',
+  'editProfile.favoriteDestination.hint':
+      'En unutamadığın rota (örn: Kapadokya)',
+
   // Home
   'home.greeting.morning': 'Günaydın,',
   'home.greeting.afternoon': 'İyi günler,',
