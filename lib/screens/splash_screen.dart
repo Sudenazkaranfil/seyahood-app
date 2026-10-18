@@ -3,6 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 import '../theme/app_theme.dart';
 import '../config/api_config.dart';
+import '../l10n/app_strings.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -200,8 +201,8 @@ class _SplashScreenState extends State<SplashScreen>
                       Icon(Icons.auto_awesome_rounded, size: 13,
                           color: const Color(0xFFFFD5C2).withOpacity(0.85)),
                       const SizedBox(width: 6),
-                      const Text('senin yolculuğun, senin hikayen',
-                          style: TextStyle(
+                      Text(context.tr('common.tagline'),
+                          style: const TextStyle(
                               fontSize: 12.5, fontWeight: FontWeight.w600,
                               color: Color(0xFFFFD5C2), letterSpacing: 0.2)),
                     ]),
@@ -225,7 +226,7 @@ class _SplashScreenState extends State<SplashScreen>
                 ),
               ),
               const SizedBox(height: 14),
-              Text('seyahat ajandan açılıyor...',
+              Text(context.tr('splash.loading'),
                   style: TextStyle(
                       fontSize: 11.5, fontWeight: FontWeight.w500,
                       color: Colors.white.withOpacity(0.35),

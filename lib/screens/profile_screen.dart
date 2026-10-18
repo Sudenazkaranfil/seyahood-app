@@ -24,6 +24,8 @@ import '../widgets/skeleton_loader.dart';
 import '../widgets/error_view.dart';
 import '../widgets/plan_badge.dart';
 import 'notifications_screen.dart';
+import '../l10n/app_strings.dart';
+import '../l10n/locale_controller.dart';
 import '../widgets/ad_banner.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -1423,6 +1425,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   builder: (context) => const NotificationsScreen()));
             }),
         _buildMenuDivider(),
+        _buildMenuItem(Icons.language_rounded, context.tr('common.language'),
+            () => _showLanguagePicker(context)),
+        _buildMenuDivider(),
         _buildMenuItem(Icons.help_center_outlined, 'Yardım', () {
           Navigator.push(context,
               MaterialPageRoute(builder: (context) => const HelpScreen()));
@@ -1480,6 +1485,59 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   Widget _buildMenuDivider() => const Divider(
       height: 1, color: Color(0xFFF0EAE1), indent: 20, endIndent: 20);
+
+  void _showLanguagePicker(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.white,
+      shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(24))),
+      builder: (sheetContext) {
+        return SafeArea(
+          child: ValueListenableBuilder<Locale>(
+            valueListenable: LocaleController.notifier,
+            builder: (context, currentLocale, _) {
+              return Column(mainAxisSize: MainAxisSize.min, children: [
+                const SizedBox(height: 16),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Text(context.tr('common.language'),
+                      style: const TextStyle(
+                          fontSize: 16, fontWeight: FontWeight.w800,
+                          color: Color(0xFF1C110A))),
+                ),
+                const SizedBox(height: 8),
+                _buildLanguageOption(
+                    'Türkçe', const Locale('tr'), currentLocale),
+                _buildLanguageOption(
+                    'English', const Locale('en'), currentLocale),
+                const SizedBox(height: 12),
+              ]);
+            },
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildLanguageOption(
+      String label, Locale locale, Locale currentLocale) {
+    final selected = locale.languageCode == currentLocale.languageCode;
+    return ListTile(
+      title: Text(label, style: TextStyle(
+          fontSize: 14,
+          fontWeight: selected ? FontWeight.w800 : FontWeight.w600,
+          color: const Color(0xFF1C110A))),
+      trailing: selected
+          ? const Icon(Icons.check_circle_rounded,
+              color: Color(0xFFC46B4E), size: 20)
+          : null,
+      onTap: () async {
+        await LocaleController.setLocale(locale);
+        if (mounted) Navigator.pop(context);
+      },
+    );
+  }
 }
 
 class _DotGridPainter extends CustomPainter {

@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import '../theme/app_theme.dart';
 import '../config/api_config.dart';
 import '../widgets/error_view.dart';
+import '../l10n/app_strings.dart';
 
 class VerifyScreen extends StatefulWidget {
   final String email;
@@ -34,7 +35,7 @@ class _VerifyScreenState extends State<VerifyScreen> {
 
   Future<void> _verify() async {
     if (_code.length < 6) {
-      setState(() => _errorMessage = 'Lütfen 6 haneli kodu girin');
+      setState(() => _errorMessage = context.tr('verify.incompleteCodeError'));
       return;
     }
     setState(() { _isLoading = true; _errorMessage = null; });
@@ -46,16 +47,18 @@ class _VerifyScreenState extends State<VerifyScreen> {
       );
       if (response.statusCode == 200) {
         if (mounted) {
+          final message = context.tr('verify.successMessage');
           Navigator.pushReplacementNamed(context, '/login');
-          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-              content: Text('E-posta doğrulandı! Giriş yapabilirsiniz.')));
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text(message)));
         }
       } else {
         final data = jsonDecode(response.body);
-        setState(() => _errorMessage = data['error'] ?? 'Geçersiz kod');
+        setState(() => _errorMessage =
+            data['error'] ?? context.tr('verify.invalidCodeError'));
       }
     } catch (e) {
-      setState(() => _errorMessage = 'Bir hata oluştu, tekrar dene');
+      setState(() => _errorMessage = context.tr('verify.genericError'));
     } finally {
       setState(() => _isLoading = false);
     }
@@ -69,7 +72,7 @@ class _VerifyScreenState extends State<VerifyScreen> {
         body: jsonEncode({'email': widget.email}),
       );
       if (mounted) ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Kod tekrar gönderildi!')));
+          SnackBar(content: Text(context.tr('verify.resentMessage'))));
     } catch (e) {}
   }
 
@@ -104,12 +107,12 @@ class _VerifyScreenState extends State<VerifyScreen> {
                   ),
                 ),
                 const SizedBox(height: 14),
-                Text('E-postanı Doğrula',
+                Text(context.tr('verify.title'),
                     style: GoogleFonts.playfairDisplay(
                         fontSize: 26, fontWeight: FontWeight.w900,
                         color: Colors.white, letterSpacing: -0.5)),
                 const SizedBox(height: 4),
-                Text('6 haneli doğrulama kodunu gir',
+                Text(context.tr('verify.subtitle'),
                     style: AppTheme.sansBody(
                         size: 13,
                         color: Colors.white.withOpacity(0.8))),
@@ -150,7 +153,7 @@ class _VerifyScreenState extends State<VerifyScreen> {
                     color: AppTheme.terracotta)),
               ),
               const SizedBox(height: 8),
-              Text('adresine 6 haneli doğrulama kodu gönderdik.',
+              Text(context.tr('verify.sentTo'),
                   style: AppTheme.sansBody(
                       size: 13, color: AppTheme.textSecondary),
                   textAlign: TextAlign.center),
@@ -219,7 +222,7 @@ class _VerifyScreenState extends State<VerifyScreen> {
                       ? const SizedBox(width: 22, height: 22,
                       child: CircularProgressIndicator(
                           color: Colors.white, strokeWidth: 2))
-                      : Text('Doğrula', style: AppTheme.sansBody(
+                      : Text(context.tr('verify.verifyButton'), style: AppTheme.sansBody(
                       size: 15, weight: FontWeight.w800,
                       color: Colors.white)),
                 ),
@@ -228,12 +231,12 @@ class _VerifyScreenState extends State<VerifyScreen> {
               const SizedBox(height: 20),
 
               Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                Text('Kod gelmedi mi? ',
+                Text(context.tr('verify.noCode'),
                     style: AppTheme.sansBody(
                         size: 13, color: AppTheme.textSecondary)),
                 TextButton(
                   onPressed: _resendCode,
-                  child: Text('Tekrar gönder', style: AppTheme.sansBody(
+                  child: Text(context.tr('verify.resend'), style: AppTheme.sansBody(
                       size: 13, weight: FontWeight.w800,
                       color: AppTheme.terracotta)),
                 ),

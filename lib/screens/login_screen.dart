@@ -4,6 +4,7 @@ import '../theme/app_theme.dart';
 import '../services/auth_service.dart';
 import '../services/storage_service.dart';
 import '../widgets/error_view.dart';
+import '../l10n/app_strings.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -29,7 +30,7 @@ class _LoginScreenState extends State<LoginScreen> {
   Future<void> _login() async {
     if (_emailController.text.trim().isEmpty ||
         _passwordController.text.isEmpty) {
-      setState(() => _errorMessage = 'Lütfen e-posta ve şifrenizi girin');
+      setState(() => _errorMessage = context.tr('login.emptyFieldsError'));
       return;
     }
     setState(() { _isLoading = true; _errorMessage = null; });
@@ -101,7 +102,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     border: Border.all(
                         color: Colors.white.withOpacity(0.15)),
                   ),
-                  child: Text('senin yolculuğun, senin hikayen',
+                  child: Text(context.tr('common.tagline'),
                       style: AppTheme.sansBody(
                           size: 12, weight: FontWeight.w600,
                           color: const Color(0xFFFFD5C2))),
@@ -117,16 +118,16 @@ class _LoginScreenState extends State<LoginScreen> {
             padding: const EdgeInsets.fromLTRB(28, 30, 28, 28),
             child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start, children: [
-              _buildLabel('E-posta veya kullanıcı adı'),
+              _buildLabel(context.tr('login.emailOrUsernameLabel')),
               const SizedBox(height: 8),
               _buildTextField(
                 controller: _emailController,
-                hint: 'ornek@mail.com',
+                hint: context.tr('login.emailHint'),
                 keyboardType: TextInputType.emailAddress,
                 prefixIcon: Icons.alternate_email_rounded,
               ),
               const SizedBox(height: 18),
-              _buildLabel('Şifre'),
+              _buildLabel(context.tr('login.passwordLabel')),
               const SizedBox(height: 8),
               _buildTextField(
                 controller: _passwordController,
@@ -150,7 +151,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   onPressed: () =>
                       Navigator.pushNamed(context, '/forgot-password'),
                   style: TextButton.styleFrom(padding: EdgeInsets.zero),
-                  child: Text('Şifreni mi unuttun?',
+                  child: Text(context.tr('login.forgotPassword'),
                       style: AppTheme.sansBody(
                           size: 13, weight: FontWeight.w700,
                           color: AppTheme.terracotta)),
@@ -179,7 +180,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ? const SizedBox(width: 22, height: 22,
                       child: CircularProgressIndicator(
                           color: Colors.white, strokeWidth: 2.2))
-                      : Text('Giriş Yap', style: AppTheme.sansBody(
+                      : Text(context.tr('login.loginButton'), style: AppTheme.sansBody(
                       size: 15, weight: FontWeight.w800,
                       color: Colors.white)),
                 ),
@@ -192,7 +193,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     color: AppTheme.border, thickness: 1)),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 12),
-                  child: Text('veya', style: AppTheme.sansBody(
+                  child: Text(context.tr('login.or'), style: AppTheme.sansBody(
                       size: 12, weight: FontWeight.w600,
                       color: AppTheme.textSecondary)),
                 ),
@@ -214,7 +215,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(16)),
                   ),
-                  child: Text('Hesap oluştur', style: AppTheme.sansBody(
+                  child: Text(context.tr('login.createAccountButton'), style: AppTheme.sansBody(
                       size: 15, weight: FontWeight.w700,
                       color: AppTheme.textPrimary)),
                 ),
