@@ -331,6 +331,18 @@ const Map<String, String> stringsTr = {
   'navBar.map': 'Harita',
   'navBar.profile': 'Profil',
 
+  // Limit reached sheet
+  'limitReached.titleJournal': 'Ajanda limitine ulaştın',
+  'limitReached.titlePage': 'Sayfa limitine ulaştın',
+  'limitReached.messageJournal':
+      'Ücretsiz planda en fazla 5 ajanda oluşturabilirsin. '
+      'Plus ile 20, PRO ile sınırsız ajanda oluşturabilirsin.',
+  'limitReached.messagePage':
+      'Ücretsiz planda bir ajandaya en fazla 15 sayfa ekleyebilirsin. '
+      'Plus ile 40, PRO ile sınırsız sayfa ekleyebilirsin.',
+  'limitReached.seePlans': 'Planları Gör',
+  'limitReached.cancel': 'Vazgeç',
+
   // Home
   'home.greeting.morning': 'Günaydın,',
   'home.greeting.afternoon': 'İyi günler,',

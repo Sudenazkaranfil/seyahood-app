@@ -331,6 +331,18 @@ const Map<String, String> stringsEn = {
   'navBar.map': 'Map',
   'navBar.profile': 'Profile',
 
+  // Limit reached sheet
+  'limitReached.titleJournal': "You've reached your journal limit",
+  'limitReached.titlePage': "You've reached your page limit",
+  'limitReached.messageJournal':
+      'On the free plan you can create up to 5 journals. '
+      'Get 20 with Plus, or unlimited journals with PRO.',
+  'limitReached.messagePage':
+      'On the free plan you can add up to 15 pages to a journal. '
+      'Get 40 with Plus, or unlimited pages with PRO.',
+  'limitReached.seePlans': 'See Plans',
+  'limitReached.cancel': 'Cancel',
+
   // Home
   'home.greeting.morning': 'Good morning,',
   'home.greeting.afternoon': 'Good afternoon,',
