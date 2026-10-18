@@ -14,6 +14,7 @@ import '../services/interstitial_ad_service.dart';
 import '../widgets/limit_reached_sheet.dart';
 import 'premium_screen.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../l10n/app_strings.dart';
 
 const Set<String> kFreeCanvasFonts = {
   'Plus Jakarta Sans', 'Playfair Display', 'Caveat', 'Dancing Script',
@@ -140,9 +141,9 @@ class _CanvasEditorScreenState extends State<CanvasEditorScreen> {
 
   void _showProFontLockedMessage() {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: const Text('Bu font PRO üyelere özel ✨'),
+      content: Text(context.tr('canvas.proFontLocked')),
       action: SnackBarAction(
-        label: "PRO'ya Geç",
+        label: context.tr('common.goProAction'),
         onPressed: () => Navigator.push(context, MaterialPageRoute(
             builder: (context) => const PremiumScreen())),
       ),
@@ -203,21 +204,21 @@ class _CanvasEditorScreenState extends State<CanvasEditorScreen> {
       builder: (context) => AlertDialog(
         backgroundColor: const Color(0xFFFAF7F2),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-        title: Row(children: const [
-          Icon(Icons.edit_note_rounded, color: Color(0xFFC4956A), size: 22),
-          SizedBox(width: 8),
-          Text('Değişiklikler Kaydedilmedi',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700,
+        title: Row(children: [
+          const Icon(Icons.edit_note_rounded, color: Color(0xFFC4956A), size: 22),
+          const SizedBox(width: 8),
+          Text(context.tr('canvas.unsavedChanges.title'),
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700,
                   color: Color(0xFF1C110A))),
         ]),
-        content: const Text(
-            'Sayfadan çıkarsanız henüz kaydetmediğiniz çizim ve anılar silinecektir.',
-            style: TextStyle(fontSize: 13, color: Color(0xFF7C6A59), height: 1.5)),
+        content: Text(
+            context.tr('canvas.unsavedChanges.content'),
+            style: const TextStyle(fontSize: 13, color: Color(0xFF7C6A59), height: 1.5)),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: const Text('Düzenlemeye Devam Et',
-                style: TextStyle(color: Color(0xFFC4956A), fontWeight: FontWeight.w600)),
+            child: Text(context.tr('canvas.unsavedChanges.continueEditing'),
+                style: const TextStyle(color: Color(0xFFC4956A), fontWeight: FontWeight.w600)),
           ),
           ElevatedButton(
             onPressed: () => Navigator.pop(context, true),
@@ -225,7 +226,7 @@ class _CanvasEditorScreenState extends State<CanvasEditorScreen> {
                 backgroundColor: Colors.red.shade400, foregroundColor: Colors.white,
                 elevation: 0,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12))),
-            child: const Text('Çık', style: TextStyle(fontWeight: FontWeight.bold)),
+            child: Text(context.tr('canvas.unsavedChanges.exit'), style: const TextStyle(fontWeight: FontWeight.bold)),
           ),
         ],
       ),
@@ -235,9 +236,9 @@ class _CanvasEditorScreenState extends State<CanvasEditorScreen> {
 
   Future<void> _saveCanvas() async {
     if (_isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text('Sayfanız boş! Lütfen en az bir anı, fotoğraf veya çizim ekleyin.'),
-        backgroundColor: Color(0xFF1C110A),
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(context.tr('canvas.emptyPageWarning')),
+        backgroundColor: const Color(0xFF1C110A),
       ));
       return;
     }
@@ -273,7 +274,8 @@ class _CanvasEditorScreenState extends State<CanvasEditorScreen> {
             final exists = await file.exists();
             if (!exists) {
               ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Dosya bulunamadı: ${item.content}')));
+                  SnackBar(content: Text(context.trf('canvas.fileNotFound',
+                      {'content': item.content!}))));
               continue;
             }
             final url = await PhotoService.uploadDirectToCloudinary(item.content!);
@@ -287,7 +289,8 @@ class _CanvasEditorScreenState extends State<CanvasEditorScreen> {
             );
           } catch (e) {
             ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Fotoğraf yükleme hatası: $e')));
+                SnackBar(content: Text(context.trf('canvas.photoUploadError',
+                    {'error': e.toString()}))));
           }
         }
       }
@@ -306,11 +309,12 @@ class _CanvasEditorScreenState extends State<CanvasEditorScreen> {
       InterstitialAdService.instance.onPageSaved();
 
       if (mounted) {
+        final message = context.tr('canvas.saveSuccess');
         setState(() => _isLoading = false);
         Navigator.pop(context);
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text('Sayfa başarıyla kaydedildi! 🌿'),
-          backgroundColor: Color(0xFF1C110A),
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(message),
+          backgroundColor: const Color(0xFF1C110A),
         ));
       }
     } on LimitReachedException catch (_) {
@@ -322,7 +326,7 @@ class _CanvasEditorScreenState extends State<CanvasEditorScreen> {
       if (mounted) {
         setState(() => _isLoading = false);
         ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Kayıt sırasında bir hata oluştu!')));
+            SnackBar(content: Text(context.tr('canvas.saveError'))));
       }
     }
   }
@@ -360,7 +364,7 @@ class _CanvasEditorScreenState extends State<CanvasEditorScreen> {
             setState(() => _locations.add(_LocationItem(
                 name: name, lat: gps['lat'], lng: gps['lng'])));
             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                content: Text('📍 "$name" fotoğraftan otomatik eklendi')));
+                content: Text(context.trf('canvas.locationAutoAdded', {'name': name}))));
           }
           return;
         }
@@ -369,10 +373,10 @@ class _CanvasEditorScreenState extends State<CanvasEditorScreen> {
       // 2-3. katman (Google Vision + Claude fallback) EXIF yoksa PRO'ya sunulur.
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: const Text('📍 Bu fotoğrafın konumunu tahmin edeyim mi?'),
+          content: Text(context.tr('canvas.estimateLocationPrompt')),
           duration: const Duration(seconds: 6),
           action: SnackBarAction(
-            label: 'Tahmin Et',
+            label: context.tr('canvas.estimateLocationAction'),
             onPressed: () => _isPro
                 ? _estimateLocationFromPhoto(savedFile.path)
                 : _showAiLocationLockedMessage(),
@@ -386,9 +390,9 @@ class _CanvasEditorScreenState extends State<CanvasEditorScreen> {
 
   void _showAiLocationLockedMessage() {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: const Text('AI konum tahmini PRO üyelere özel ✨'),
+      content: Text(context.tr('canvas.aiLocationLocked')),
       action: SnackBarAction(
-        label: "PRO'ya Geç",
+        label: context.tr('common.goProAction'),
         onPressed: () => Navigator.push(context, MaterialPageRoute(
             builder: (context) => const PremiumScreen())),
       ),
@@ -396,9 +400,9 @@ class _CanvasEditorScreenState extends State<CanvasEditorScreen> {
   }
 
   Future<void> _estimateLocationFromPhoto(String filePath) async {
-    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-      content: Text('🔍 Konum tahmin ediliyor...'),
-      duration: Duration(seconds: 3),
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text(context.tr('canvas.estimatingLocation')),
+      duration: const Duration(seconds: 3),
     ));
     try {
       final guess = await PhotoService.estimateLocation(filePath);
@@ -406,11 +410,11 @@ class _CanvasEditorScreenState extends State<CanvasEditorScreen> {
       setState(() => _locations.add(
           _LocationItem(name: guess.name, lat: guess.lat, lng: guess.lng)));
       ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('📍 "${guess.name}" eklendi')));
+          SnackBar(content: Text(context.trf('canvas.locationAdded', {'name': guess.name}))));
     } catch (e) {
       if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text('Konum tahmin edilemedi, tekrar dene.')));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(context.tr('canvas.locationEstimateFailed'))));
     }
   }
 
@@ -439,10 +443,11 @@ class _CanvasEditorScreenState extends State<CanvasEditorScreen> {
                     decoration: BoxDecoration(color: const Color(0xFFEADBCE),
                         borderRadius: BorderRadius.circular(2)))),
                 Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                  const Text('Anı / Not Yazısı',
-                      style: TextStyle(fontSize: 17, fontWeight: FontWeight.w700,
+                  Text(context.tr('canvas.addText.title'),
+                      style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w700,
                           color: Color(0xFF1C110A))),
-                  Text('Boyut: ${selectedSize.toInt()}px',
+                  Text(context.trf('canvas.addText.sizeLabel',
+                      {'size': selectedSize.toInt().toString()}),
                       style: const TextStyle(fontSize: 12,
                           fontWeight: FontWeight.bold, color: Color(0xFFC4956A))),
                 ]),
@@ -452,7 +457,7 @@ class _CanvasEditorScreenState extends State<CanvasEditorScreen> {
                   style: GoogleFonts.getFont(selectedFont,
                       fontSize: selectedSize * 0.75, color: selectedColor, height: 1.4),
                   decoration: InputDecoration(
-                    hintText: 'Şimdi hissettiklerin, mekanın kokusu, aldığın bir not...',
+                    hintText: context.tr('canvas.addText.hint'),
                     hintStyle: const TextStyle(color: Color(0xFF9E8E81), fontSize: 14),
                     filled: true, fillColor: const Color(0xFFFAF7F2),
                     border: OutlineInputBorder(borderRadius: BorderRadius.circular(18),
@@ -465,31 +470,31 @@ class _CanvasEditorScreenState extends State<CanvasEditorScreen> {
                 const SizedBox(height: 16),
 
                 // Font seçimi
-                const Text('Yazı Stili',
-                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600,
+                Text(context.tr('canvas.addText.fontStyleLabel'),
+                    style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600,
                         color: Color(0xFF7C6A59))),
                 const SizedBox(height: 8),
                 SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
                   child: Row(children: [
-                    {'name': 'Plus Jakarta Sans', 'label': 'Modern'},
-                    {'name': 'Playfair Display', 'label': 'Serif'},
-                    {'name': 'Caveat', 'label': 'El Yazısı'},
-                    {'name': 'Dancing Script', 'label': 'Kaligrafi'},
-                    {'name': 'Roboto Mono', 'label': 'Mono'},
-                    {'name': 'Lora', 'label': 'Klasik'},
-                    {'name': 'Merriweather', 'label': 'Gazete'},
-                    {'name': 'Pacifico', 'label': 'Eğlenceli'},
-                    {'name': 'Satisfy', 'label': 'İmza'},
-                    {'name': 'Sacramento', 'label': 'Zarif'},
-                    {'name': 'Abril Fatface', 'label': 'Kalın'},
-                    {'name': 'Cinzel', 'label': 'Antik'},
-                    {'name': 'Great Vibes', 'label': 'Romantik'},
-                    {'name': 'Permanent Marker', 'label': 'Marker'},
-                    {'name': 'Special Elite', 'label': 'Daktilo'},
-                    {'name': 'Amatic SC', 'label': 'El Baskı'},
-                    {'name': 'Josefin Sans', 'label': 'Minimal'},
-                    {'name': 'Raleway', 'label': 'Şık'},
+                    {'name': 'Plus Jakarta Sans', 'label': context.tr('canvas.font.modern')},
+                    {'name': 'Playfair Display', 'label': context.tr('canvas.font.serif')},
+                    {'name': 'Caveat', 'label': context.tr('canvas.font.handwriting')},
+                    {'name': 'Dancing Script', 'label': context.tr('canvas.font.calligraphy')},
+                    {'name': 'Roboto Mono', 'label': context.tr('canvas.font.mono')},
+                    {'name': 'Lora', 'label': context.tr('canvas.font.classic')},
+                    {'name': 'Merriweather', 'label': context.tr('canvas.font.newspaper')},
+                    {'name': 'Pacifico', 'label': context.tr('canvas.font.fun')},
+                    {'name': 'Satisfy', 'label': context.tr('canvas.font.signature')},
+                    {'name': 'Sacramento', 'label': context.tr('canvas.font.elegant')},
+                    {'name': 'Abril Fatface', 'label': context.tr('canvas.font.bold')},
+                    {'name': 'Cinzel', 'label': context.tr('canvas.font.antique')},
+                    {'name': 'Great Vibes', 'label': context.tr('canvas.font.romantic')},
+                    {'name': 'Permanent Marker', 'label': context.tr('canvas.font.marker')},
+                    {'name': 'Special Elite', 'label': context.tr('canvas.font.typewriter')},
+                    {'name': 'Amatic SC', 'label': context.tr('canvas.font.handPrint')},
+                    {'name': 'Josefin Sans', 'label': context.tr('canvas.font.minimal')},
+                    {'name': 'Raleway', 'label': context.tr('canvas.font.chic')},
                   ].map((font) {
                     final isLocked = !_isPro &&
                         !kFreeCanvasFonts.contains(font['name']);
@@ -529,8 +534,8 @@ class _CanvasEditorScreenState extends State<CanvasEditorScreen> {
 
                 const SizedBox(height: 14),
                 // Renk seçimi
-                const Text('Metin Rengi',
-                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600,
+                Text(context.tr('canvas.addText.colorLabel'),
+                    style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600,
                         color: Color(0xFF7C6A59))),
                 const SizedBox(height: 8),
                 SingleChildScrollView(
@@ -564,8 +569,8 @@ class _CanvasEditorScreenState extends State<CanvasEditorScreen> {
                 const SizedBox(height: 14),
                 // Boyut seçimi
                 Row(children: [
-                  const Text('Yazı Boyutu',
-                      style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600,
+                  Text(context.tr('canvas.addText.sizeHeaderLabel'),
+                      style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600,
                           color: Color(0xFF7C6A59))),
                   Expanded(child: Slider(
                     value: selectedSize, min: 14, max: 48,
@@ -586,8 +591,8 @@ class _CanvasEditorScreenState extends State<CanvasEditorScreen> {
                         padding: const EdgeInsets.symmetric(vertical: 14),
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(14))),
-                    child: const Text('Vazgeç',
-                        style: TextStyle(color: Color(0xFF7C6A59),
+                    child: Text(context.tr('canvas.addText.cancel'),
+                        style: const TextStyle(color: Color(0xFF7C6A59),
                             fontWeight: FontWeight.w600)),
                   )),
                   const SizedBox(width: 12),
@@ -620,8 +625,8 @@ class _CanvasEditorScreenState extends State<CanvasEditorScreen> {
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(14)),
                     ),
-                    child: const Text('Sayfaya Ekle',
-                        style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
+                    child: Text(context.tr('canvas.addText.addButton'),
+                        style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
                   )),
                 ]),
               ]),
@@ -648,24 +653,24 @@ class _CanvasEditorScreenState extends State<CanvasEditorScreen> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20),
             child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: const [
-                  Text('Emoji Ekle',
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700,
+                children: [
+                  Text(context.tr('canvas.addEmoji.title'),
+                      style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w700,
                           color: Color(0xFF1C110A))),
-                  Text('Seyahat & Keşif',
-                      style: TextStyle(fontSize: 12, color: Color(0xFF7C6A59))),
+                  Text(context.tr('canvas.addEmoji.subtitle'),
+                      style: const TextStyle(fontSize: 12, color: Color(0xFF7C6A59))),
                 ]),
           ),
           const SizedBox(height: 8),
           Expanded(child: ListView(
             controller: scrollController, padding: const EdgeInsets.all(16),
             children: {
-              '✈️ Seyahat ve Rota': ['✈️','🚂','⛵','🚗','🏕️','🗺️','🧳','🎒','🚀','🚁','⛴️','🚢','🛳️','🚤','🚲'],
-              '🌍 Şehirler ve Yerler': ['🏔️','🌊','🏖️','🌅','🗼','🏰','🌃','🌉','🌴','🏝️','🗽','🏯','⛩️','🕌','🏛️'],
-              '❤️ Duygular ve Işıltı': ['❤️','⭐','🌟','💫','🎉','🥰','😊','🤩','💕','🙌','🥳','😍','🤗','💖','✨'],
-              '📸 Anlar ve Aktiviteler': ['📸','🎭','🎪','🎨','🎵','🍜','🥂','🌺','🎊','🎁','🎬','🎤','🎸','🍷','🥗'],
-              '🌙 Gökyüzü ve Doğa': ['☀️','🌙','⭐','🌈','🌸','🍂','❄️','🌊','⚡','🌤️','🌧️','🌨️','🌪️','🌫️','🌬️'],
-              '🍕 Yerel Lezzetler': ['🍜','🍣','🥐','🍕','🌮','🥘','🍛','🥗','🍰','☕','🧃','🍹','🥤','🍦','🧁'],
+              context.tr('canvas.emojiCategory.travel'): ['✈️','🚂','⛵','🚗','🏕️','🗺️','🧳','🎒','🚀','🚁','⛴️','🚢','🛳️','🚤','🚲'],
+              context.tr('canvas.emojiCategory.places'): ['🏔️','🌊','🏖️','🌅','🗼','🏰','🌃','🌉','🌴','🏝️','🗽','🏯','⛩️','🕌','🏛️'],
+              context.tr('canvas.emojiCategory.emotions'): ['❤️','⭐','🌟','💫','🎉','🥰','😊','🤩','💕','🙌','🥳','😍','🤗','💖','✨'],
+              context.tr('canvas.emojiCategory.moments'): ['📸','🎭','🎪','🎨','🎵','🍜','🥂','🌺','🎊','🎁','🎬','🎤','🎸','🍷','🥗'],
+              context.tr('canvas.emojiCategory.nature'): ['☀️','🌙','⭐','🌈','🌸','🍂','❄️','🌊','⚡','🌤️','🌧️','🌨️','🌪️','🌫️','🌬️'],
+              context.tr('canvas.emojiCategory.food'): ['🍜','🍣','🥐','🍕','🌮','🥘','🍛','🥗','🍰','☕','🧃','🍹','🥤','🍦','🧁'],
             }.entries.map((category) => Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -729,11 +734,11 @@ class _CanvasEditorScreenState extends State<CanvasEditorScreen> {
                     borderRadius: BorderRadius.circular(2))),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Row(children: const [
-                Icon(Icons.pin_drop_rounded, color: Color(0xFFC4956A), size: 22),
-                SizedBox(width: 8),
-                Text('Ziyaret Edilen Konum Ekle',
-                    style: TextStyle(fontSize: 17, fontWeight: FontWeight.w700,
+              child: Row(children: [
+                const Icon(Icons.pin_drop_rounded, color: Color(0xFFC4956A), size: 22),
+                const SizedBox(width: 8),
+                Text(context.tr('canvas.addLocation.title'),
+                    style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w700,
                         color: Color(0xFF1C110A))),
               ]),
             ),
@@ -749,8 +754,9 @@ class _CanvasEditorScreenState extends State<CanvasEditorScreen> {
                   }
                   setSheetState(() => isSearching = true);
                   try {
+                    final langCode = Localizations.localeOf(context).languageCode;
                     final response = await http.get(
-                      Uri.parse('https://nominatim.openstreetmap.org/search?q=${Uri.encodeComponent(value)}&format=json&limit=5&accept-language=tr'),
+                      Uri.parse('https://nominatim.openstreetmap.org/search?q=${Uri.encodeComponent(value)}&format=json&limit=5&accept-language=$langCode'),
                       headers: {'User-Agent': 'Seyahood/1.0'},
                     );
                     if (response.statusCode == 200) {
@@ -769,7 +775,7 @@ class _CanvasEditorScreenState extends State<CanvasEditorScreen> {
                   }
                 },
                 decoration: InputDecoration(
-                  hintText: 'Şehir, mekan, anıt ara (Roma, Eyfel, Karaköy...)',
+                  hintText: context.tr('canvas.addLocation.hint'),
                   hintStyle: const TextStyle(color: Color(0xFF9E8E81), fontSize: 13),
                   filled: true, fillColor: const Color(0xFFFAF7F2),
                   border: OutlineInputBorder(
@@ -854,8 +860,8 @@ class _CanvasEditorScreenState extends State<CanvasEditorScreen> {
                     decoration: BoxDecoration(color: const Color(0xFFEADBCE),
                         borderRadius: BorderRadius.circular(2)))),
                 Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                  const Text('Çizim & Fırça Ayarları',
-                      style: TextStyle(fontSize: 17, fontWeight: FontWeight.w700,
+                  Text(context.tr('canvas.drawing.title'),
+                      style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w700,
                           color: Color(0xFF1C110A))),
                   ElevatedButton.icon(
                     onPressed: () {
@@ -863,7 +869,7 @@ class _CanvasEditorScreenState extends State<CanvasEditorScreen> {
                       Navigator.pop(context);
                     },
                     icon: const Icon(Icons.brush, size: 16),
-                    label: const Text('Çizmeye Başla'),
+                    label: Text(context.tr('canvas.drawing.startButton')),
                     style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFFC4956A),
                         foregroundColor: Colors.white, elevation: 0,
@@ -872,8 +878,8 @@ class _CanvasEditorScreenState extends State<CanvasEditorScreen> {
                   ),
                 ]),
                 const SizedBox(height: 16),
-                const Text('Fırça Rengi',
-                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600,
+                Text(context.tr('canvas.drawing.colorLabel'),
+                    style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600,
                         color: Color(0xFF7C6A59))),
                 const SizedBox(height: 10),
                 Wrap(spacing: 10, runSpacing: 10, children: [
@@ -905,8 +911,8 @@ class _CanvasEditorScreenState extends State<CanvasEditorScreen> {
                 )).toList()),
                 const SizedBox(height: 16),
                 Row(children: [
-                  const Text('Fırça Kalınlığı',
-                      style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600,
+                  Text(context.tr('canvas.drawing.thicknessLabel'),
+                      style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600,
                           color: Color(0xFF7C6A59))),
                   Expanded(child: Slider(
                     value: _drawingSize, min: 1, max: 24,
@@ -939,8 +945,8 @@ class _CanvasEditorScreenState extends State<CanvasEditorScreen> {
                         Navigator.pop(context);
                       },
                       icon: const Icon(Icons.delete_outline, color: Colors.red, size: 16),
-                      label: const Text('Çizimleri Temizle',
-                          style: TextStyle(color: Colors.red, fontSize: 12)),
+                      label: Text(context.tr('canvas.drawing.clearButton'),
+                          style: const TextStyle(color: Colors.red, fontSize: 12)),
                     ),
                   ),
               ]),
@@ -971,12 +977,12 @@ class _CanvasEditorScreenState extends State<CanvasEditorScreen> {
                   margin: const EdgeInsets.only(bottom: 16),
                   decoration: BoxDecoration(color: const Color(0xFFEADBCE),
                       borderRadius: BorderRadius.circular(2)))),
-              const Text('Defter Sayfası Rengi',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700,
+              Text(context.tr('canvas.background.title'),
+                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w700,
                       color: Color(0xFF1C110A))),
               const SizedBox(height: 6),
-              const Text('Sayfanızın havasına uygun bir defter kağıdı seçin',
-                  style: TextStyle(fontSize: 12, color: Color(0xFF7C6A59))),
+              Text(context.tr('canvas.background.subtitle'),
+                  style: const TextStyle(fontSize: 12, color: Color(0xFF7C6A59))),
               const SizedBox(height: 18),
               Wrap(spacing: 12, runSpacing: 12, children: colors.map((color) =>
                   GestureDetector(
@@ -1030,12 +1036,12 @@ class _CanvasEditorScreenState extends State<CanvasEditorScreen> {
             ),
             onPressed: _onBackPressed,
           ),
-          title: Column(crossAxisAlignment: CrossAxisAlignment.start, children: const [
-            Text('Sayfa Tasarla',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w700,
+          title: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Text(context.tr('canvas.appBarTitle'),
+                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700,
                     color: Color(0xFFFAF7F2))),
-            Text('Seyahat Defteri Tuvali',
-                style: TextStyle(fontSize: 10, color: Color(0xFFC4956A),
+            Text(context.tr('canvas.appBarSubtitle'),
+                style: const TextStyle(fontSize: 10, color: Color(0xFFC4956A),
                     fontWeight: FontWeight.w500)),
           ]),
           actions: _buildAppBarActions(),
@@ -1302,21 +1308,21 @@ class _CanvasEditorScreenState extends State<CanvasEditorScreen> {
                                         size: 34, color: Color(0xFFC4956A)),
                                   ),
                                   const SizedBox(height: 16),
-                                  const Text('Sayfan Henüz Boş',
-                                      style: TextStyle(fontSize: 17,
+                                  Text(context.tr('canvas.empty.title'),
+                                      style: const TextStyle(fontSize: 17,
                                           fontWeight: FontWeight.w700,
                                           color: Color(0xFF1C110A))),
                                   const SizedBox(height: 6),
-                                  const Text(
-                                      'Fotoğraf, anı yazısı, konum veya çizim ekleyin.',
+                                  Text(
+                                      context.tr('canvas.empty.subtitle'),
                                       textAlign: TextAlign.center,
-                                      style: TextStyle(fontSize: 12,
+                                      style: const TextStyle(fontSize: 12,
                                           color: Color(0xFF7C6A59), height: 1.4)),
                                   const SizedBox(height: 18),
                                   Wrap(spacing: 8, children: [
-                                    _buildQuickAddChip('+ Fotoğraf', _addPhoto),
-                                    _buildQuickAddChip('+ Yazı', _addText),
-                                    _buildQuickAddChip('+ Konum', _addLocation),
+                                    _buildQuickAddChip(context.tr('canvas.empty.addPhoto'), _addPhoto),
+                                    _buildQuickAddChip(context.tr('canvas.empty.addText'), _addText),
+                                    _buildQuickAddChip(context.tr('canvas.empty.addLocation'), _addLocation),
                                   ]),
                                 ],
                               ),
@@ -1347,8 +1353,8 @@ class _CanvasEditorScreenState extends State<CanvasEditorScreen> {
                                         color: _drawingColor, shape: BoxShape.circle),
                                   ),
                                   const SizedBox(width: 8),
-                                  const Text('Çizim Modu Aktif',
-                                      style: TextStyle(color: Colors.white,
+                                  Text(context.tr('canvas.drawing.modeActive'),
+                                      style: const TextStyle(color: Colors.white,
                                           fontSize: 12, fontWeight: FontWeight.w600)),
                                   const SizedBox(width: 12),
                                   GestureDetector(
@@ -1359,8 +1365,8 @@ class _CanvasEditorScreenState extends State<CanvasEditorScreen> {
                                       decoration: BoxDecoration(
                                           color: const Color(0xFFC4956A),
                                           borderRadius: BorderRadius.circular(12)),
-                                      child: const Text('Tamamla',
-                                          style: TextStyle(color: Colors.white,
+                                      child: Text(context.tr('canvas.drawing.doneButton'),
+                                          style: const TextStyle(color: Colors.white,
                                               fontSize: 11,
                                               fontWeight: FontWeight.bold)),
                                     ),
@@ -1430,7 +1436,7 @@ class _CanvasEditorScreenState extends State<CanvasEditorScreen> {
           ),
           child: Row(mainAxisSize: MainAxisSize.min, children: [
             IconButton(
-              tooltip: 'Kopyala',
+              tooltip: context.tr('canvas.tooltip.copy'),
               icon: Icon(Icons.copy_rounded,
                   color: hasSelection ? Colors.white : Colors.white24, size: 17),
               onPressed: hasSelection
@@ -1438,7 +1444,7 @@ class _CanvasEditorScreenState extends State<CanvasEditorScreen> {
                   : null,
             ),
             IconButton(
-              tooltip: 'Öne Getir',
+              tooltip: context.tr('canvas.tooltip.bringToFront'),
               icon: Icon(Icons.flip_to_front_rounded,
                   color: canGoFront ? Colors.white : Colors.white24, size: 17),
               onPressed: canGoFront ? () => setState(() {
@@ -1448,7 +1454,7 @@ class _CanvasEditorScreenState extends State<CanvasEditorScreen> {
               }) : null,
             ),
             IconButton(
-              tooltip: 'Arkaya Gönder',
+              tooltip: context.tr('canvas.tooltip.sendToBack'),
               icon: Icon(Icons.flip_to_back_rounded,
                   color: canGoBack ? Colors.white : Colors.white24, size: 17),
               onPressed: canGoBack ? () => setState(() {
@@ -1459,7 +1465,7 @@ class _CanvasEditorScreenState extends State<CanvasEditorScreen> {
             ),
             if (_clipboard != null)
               IconButton(
-                tooltip: 'Yapıştır',
+                tooltip: context.tr('canvas.tooltip.paste'),
                 icon: const Icon(Icons.paste_rounded,
                     color: Color(0xFFC4956A), size: 17),
                 onPressed: () {
@@ -1494,7 +1500,7 @@ class _CanvasEditorScreenState extends State<CanvasEditorScreen> {
           child: ElevatedButton.icon(
             onPressed: _saveCanvas,
             icon: const Icon(Icons.check_rounded, size: 16),
-            label: const Text('Kaydet'),
+            label: Text(context.tr('canvas.saveButton')),
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xFFC4956A),
               foregroundColor: Colors.white, elevation: 0,
@@ -1565,22 +1571,22 @@ class _CanvasEditorScreenState extends State<CanvasEditorScreen> {
               blurRadius: 20, offset: const Offset(0, 8))],
         ),
         child: Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
-          _buildTool(Icons.image_outlined, 'Fotoğraf', _addPhoto,
+          _buildTool(Icons.image_outlined, context.tr('canvas.tool.photo'), _addPhoto,
               enabled: !_isDrawingMode),
-          _buildTool(Icons.text_fields_rounded, 'Yazı', _addText,
+          _buildTool(Icons.text_fields_rounded, context.tr('canvas.tool.text'), _addText,
               enabled: !_isDrawingMode),
-          _buildTool(Icons.emoji_emotions_outlined, 'Emoji', _addEmoji,
+          _buildTool(Icons.emoji_emotions_outlined, context.tr('canvas.tool.emoji'), _addEmoji,
               enabled: !_isDrawingMode),
           _buildTool(
-            Icons.draw_outlined, 'Çiz',
+            Icons.draw_outlined, context.tr('canvas.tool.draw'),
             _isDrawingMode
                 ? () => setState(() => _isDrawingMode = false)
                 : _showDrawingOptions,
             isActive: _isDrawingMode, enabled: true,
           ),
-          _buildTool(Icons.location_on_outlined, 'Konum', _addLocation,
+          _buildTool(Icons.location_on_outlined, context.tr('canvas.tool.location'), _addLocation,
               enabled: !_isDrawingMode),
-          _buildTool(Icons.palette_outlined, 'Arka Plan', _showBackgroundPicker,
+          _buildTool(Icons.palette_outlined, context.tr('canvas.tool.background'), _showBackgroundPicker,
               enabled: !_isDrawingMode),
         ]),
       ),
