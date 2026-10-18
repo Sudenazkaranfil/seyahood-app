@@ -275,6 +275,31 @@ const Map<String, String> stringsTr = {
   'explore.journalByUsername': '@{username} • Ajandası',
   'explore.noPagesYet': 'Bu ajandada henüz sayfa yok',
 
+  // Error view widget
+  'errorView.feedbackEmailSubject': 'Seyahood - Hata Bildirimi',
+  'errorView.feedbackEmailBody':
+      'Merhaba,\n\nUygulama kullanırken şu sorunla karşılaştım:\n\n[Lütfen sorunu açıklayın]\n\nHata mesajı: {message}',
+  'errorView.feedbackEmailBodyShort': 'Hata: {message}',
+  'errorView.unknownError': 'Bilinmiyor',
+  'errorView.noMailApp': 'Mail uygulaması bulunamadı',
+  'errorView.title': 'Bir şeyler ters gitti',
+  'errorView.defaultMessage':
+      'Bağlantı kurulamadı. Lütfen internet bağlantını kontrol et.',
+  'errorView.retryButton': 'Tekrar Dene',
+  'errorView.sendFeedbackButton': 'Geri Bildirim Gönder',
+  'errorView.feedbackLabel': 'Geri Bildirim',
+  'errorView.cardDefaultMessage': 'Bir hata oluştu, lütfen tekrar dene.',
+
+  // User profile screen
+  'userProfile.headerSubtitle': 'Gezgin Profili',
+  'userProfile.following': 'Takip Ediliyor',
+  'userProfile.follow': 'Takip Et',
+  'userProfile.noPublicJournals': 'Henüz herkese açık ajanda yok',
+  'userProfile.noPublicJournalsSubtitle':
+      'Bu gezgin henüz paylaştığı bir ajanda eklemedi.',
+  'userProfile.journalsByName': '{name} Ajandaları',
+  'userProfile.journalCountBadge': '{count} ajanda',
+
   // Home
   'home.greeting.morning': 'Günaydın,',
   'home.greeting.afternoon': 'İyi günler,',

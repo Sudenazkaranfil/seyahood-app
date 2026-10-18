@@ -275,6 +275,31 @@ const Map<String, String> stringsEn = {
   'explore.journalByUsername': "@{username}'s Journal",
   'explore.noPagesYet': 'No pages in this journal yet',
 
+  // Error view widget
+  'errorView.feedbackEmailSubject': 'Seyahood - Bug Report',
+  'errorView.feedbackEmailBody':
+      "Hi,\n\nI ran into an issue while using the app:\n\n[Please describe the issue]\n\nError message: {message}",
+  'errorView.feedbackEmailBodyShort': 'Error: {message}',
+  'errorView.unknownError': 'Unknown',
+  'errorView.noMailApp': 'No mail app found',
+  'errorView.title': 'Something went wrong',
+  'errorView.defaultMessage':
+      'Could not connect. Please check your internet connection.',
+  'errorView.retryButton': 'Try Again',
+  'errorView.sendFeedbackButton': 'Send Feedback',
+  'errorView.feedbackLabel': 'Feedback',
+  'errorView.cardDefaultMessage': 'Something went wrong, please try again.',
+
+  // User profile screen
+  'userProfile.headerSubtitle': 'Traveler Profile',
+  'userProfile.following': 'Following',
+  'userProfile.follow': 'Follow',
+  'userProfile.noPublicJournals': 'No public journals yet',
+  'userProfile.noPublicJournalsSubtitle':
+      "This traveler hasn't shared a journal yet.",
+  'userProfile.journalsByName': "{name}'s Journals",
+  'userProfile.journalCountBadge': '{count} journals',
+
   // Home
   'home.greeting.morning': 'Good morning,',
   'home.greeting.afternoon': 'Good afternoon,',

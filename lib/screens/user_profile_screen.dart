@@ -10,6 +10,7 @@ import '../widgets/skeleton_loader.dart';
 import '../widgets/error_view.dart';
 import '../widgets/plan_badge.dart';
 import '../widgets/ad_banner.dart';
+import '../l10n/app_strings.dart';
 
 class UserProfileScreen extends StatefulWidget {
   final String username;
@@ -64,21 +65,21 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     } catch (e) {}
   }
 
-  Map<String, dynamic> _getLevelInfo(int journalCount) {
+  Map<String, dynamic> _getLevelInfo(BuildContext context, int journalCount) {
     if (journalCount <= 3) {
-      return {'emoji': '🌱', 'title': 'Yeni Gezgin',
+      return {'emoji': '🌱', 'title': context.tr('profile.level.newTraveler'),
         'color': const Color(0xFF7BAE7F)};
     } else if (journalCount <= 10) {
-      return {'emoji': '🗺️', 'title': 'Kaşif',
+      return {'emoji': '🗺️', 'title': context.tr('profile.level.explorer'),
         'color': const Color(0xFFC46B4E)};
     } else if (journalCount <= 20) {
-      return {'emoji': '✈️', 'title': 'Seyyah',
+      return {'emoji': '✈️', 'title': context.tr('profile.level.voyager'),
         'color': const Color(0xFF5B8A6F)};
     } else if (journalCount <= 50) {
-      return {'emoji': '🌍', 'title': 'Dünya Gezgini',
+      return {'emoji': '🌍', 'title': context.tr('profile.level.worldTraveler'),
         'color': const Color(0xFF3D6B9E)};
     } else {
-      return {'emoji': '🏆', 'title': 'Efsane Gezgin',
+      return {'emoji': '🏆', 'title': context.tr('profile.level.legendaryTraveler'),
         'color': const Color(0xFFD4A017)};
     }
   }
@@ -131,7 +132,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                           style: GoogleFonts.playfairDisplay(
                               fontSize: 16, fontWeight: FontWeight.w800,
                               color: Colors.white, letterSpacing: -0.2)),
-                      Text('Gezgin Profili', style: AppTheme.sansBody(
+                      Text(context.tr('userProfile.headerSubtitle'), style: AppTheme.sansBody(
                           size: 11, weight: FontWeight.w600,
                           color: AppTheme.terracotta)),
                     ]),
@@ -163,7 +164,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     final isFollowing = _followStatus?['following'] ?? false;
     final followerCount = _followStatus?['followerCount'] ?? 0;
     final followingCount = _followStatus?['followingCount'] ?? 0;
-    final level = _getLevelInfo(_journals.length);
+    final level = _getLevelInfo(context, _journals.length);
     final levelColor = level['color'] as Color;
 
     return Container(
@@ -296,16 +297,16 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      _buildStat('Ajanda', _journals.length.toString(), null),
+                      _buildStat(context.tr('profile.stat.journals'), _journals.length.toString(), null),
                       Container(width: 1, height: 32, color: AppTheme.border),
-                      _buildStat('Takipçi', followerCount.toString(), () {
+                      _buildStat(context.tr('profile.stat.followers'), followerCount.toString(), () {
                         Navigator.push(context, MaterialPageRoute(
                             builder: (context) => FollowListScreen(
                                 username: widget.username,
                                 type: 'followers')));
                       }),
                       Container(width: 1, height: 32, color: AppTheme.border),
-                      _buildStat('Takip', followingCount.toString(), () {
+                      _buildStat(context.tr('profile.stat.following'), followingCount.toString(), () {
                         Navigator.push(context, MaterialPageRoute(
                             builder: (context) => FollowListScreen(
                                 username: widget.username,
@@ -342,7 +343,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                             ? Icons.check_rounded
                             : Icons.person_add_outlined, size: 18),
                         const SizedBox(width: 8),
-                        Text(isFollowing ? 'Takip Ediliyor' : 'Takip Et',
+                        Text(isFollowing ? context.tr('userProfile.following') : context.tr('userProfile.follow'),
                             style: AppTheme.sansBody(
                                 size: 14, weight: FontWeight.w700,
                                 color: isFollowing
@@ -397,12 +398,12 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                       size: 30, color: AppTheme.terracotta),
                 ),
                 const SizedBox(height: 14),
-                Text('Henüz herkese açık ajanda yok',
+                Text(context.tr('userProfile.noPublicJournals'),
                     style: GoogleFonts.playfairDisplay(
                         fontSize: 14, fontWeight: FontWeight.w700,
                         color: AppTheme.textPrimary)),
                 const SizedBox(height: 4),
-                Text('Bu gezgin henüz paylaştığı bir ajanda eklemedi.',
+                Text(context.tr('userProfile.noPublicJournalsSubtitle'),
                     style: AppTheme.sansBody(
                         size: 12, color: AppTheme.textSecondary)),
               ]),
@@ -417,7 +418,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
           const Icon(Icons.auto_stories_outlined,
               size: 16, color: AppTheme.terracotta),
           const SizedBox(width: 6),
-          Text('$_displayName Ajandaları',
+          Text(context.trf('userProfile.journalsByName', {'name': _displayName}),
               style: GoogleFonts.playfairDisplay(
                   fontSize: 15, fontWeight: FontWeight.w800,
                   color: AppTheme.textPrimary)),
@@ -428,7 +429,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
               color: AppTheme.terracottaLight,
               borderRadius: BorderRadius.circular(10),
             ),
-            child: Text('${_journals.length} ajanda',
+            child: Text(context.trf('userProfile.journalCountBadge', {'count': _journals.length.toString()}),
                 style: AppTheme.sansBody(
                     size: 11, weight: FontWeight.w700,
                     color: AppTheme.terracotta)),
