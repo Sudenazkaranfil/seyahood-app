@@ -343,6 +343,74 @@ const Map<String, String> stringsEn = {
   'limitReached.seePlans': 'See Plans',
   'limitReached.cancel': 'Cancel',
 
+  // Privacy policy
+  'privacyPolicy.headerTitle': 'Privacy Policy',
+  'privacyPolicy.headerSubtitle': 'Seyahood Data Security',
+  'privacyPolicy.bannerTitle': 'Transparent & Secure Travel',
+  'privacyPolicy.bannerDate': 'Last updated: August 2026',
+  'privacyPolicy.section1.title': '1. Introduction',
+  'privacyPolicy.section1.content':
+      'At Seyahood, we care about the security of your personal data. '
+      'This Privacy Policy explains what data we collect when you use our '
+      'app, how we use that data, and what rights you have.',
+  'privacyPolicy.section2.title': '2. Data We Collect',
+  'privacyPolicy.section2.content':
+      '• Account Information: We collect your username and email address '
+      'during registration.\n\n• Profile Information: Optional details '
+      'such as first name, last name, bio, location, and profile photo.'
+      '\n\n• Content Data: The journals, pages, photos, drawings, and '
+      'location tags you create.\n\n• Usage Data: In-app interactions and '
+      'preferences.',
+  'privacyPolicy.section3.title': '3. How We Use Data',
+  'privacyPolicy.section3.content':
+      'The data we collect is used for the following purposes:\n\n• '
+      'Creating and managing your account\n• Providing and improving app '
+      'features\n• Securely storing your photos\n• Sending necessary '
+      'system notifications\n• Security and verification processes',
+  'privacyPolicy.section4.title': '4. Data Sharing',
+  'privacyPolicy.section4.content':
+      'We do not sell or rent your personal data to third parties. Your '
+      'data is only shared with the following service providers:\n\n• '
+      'Cloudinary: Photo storage service\n• Render: Server '
+      'infrastructure\n• OpenStreetMap/Nominatim: Map and location '
+      'services',
+  'privacyPolicy.section5.title': '5. Data Security',
+  'privacyPolicy.section5.content':
+      'We take industry-standard measures to protect your data:\n\n• '
+      'Passwords are stored hashed using the bcrypt algorithm\n• All '
+      'communication is encrypted via the HTTPS protocol\n• Secure session '
+      'management is provided using JWT tokens\n• Data is stored on secure '
+      'cloud servers',
+  'privacyPolicy.section6.title': '6. Data Retention',
+  'privacyPolicy.section6.content':
+      'Your data is retained as long as your account is active. If you '
+      'delete your account, all your personal data will be permanently '
+      'deleted within 30 days.',
+  'privacyPolicy.section7.title': '7. Your Rights',
+  'privacyPolicy.section7.content':
+      'You have the following rights regarding your personal data:\n\n• '
+      'Requesting access to your data\n• Requesting correction of '
+      'inaccurate data\n• Requesting deletion of your data\n• Objecting to '
+      'data processing\n\nTo exercise these rights, you can write to '
+      'noreply.memorylane@gmail.com.',
+  'privacyPolicy.section8.title': '8. Cookies and Tracking',
+  'privacyPolicy.section8.content':
+      'Our app does not use cookies. Your user preferences are stored '
+      'locally on your device only.',
+  'privacyPolicy.section9.title': "9. Children's Privacy",
+  'privacyPolicy.section9.content':
+      'We do not knowingly collect personal data from children under the '
+      'age of 13.',
+  'privacyPolicy.section10.title': '10. Policy Updates',
+  'privacyPolicy.section10.content':
+      'We may update this privacy policy from time to time. We will send '
+      'a notification through the app when significant changes occur.',
+  'privacyPolicy.section11.title': '11. Contact',
+  'privacyPolicy.section11.content':
+      'For questions about our privacy policy or your personal data:'
+      '\n\nEmail: noreply.memorylane@gmail.com\n\nAs the Seyahood team, we '
+      'respect your privacy and are committed to protecting your data.',
+
   // Home
   'home.greeting.morning': 'Good morning,',
   'home.greeting.afternoon': 'Good afternoon,',

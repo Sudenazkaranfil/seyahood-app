@@ -343,6 +343,75 @@ const Map<String, String> stringsTr = {
   'limitReached.seePlans': 'Planları Gör',
   'limitReached.cancel': 'Vazgeç',
 
+  // Privacy policy
+  'privacyPolicy.headerTitle': 'Gizlilik Politikası',
+  'privacyPolicy.headerSubtitle': 'Seyahood Veri Güvenliği',
+  'privacyPolicy.bannerTitle': 'Şeffaf & Güvenli Seyahat',
+  'privacyPolicy.bannerDate': 'Son güncelleme: Ağustos 2026',
+  'privacyPolicy.section1.title': '1. Giriş',
+  'privacyPolicy.section1.content':
+      'Seyahood olarak kişisel verilerinizin güvenliğine önem veriyoruz. '
+      'Bu Gizlilik Politikası, uygulamamızı kullandığınızda hangi verileri '
+      'topladığımızı, bu verileri nasıl kullandığımızı ve haklarınızı '
+      'açıklamaktadır.',
+  'privacyPolicy.section2.title': '2. Topladığımız Veriler',
+  'privacyPolicy.section2.content':
+      '• Hesap Bilgileri: Kayıt sırasında kullanıcı adı ve e-posta adresi '
+      'topluyoruz.\n\n• Profil Bilgileri: Ad, soyad, biyografi, konum ve '
+      'profil fotoğrafı gibi isteğe bağlı bilgiler.\n\n• İçerik Verileri: '
+      'Oluşturduğunuz ajandalar, sayfalar, fotoğraflar, çizimler ve konum '
+      'etiketleri.\n\n• Kullanım Verileri: Uygulama içi etkileşimler ve '
+      'tercihler.',
+  'privacyPolicy.section3.title': '3. Verilerin Kullanımı',
+  'privacyPolicy.section3.content':
+      'Topladığımız veriler şu amaçlarla kullanılmaktadır:\n\n• Hesabınızı '
+      'oluşturmak ve yönetmek\n• Uygulama özelliklerini sunmak ve '
+      'geliştirmek\n• Fotoğraflarınızı güvenli şekilde depolamak\n• Gerekli '
+      'sistem bildirimleri göndermek\n• Güvenlik ve doğrulama işlemleri',
+  'privacyPolicy.section4.title': '4. Veri Paylaşımı',
+  'privacyPolicy.section4.content':
+      'Kişisel verilerinizi üçüncü taraflarla satmıyor veya kiralamıyoruz. '
+      'Verileriniz yalnızca aşağıdaki hizmet sağlayıcılarla '
+      'paylaşılmaktadır:\n\n• Cloudinary: Fotoğraf depolama hizmeti\n• '
+      'Render: Sunucu altyapısı\n• OpenStreetMap/Nominatim: Harita ve konum '
+      'hizmetleri',
+  'privacyPolicy.section5.title': '5. Veri Güvenliği',
+  'privacyPolicy.section5.content':
+      'Verilerinizin güvenliği için endüstri standardı önlemler '
+      'alıyoruz:\n\n• Şifreler bcrypt algoritması ile hashlenerek '
+      'saklanır\n• Tüm iletişim HTTPS protokolü ile şifrelenir\n• JWT '
+      'token\'ları ile güvenli oturum yönetimi sağlanır\n• Veriler güvenli '
+      'bulut sunucularında saklanır',
+  'privacyPolicy.section6.title': '6. Veri Saklama',
+  'privacyPolicy.section6.content':
+      'Verileriniz hesabınız aktif olduğu sürece saklanır. Hesabınızı '
+      'silmeniz durumunda tüm kişisel verileriniz 30 gün içinde kalıcı '
+      'olarak silinir.',
+  'privacyPolicy.section7.title': '7. Haklarınız',
+  'privacyPolicy.section7.content':
+      'Kişisel verileriniz üzerinde aşağıdaki haklara sahipsiniz:\n\n• '
+      'Verilerinize erişim talep etme\n• Yanlış verilerin düzeltilmesini '
+      'isteme\n• Verilerinizin silinmesini talep etme\n• Veri işlemeye '
+      'itiraz etme\n\nBu haklarınızı kullanmak için '
+      'noreply.memorylane@gmail.com adresine yazabilirsiniz.',
+  'privacyPolicy.section8.title': '8. Çerezler ve Takip',
+  'privacyPolicy.section8.content':
+      'Uygulamamız çerez kullanmamaktadır. Kullanıcı tercihleriniz yalnızca '
+      'cihazınızda yerel olarak saklanır.',
+  'privacyPolicy.section9.title': '9. Çocukların Gizliliği',
+  'privacyPolicy.section9.content':
+      '13 yaşın altındaki çocuklardan bilerek kişisel veri toplamıyoruz.',
+  'privacyPolicy.section10.title': '10. Politika Güncellemeleri',
+  'privacyPolicy.section10.content':
+      'Bu gizlilik politikasını zaman zaman güncelleyebiliriz. Önemli '
+      'değişiklikler olduğunda uygulama üzerinden bildirim göndereceğiz.',
+  'privacyPolicy.section11.title': '11. İletişim',
+  'privacyPolicy.section11.content':
+      'Gizlilik politikamız veya kişisel verilerinizle ilgili sorularınız '
+      'için:\n\nE-posta: noreply.memorylane@gmail.com\n\nSeyahood ekibi '
+      'olarak gizliliğinize saygı duyuyor ve verilerinizi korumayı taahhüt '
+      'ediyoruz.',
+
   // Home
   'home.greeting.morning': 'Günaydın,',
   'home.greeting.afternoon': 'İyi günler,',
