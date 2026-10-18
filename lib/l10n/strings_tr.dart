@@ -325,6 +325,12 @@ const Map<String, String> stringsTr = {
   'notifications.message.journalSave': '{name} "{title}" ajandanı kaydetti',
   'notifications.message.unknown': '{name} bir etkileşimde bulundu',
 
+  // Nav bar
+  'navBar.journal': 'Ajanda',
+  'navBar.explore': 'Keşfet',
+  'navBar.map': 'Harita',
+  'navBar.profile': 'Profil',
+
   // Home
   'home.greeting.morning': 'Günaydın,',
   'home.greeting.afternoon': 'İyi günler,',

@@ -325,6 +325,12 @@ const Map<String, String> stringsEn = {
   'notifications.message.journalSave': '{name} saved your journal "{title}"',
   'notifications.message.unknown': '{name} interacted with your content',
 
+  // Nav bar
+  'navBar.journal': 'Journal',
+  'navBar.explore': 'Explore',
+  'navBar.map': 'Map',
+  'navBar.profile': 'Profile',
+
   // Home
   'home.greeting.morning': 'Good morning,',
   'home.greeting.afternoon': 'Good afternoon,',

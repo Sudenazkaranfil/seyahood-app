@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import '../theme/app_theme.dart';
+import '../l10n/app_strings.dart';
 
 class AppNavBar extends StatelessWidget {
   final int currentIndex;
@@ -32,11 +33,11 @@ class AppNavBar extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            _NavItem(icon: Icons.book_outlined, label: 'Ajanda', index: 0, currentIndex: currentIndex, onTap: onTap),
-            _NavItem(icon: Icons.explore_outlined, label: 'Keşfet', index: 1, currentIndex: currentIndex, onTap: onTap),
+            _NavItem(icon: Icons.book_outlined, label: context.tr('navBar.journal'), index: 0, currentIndex: currentIndex, onTap: onTap),
+            _NavItem(icon: Icons.explore_outlined, label: context.tr('navBar.explore'), index: 1, currentIndex: currentIndex, onTap: onTap),
             _NavPlusButton(onTap: () => onTap(5)),
-            _NavItem(icon: Icons.map_outlined, label: 'Harita', index: 2, currentIndex: currentIndex, onTap: onTap),
-            _NavItem(icon: Icons.person_outline, label: 'Profil', index: 3, currentIndex: currentIndex, onTap: onTap),
+            _NavItem(icon: Icons.map_outlined, label: context.tr('navBar.map'), index: 2, currentIndex: currentIndex, onTap: onTap),
+            _NavItem(icon: Icons.person_outline, label: context.tr('navBar.profile'), index: 3, currentIndex: currentIndex, onTap: onTap),
           ],
         ),
       ),
