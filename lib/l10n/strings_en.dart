@@ -167,6 +167,47 @@ const Map<String, String> stringsEn = {
   'common.month.short.nov': 'Nov',
   'common.month.short.dec': 'Dec',
 
+  // Help screen
+  'help.header.title': 'Help & Support',
+  'help.header.subtitle': 'Traveler Guide & FAQ',
+  'help.section.gettingStarted': 'Getting Started',
+  'help.section.privacySharing': 'Privacy & Sharing',
+  'help.section.mapLocation': 'Map & Location',
+  'help.section.accountSettings': 'Account Settings',
+  'help.faq1.q': 'How do I create a journal?',
+  'help.faq1.a':
+      'Tap the "Leave a Memory" button on the home screen, choose a journal name and privacy setting.',
+  'help.faq2.q': 'How do I add content to my page?',
+  'help.faq2.a':
+      'Open your journal, tap the + button. You can add photos, text, emoji, location or drawings.',
+  'help.faq3.q': 'How do I save my page?',
+  'help.faq3.a': 'Tap the "Save" button at the top right of the canvas editor.',
+  'help.faq4.q': 'Can I make my journal public?',
+  'help.faq4.a':
+      'Yes! Open your journal, choose "Make public" from the three-dot menu at the top right.',
+  'help.faq5.q': 'Who can see my private journal?',
+  'help.faq5.a': 'Only you can see your private journal.',
+  'help.faq6.q': 'Who can see my public journal?',
+  'help.faq6.a': 'Public journals appear in the Explore screen and on the map.',
+  'help.faq7.q': "Why doesn't my location show on the map?",
+  'help.faq7.a':
+      "Make sure you added a location when creating the page. Without a location it won't show on the map.",
+  'help.faq8.q': "What's the difference between My Map and the Explore map?",
+  'help.faq8.a':
+      'My Map shows only your own locations. The Explore map shows public locations from everyone.',
+  'help.faq9.q': 'How do I change my password?',
+  'help.faq9.a':
+      'Tap "Forgot your password?" on the login screen, you can reset it by email.',
+  'help.faq10.q': 'How do I delete my account?',
+  'help.faq10.a':
+      "Account deletion is coming soon. For now, you can reach out to us for support.",
+  'help.contact.title': 'Contact Us',
+  'help.contact.subtitle':
+      'For problems, suggestions, or your travel stories:',
+  'help.legalSection': 'LEGAL & ASSURANCE',
+  'help.privacyPolicy.title': 'Privacy Policy',
+  'help.privacyPolicy.subtitle': 'Personal data protection and retention rules',
+
   // Home
   'home.greeting.morning': 'Good morning,',
   'home.greeting.afternoon': 'Good afternoon,',

@@ -167,6 +167,47 @@ const Map<String, String> stringsTr = {
   'common.month.short.nov': 'Kas',
   'common.month.short.dec': 'Ara',
 
+  // Help screen
+  'help.header.title': 'Yardım & Destek',
+  'help.header.subtitle': 'Gezgin Kılavuzu & SSS',
+  'help.section.gettingStarted': 'Başlarken',
+  'help.section.privacySharing': 'Gizlilik & Paylaşım',
+  'help.section.mapLocation': 'Harita & Konum',
+  'help.section.accountSettings': 'Hesap Ayarları',
+  'help.faq1.q': 'Nasıl ajanda oluştururum?',
+  'help.faq1.a':
+      'Ana ekranda "Anını Bırak" butonuna bas, ajanda adını ve gizlilik ayarını seç.',
+  'help.faq2.q': 'Sayfama nasıl içerik eklerim?',
+  'help.faq2.a':
+      'Ajandana gir, + butonuna bas. Fotoğraf, yazı, emoji, konum veya çizim ekleyebilirsin.',
+  'help.faq3.q': 'Sayfamı nasıl kaydederim?',
+  'help.faq3.a': 'Canvas editörde sağ üstteki "Kaydet" butonuna bas.',
+  'help.faq4.q': 'Ajandamı herkese açık yapabilir miyim?',
+  'help.faq4.a':
+      'Evet! Ajandana gir, sağ üstteki üç nokta menüsünden "Herkese aç" seç.',
+  'help.faq5.q': 'Özel ajandamı kimler görebilir?',
+  'help.faq5.a': 'Özel ajandanı sadece sen görebilirsin.',
+  'help.faq6.q': 'Herkese açık ajandamı kim görebilir?',
+  'help.faq6.a': 'Herkese açık ajandalar Keşfet ekranında ve haritada görünür.',
+  'help.faq7.q': 'Haritada konumum neden görünmüyor?',
+  'help.faq7.a':
+      'Sayfa eklerken konum eklediğinden emin ol. Konum olmadan haritada görünmez.',
+  'help.faq8.q': 'Haritam ve Keşfet haritası arasındaki fark nedir?',
+  'help.faq8.a':
+      'Haritam sadece senin konumlarını gösterir. Keşfet haritası herkese açık konumları gösterir.',
+  'help.faq9.q': 'Şifremi nasıl değiştiririm?',
+  'help.faq9.a':
+      'Giriş ekranında "Şifreni mi unuttun?" linkine tıkla, e-posta ile sıfırlayabilirsin.',
+  'help.faq10.q': 'Hesabımı nasıl silebilirim?',
+  'help.faq10.a':
+      'Hesap silme özelliği yakında eklenecek. Şimdilik destek için bize ulaşabilirsin.',
+  'help.contact.title': 'Bize Ulaşın',
+  'help.contact.subtitle':
+      'Sorunların, önerilerin veya yolculuk hikayelerin için:',
+  'help.legalSection': 'YASAL & GÜVENCE',
+  'help.privacyPolicy.title': 'Gizlilik Politikası',
+  'help.privacyPolicy.subtitle': 'Kişisel veri koruma ve saklama kuralları',
+
   // Home
   'home.greeting.morning': 'Günaydın,',
   'home.greeting.afternoon': 'İyi günler,',
