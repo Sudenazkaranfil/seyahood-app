@@ -311,6 +311,20 @@ const Map<String, String> stringsEn = {
       'Check out the Explore tab to discover new travel stories.',
   'followList.you': 'You',
 
+  // Notifications
+  'notifications.title': 'Notifications',
+  'notifications.markAllRead': 'Mark all as read',
+  'notifications.emptyTitle': 'No Notifications Yet',
+  'notifications.emptySubtitle':
+      "It'll show up here when someone follows you or saves one of your journals.",
+  'notifications.time.justNow': 'Just now',
+  'notifications.time.minutesAgo': '{minutes}m ago',
+  'notifications.time.hoursAgo': '{hours}h ago',
+  'notifications.time.daysAgo': '{days}d ago',
+  'notifications.message.follow': '{name} started following you',
+  'notifications.message.journalSave': '{name} saved your journal "{title}"',
+  'notifications.message.unknown': '{name} interacted with your content',
+
   // Home
   'home.greeting.morning': 'Good morning,',
   'home.greeting.afternoon': 'Good afternoon,',

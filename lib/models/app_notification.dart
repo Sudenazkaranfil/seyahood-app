@@ -1,3 +1,6 @@
+import 'package:flutter/material.dart';
+import '../l10n/app_strings.dart';
+
 enum NotificationType { follow, journalSave, unknown }
 
 class AppNotification {
@@ -53,14 +56,17 @@ class AppNotification {
   String get actorDisplayName =>
       (actorFirstName != null && actorFirstName!.isNotEmpty) ? actorFirstName! : actorUsername;
 
-  String get message {
+  String message(BuildContext context) {
     switch (type) {
       case NotificationType.follow:
-        return '$actorDisplayName seni takip etmeye başladı';
+        return context.trf('notifications.message.follow',
+            {'name': actorDisplayName});
       case NotificationType.journalSave:
-        return '$actorDisplayName "${journalTitle ?? ''}" ajandanı kaydetti';
+        return context.trf('notifications.message.journalSave',
+            {'name': actorDisplayName, 'title': journalTitle ?? ''});
       case NotificationType.unknown:
-        return '$actorDisplayName bir etkileşimde bulundu';
+        return context.trf('notifications.message.unknown',
+            {'name': actorDisplayName});
     }
   }
 }

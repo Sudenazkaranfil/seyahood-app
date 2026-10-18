@@ -311,6 +311,20 @@ const Map<String, String> stringsTr = {
       'Yeni seyahat hikayeleri keşfetmek için Keşfet sekmesine göz at.',
   'followList.you': 'Sen',
 
+  // Notifications
+  'notifications.title': 'Bildirimler',
+  'notifications.markAllRead': 'Tümünü okundu yap',
+  'notifications.emptyTitle': 'Henüz Bildirim Yok',
+  'notifications.emptySubtitle':
+      'Biri seni takip ettiğinde ya da bir ajandanı kaydettiğinde burada görünecek.',
+  'notifications.time.justNow': 'Az önce',
+  'notifications.time.minutesAgo': '{minutes} dk önce',
+  'notifications.time.hoursAgo': '{hours} sa önce',
+  'notifications.time.daysAgo': '{days} gün önce',
+  'notifications.message.follow': '{name} seni takip etmeye başladı',
+  'notifications.message.journalSave': '{name} "{title}" ajandanı kaydetti',
+  'notifications.message.unknown': '{name} bir etkileşimde bulundu',
+
   // Home
   'home.greeting.morning': 'Günaydın,',
   'home.greeting.afternoon': 'İyi günler,',
