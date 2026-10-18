@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../services/subscription_service.dart';
 import '../theme/app_theme.dart';
+import '../l10n/app_strings.dart';
 
 class PremiumScreen extends StatefulWidget {
   const PremiumScreen({super.key});
@@ -17,59 +18,59 @@ class _PremiumScreenState extends State<PremiumScreen> {
   final _promoCodeController = TextEditingController();
   bool _isRedeemingCode = false;
 
-  static const List<_ComparisonFeature> _features = [
+  List<_ComparisonFeature> _features(BuildContext context) => [
     _ComparisonFeature(
       icon: Icons.auto_stories_rounded,
-      label: 'Ajanda',
+      label: context.tr('premium.feature.journals.label'),
       free: '5',
       plus: '20',
-      pro: 'Sınırsız',
+      pro: context.tr('premium.unlimited'),
     ),
     _ComparisonFeature(
       icon: Icons.description_outlined,
-      label: 'Sayfa / ajanda',
+      label: context.tr('premium.feature.pagesPerJournal.label'),
       free: '15',
       plus: '40',
-      pro: 'Sınırsız',
+      pro: context.tr('premium.unlimited'),
     ),
     _ComparisonFeature(
       icon: Icons.explore_outlined,
-      label: 'Gezgin rozeti',
+      label: context.tr('premium.feature.travelerBadge.label'),
       free: null,
-      plus: '🧭 Gümüş',
-      pro: '🧭 Altın',
+      plus: context.tr('premium.badge.silver'),
+      pro: context.tr('premium.badge.gold'),
     ),
     _ComparisonFeature(
       icon: Icons.image_outlined,
-      label: 'Filigransız paylaşım',
+      label: context.tr('premium.feature.watermarkFreeSharing.label'),
       free: null,
       plus: '✓',
       pro: '✓',
     ),
     _ComparisonFeature(
       icon: Icons.high_quality_outlined,
-      label: 'Export kalitesi',
+      label: context.tr('premium.feature.exportQuality.label'),
       free: '1x',
       plus: '2x HD',
       pro: '3x 4K',
     ),
     _ComparisonFeature(
       icon: Icons.dashboard_customize_outlined,
-      label: 'PRO şablonlar',
+      label: context.tr('premium.feature.proTemplates.label'),
       free: null,
-      plus: '1 şablon',
-      pro: 'Tümü',
+      plus: context.tr('premium.oneTemplate'),
+      pro: context.tr('premium.allTemplates'),
     ),
     _ComparisonFeature(
       icon: Icons.font_download_outlined,
-      label: 'PRO canvas fontları',
+      label: context.tr('premium.feature.proCanvasFonts.label'),
       free: null,
       plus: null,
       pro: '✓',
     ),
     _ComparisonFeature(
       icon: Icons.travel_explore_rounded,
-      label: 'AI konum tahmini',
+      label: context.tr('premium.feature.aiLocation.label'),
       free: null,
       plus: null,
       pro: '✓',
@@ -115,8 +116,8 @@ class _PremiumScreenState extends State<PremiumScreen> {
         _promoCodeController.clear();
       });
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text(
-              '🎉 Kod kullanıldı! Artık ${_planLabel(status.plan)} üyesisin.')));
+          content: Text(context.trf('premium.redeemSuccess',
+              {'plan': _planLabel(context, status.plan)}))));
     } catch (e) {
       if (!mounted) return;
       setState(() => _isRedeemingCode = false);
@@ -147,15 +148,14 @@ class _PremiumScreenState extends State<PremiumScreen> {
                 child: Text('⏳', style: TextStyle(fontSize: 26))),
           ),
           const SizedBox(height: 16),
-          Text('$planLabel yakında aktif oluyor',
+          Text(context.trf('premium.purchaseSoon.title', {'plan': planLabel}),
               textAlign: TextAlign.center,
               style: GoogleFonts.playfairDisplay(
                   fontSize: 17, fontWeight: FontWeight.w800,
                   color: AppTheme.textPrimary)),
           const SizedBox(height: 8),
           Text(
-              'Satın alma altyapısı (RevenueCat) tamamlandığında bu plana '
-              'buradan 7 gün ücretsiz deneme ile başlayabileceksin.',
+              context.tr('premium.purchaseSoon.content'),
               textAlign: TextAlign.center,
               style: AppTheme.sansBody(
                   size: 13, color: AppTheme.textSecondary)),
@@ -164,7 +164,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
             width: double.infinity,
             child: ElevatedButton(
               onPressed: () => Navigator.pop(context),
-              child: const Text('Anladım'),
+              child: Text(context.tr('premium.purchaseSoon.gotIt')),
             ),
           ),
         ]),
@@ -172,14 +172,14 @@ class _PremiumScreenState extends State<PremiumScreen> {
     );
   }
 
-  String _planLabel(String plan) {
+  String _planLabel(BuildContext context, String plan) {
     switch (plan) {
       case 'PLUS':
-        return 'Plus';
+        return context.tr('premium.planLabel.plus');
       case 'PRO':
-        return 'PRO';
+        return context.tr('premium.planLabel.pro');
       default:
-        return 'Free';
+        return context.tr('premium.planLabel.free');
     }
   }
 
@@ -204,26 +204,26 @@ class _PremiumScreenState extends State<PremiumScreen> {
                 child: Column(children: [
                   _buildPlanCard(
                     planKey: 'PLUS',
-                    title: 'Seyahood Plus',
-                    ctaLabel: "Plus'a Geç",
+                    title: context.tr('premium.plan.plusTitle'),
+                    ctaLabel: context.tr('premium.plan.plusCta'),
                     emoji: '🧭',
                     color: AppTheme.sage,
                     monthlyPrice: 39.99,
                     yearlyPrice: 419.99,
                     highlight: false,
-                    tagline: 'Daha fazla ajanda ve gümüş gezgin rozeti',
+                    tagline: context.tr('premium.plan.plusTagline'),
                   ),
                   const SizedBox(height: 16),
                   _buildPlanCard(
                     planKey: 'PRO',
-                    title: 'Seyahood PRO',
-                    ctaLabel: "PRO'ya Geç",
+                    title: context.tr('premium.plan.proTitle'),
+                    ctaLabel: context.tr('common.goProAction'),
                     emoji: '👑',
                     color: AppTheme.terracotta,
                     monthlyPrice: 59.99,
                     yearlyPrice: 599.99,
                     highlight: true,
-                    tagline: 'Sınırsız ajanda ve tüm premium özellikler',
+                    tagline: context.tr('premium.plan.proTagline'),
                   ),
                 ]),
               ),
@@ -279,12 +279,12 @@ class _PremiumScreenState extends State<PremiumScreen> {
               child: Text('👑', style: TextStyle(fontSize: 30))),
         ),
         const SizedBox(height: 16),
-        Text('Seyahood Premium',
+        Text(context.tr('premium.header.title'),
             style: GoogleFonts.playfairDisplay(
                 fontSize: 24, fontWeight: FontWeight.w700,
                 color: Colors.white, letterSpacing: -0.5)),
         const SizedBox(height: 6),
-        Text('Seyahatlerini sınırsız sayfada anlat',
+        Text(context.tr('premium.header.subtitle'),
             textAlign: TextAlign.center,
             style: AppTheme.sansBody(
                 size: 13, color: Colors.white.withOpacity(0.7))),
@@ -297,7 +297,8 @@ class _PremiumScreenState extends State<PremiumScreen> {
               borderRadius: BorderRadius.circular(20),
               border: Border.all(color: Colors.white.withOpacity(0.2)),
             ),
-            child: Text('Mevcut plan: ${_planLabel(_currentPlan)}',
+            child: Text(context.trf('premium.header.currentPlan',
+                {'plan': _planLabel(context, _currentPlan)}),
                 style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700,
                     color: Colors.white.withOpacity(0.85))),
           ),
@@ -314,8 +315,8 @@ class _PremiumScreenState extends State<PremiumScreen> {
         borderRadius: BorderRadius.circular(50),
       ),
       child: Row(children: [
-        Expanded(child: _billingOption('Aylık', !_isYearly, false)),
-        Expanded(child: _billingOption('Yıllık', _isYearly, true)),
+        Expanded(child: _billingOption(context.tr('premium.billing.monthly'), !_isYearly, false)),
+        Expanded(child: _billingOption(context.tr('premium.billing.yearly'), _isYearly, true)),
       ]),
     );
   }
@@ -346,7 +347,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
         const Icon(Icons.card_giftcard_rounded,
             size: 14, color: AppTheme.sage),
         const SizedBox(width: 6),
-        Text('Her iki planda da 7 gün ücretsiz deneme',
+        Text(context.tr('premium.trialBanner'),
             style: AppTheme.sansBody(
                 size: 12, weight: FontWeight.w700, color: AppTheme.sage)),
       ]),
@@ -365,7 +366,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
     required String tagline,
   }) {
     final price = _isYearly ? yearlyPrice : monthlyPrice;
-    final period = _isYearly ? '/yıl' : '/ay';
+    final period = _isYearly ? context.tr('premium.perYear') : context.tr('premium.perMonth');
     final isCurrent = _currentPlan == planKey;
 
     return Container(
@@ -409,8 +410,8 @@ class _PremiumScreenState extends State<PremiumScreen> {
                         color: color,
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      child: const Text('ÖNERİLEN',
-                          style: TextStyle(fontSize: 9,
+                      child: Text(context.tr('premium.recommended'),
+                          style: const TextStyle(fontSize: 9,
                               fontWeight: FontWeight.w800,
                               color: Colors.white)),
                     ),
@@ -445,14 +446,15 @@ class _PremiumScreenState extends State<PremiumScreen> {
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Text(
-                      '%${(100 - (yearlyPrice / (monthlyPrice * 12) * 100)).round()} indirim',
+                      context.trf('premium.discountLabel', {'percent':
+                          (100 - (yearlyPrice / (monthlyPrice * 12) * 100)).round().toString()}),
                       style: const TextStyle(fontSize: 10,
                           fontWeight: FontWeight.w800, color: AppTheme.sage)),
                 ),
               ],
             ]),
         const SizedBox(height: 4),
-        Text('7 gün ücretsiz dene, istediğin zaman iptal et',
+        Text(context.tr('premium.freeTrialNote'),
             style: AppTheme.sansBody(size: 11, color: AppTheme.textMuted)),
         const SizedBox(height: 16),
         SizedBox(
@@ -467,7 +469,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(16)),
             ),
-            child: Text(isCurrent ? 'Mevcut Planın' : ctaLabel,
+            child: Text(isCurrent ? context.tr('premium.currentPlanButton') : ctaLabel,
                 style: const TextStyle(
                     fontSize: 14, fontWeight: FontWeight.w800)),
           ),
@@ -489,12 +491,12 @@ class _PremiumScreenState extends State<PremiumScreen> {
         Padding(
           padding: const EdgeInsets.fromLTRB(18, 24, 18, 10),
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text('Detaylı Karşılaştırma',
+            Text(context.tr('premium.comparison.title'),
                 style: GoogleFonts.playfairDisplay(
                     fontSize: 17, fontWeight: FontWeight.w800,
                     color: AppTheme.textPrimary)),
             const SizedBox(height: 3),
-            Text('Free, Plus ve PRO arasındaki farklar',
+            Text(context.tr('premium.comparison.subtitle'),
                 style: AppTheme.sansBody(size: 12, color: AppTheme.textSecondary)),
             const SizedBox(height: 18),
             Row(children: [
@@ -502,28 +504,28 @@ class _PremiumScreenState extends State<PremiumScreen> {
               Expanded(
                   flex: 2,
                   child: Center(
-                      child: Text('Free',
-                          style: TextStyle(
+                      child: Text(context.tr('premium.comparison.free'),
+                          style: const TextStyle(
                               fontSize: 11, fontWeight: FontWeight.w700,
                               color: AppTheme.textSecondary)))),
               Expanded(
                   flex: 2,
                   child: Center(
-                      child: Text('🧭 Plus',
-                          style: TextStyle(
+                      child: Text(context.tr('premium.comparison.plus'),
+                          style: const TextStyle(
                               fontSize: 11, fontWeight: FontWeight.w800,
                               color: AppTheme.sage)))),
               Expanded(
                   flex: 2,
                   child: Center(
-                      child: Text('👑 PRO',
-                          style: TextStyle(
+                      child: Text(context.tr('premium.comparison.pro'),
+                          style: const TextStyle(
                               fontSize: 11, fontWeight: FontWeight.w800,
                               color: AppTheme.terracotta)))),
             ]),
             const SizedBox(height: 10),
             const Divider(height: 1, color: AppTheme.border),
-            ..._features.map(_buildFeatureRow),
+            ..._features(context).map(_buildFeatureRow),
           ]),
         ),
         // Washi bant köşesi
@@ -617,13 +619,13 @@ class _PremiumScreenState extends State<PremiumScreen> {
         Row(children: [
           const Icon(Icons.redeem_rounded, size: 18, color: AppTheme.terracotta),
           const SizedBox(width: 8),
-          Text('Promosyon Kodun mu Var?',
+          Text(context.tr('premium.promo.title'),
               style: GoogleFonts.playfairDisplay(
                   fontSize: 15, fontWeight: FontWeight.w800,
                   color: AppTheme.textPrimary)),
         ]),
         const SizedBox(height: 4),
-        Text('Hediye ya da kampanya kodunu gir, planın hemen aktifleşsin.',
+        Text(context.tr('premium.promo.subtitle'),
             style: AppTheme.sansBody(size: 12, color: AppTheme.textSecondary)),
         const SizedBox(height: 12),
         Row(children: [
@@ -633,7 +635,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
               textCapitalization: TextCapitalization.characters,
               style: AppTheme.sansBody(size: 14, weight: FontWeight.w700),
               decoration: InputDecoration(
-                hintText: 'Örn. SEYAHOOD2026',
+                hintText: context.tr('premium.promo.hint'),
                 isDense: true,
                 contentPadding: const EdgeInsets.symmetric(
                     horizontal: 14, vertical: 12),
@@ -667,8 +669,8 @@ class _PremiumScreenState extends State<PremiumScreen> {
                     width: 16, height: 16,
                     child: CircularProgressIndicator(
                         strokeWidth: 2, color: Colors.white))
-                : const Text('Kullan',
-                    style: TextStyle(fontSize: 13, fontWeight: FontWeight.w800)),
+                : Text(context.tr('premium.promo.redeemButton'),
+                    style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w800)),
           ),
         ]),
       ]),
@@ -679,11 +681,10 @@ class _PremiumScreenState extends State<PremiumScreen> {
     return Center(
       child: TextButton(
         onPressed: () {
-          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-              content: Text(
-                  'Satın almalar RevenueCat entegrasyonu ile geri yüklenebilecek')));
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text(context.tr('premium.restoreNotice'))));
         },
-        child: const Text('Satın Alımları Geri Yükle'),
+        child: Text(context.tr('premium.restorePurchases')),
       ),
     );
   }
