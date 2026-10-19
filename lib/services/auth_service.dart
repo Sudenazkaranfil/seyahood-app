@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../config/api_config.dart';
+import '../l10n/auth_error_keys.dart';
+import 'api_exception.dart';
 
 class AuthService {
   static const String baseUrl = ApiConfig.baseUrl;
@@ -18,8 +20,8 @@ class AuthService {
     if(response.statusCode == 200) {
       return jsonDecode(response.body);
     } else {
-      final error = jsonDecode(response.body);
-      throw Exception(error['error'] ?? 'Giriş başarısız');
+      final error = jsonDecode(response.body)['error'] as String?;
+      throw ApiException(authErrorKeys[error] ?? 'common.genericError');
     }
   }
   static Future<void> register(
@@ -35,8 +37,8 @@ class AuthService {
     );
 
     if (response.statusCode != 200) {
-      final error = jsonDecode(response.body);
-      throw Exception(error['error'] ?? 'Kayıt başarısız');
+      final error = jsonDecode(response.body)['error'] as String?;
+      throw ApiException(authErrorKeys[error] ?? 'common.genericError');
     }
   }
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'strings_tr.dart';
 import 'strings_en.dart';
 import '../services/api_exception.dart';
+import 'auth_error_keys.dart';
 
 /// Basit, kod üretimi gerektirmeyen çeviri katmanı. Yeni bir dil eklemek
 /// için tek yapılması gereken: bu klasöre bir `strings_xx.dart` dosyası
@@ -41,5 +42,14 @@ extension AppStringsExtension on BuildContext {
   String trError(Object error, {String fallbackKey = 'common.genericError'}) {
     if (error is ApiException) return tr(error.messageKey);
     return tr(fallbackKey);
+  }
+
+  /// `/auth/*` uçlarının ham JSON gövdesinden okunan bir `error` kodunu
+  /// (örn. "INVALID_RESET_CODE") lokalize eder; kod bilinmiyorsa veya
+  /// null ise [fallbackKey] kullanılır.
+  String trAuthErrorCode(String? code,
+      {String fallbackKey = 'common.genericError'}) {
+    final key = code != null ? authErrorKeys[code] : null;
+    return tr(key ?? fallbackKey);
   }
 }

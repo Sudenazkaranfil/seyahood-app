@@ -54,8 +54,9 @@ class _VerifyScreenState extends State<VerifyScreen> {
         }
       } else {
         final data = jsonDecode(response.body);
-        setState(() => _errorMessage =
-            data['error'] ?? context.tr('verify.invalidCodeError'));
+        setState(() => _errorMessage = context.trAuthErrorCode(
+            data['error'] as String?,
+            fallbackKey: 'verify.invalidCodeError'));
       }
     } catch (e) {
       setState(() => _errorMessage = context.tr('verify.genericError'));

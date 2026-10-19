@@ -50,8 +50,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             content: Text(message)));
       }
     } catch (e) {
-      setState(() => _errorMessage =
-          e.toString().replaceAll('Exception: ', ''));
+      setState(() => _errorMessage = context.trError(e));
     } finally {
       setState(() => _isLoading = false);
     }

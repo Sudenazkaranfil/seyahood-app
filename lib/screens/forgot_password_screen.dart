@@ -57,8 +57,9 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
         setState(() => _step = 2);
       } else {
         final data = jsonDecode(response.body);
-        setState(() => _errorMessage =
-            data['error'] ?? context.tr('forgotPassword.genericServerError'));
+        setState(() => _errorMessage = context.trAuthErrorCode(
+            data['error'] as String?,
+            fallbackKey: 'forgotPassword.genericServerError'));
       }
     } catch (e) {
       setState(() => _errorMessage = context.tr('forgotPassword.connectionError'));
@@ -86,8 +87,9 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
         setState(() => _step = 3);
       } else {
         final data = jsonDecode(response.body);
-        setState(() => _errorMessage =
-            data['error'] ?? context.tr('forgotPassword.invalidCodeError'));
+        setState(() => _errorMessage = context.trAuthErrorCode(
+            data['error'] as String?,
+            fallbackKey: 'forgotPassword.invalidCodeError'));
       }
     } catch (e) {
       setState(() => _errorMessage = context.tr('forgotPassword.connectionError'));
@@ -125,8 +127,9 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
         }
       } else {
         final data = jsonDecode(response.body);
-        setState(() => _errorMessage =
-            data['error'] ?? context.tr('forgotPassword.genericServerError'));
+        setState(() => _errorMessage = context.trAuthErrorCode(
+            data['error'] as String?,
+            fallbackKey: 'forgotPassword.genericServerError'));
       }
     } catch (e) {
       setState(() => _errorMessage = context.tr('forgotPassword.connectionError'));
