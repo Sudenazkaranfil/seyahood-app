@@ -424,7 +424,7 @@ const Map<String, String> stringsTr = {
       'Verilerinize erişim talep etme\n• Yanlış verilerin düzeltilmesini '
       'isteme\n• Verilerinizin silinmesini talep etme\n• Veri işlemeye '
       'itiraz etme\n\nBu haklarınızı kullanmak için '
-      'noreply.memorylane@gmail.com adresine yazabilirsiniz.',
+      'seyahood@gmail.com adresine yazabilirsiniz.',
   'privacyPolicy.section8.title': '8. Çerezler ve Takip',
   'privacyPolicy.section8.content':
       'Uygulamamız çerez kullanmamaktadır. Kullanıcı tercihleriniz yalnızca '
@@ -439,7 +439,7 @@ const Map<String, String> stringsTr = {
   'privacyPolicy.section11.title': '11. İletişim',
   'privacyPolicy.section11.content':
       'Gizlilik politikamız veya kişisel verilerinizle ilgili sorularınız '
-      'için:\n\nE-posta: noreply.memorylane@gmail.com\n\nSeyahood ekibi '
+      'için:\n\nE-posta: seyahood@gmail.com\n\nSeyahood ekibi '
       'olarak gizliliğinize saygı duyuyor ve verilerinizi korumayı taahhüt '
       'ediyoruz.',
 
@@ -671,7 +671,7 @@ const Map<String, String> stringsTr = {
   'register.alreadyHaveAccount': 'Zaten hesabın var mı? ',
   'register.loginLink': 'Giriş yap',
   'register.emptyFieldsError': 'Tüm alanları doldurun',
-  'register.successMessage': 'Kayıt başarılı! Giriş yapabilirsiniz.',
+  'register.successMessage': 'Kayıt başarılı! E-postana gönderilen kodu gir.',
 
   // Verify
   'verify.title': 'E-postanı Doğrula',

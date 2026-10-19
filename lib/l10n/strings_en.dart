@@ -423,7 +423,7 @@ const Map<String, String> stringsEn = {
       'Requesting access to your data\n• Requesting correction of '
       'inaccurate data\n• Requesting deletion of your data\n• Objecting to '
       'data processing\n\nTo exercise these rights, you can write to '
-      'noreply.memorylane@gmail.com.',
+      'seyahood@gmail.com.',
   'privacyPolicy.section8.title': '8. Cookies and Tracking',
   'privacyPolicy.section8.content':
       'Our app does not use cookies. Your user preferences are stored '
@@ -439,7 +439,7 @@ const Map<String, String> stringsEn = {
   'privacyPolicy.section11.title': '11. Contact',
   'privacyPolicy.section11.content':
       'For questions about our privacy policy or your personal data:'
-      '\n\nEmail: noreply.memorylane@gmail.com\n\nAs the Seyahood team, we '
+      '\n\nEmail: seyahood@gmail.com\n\nAs the Seyahood team, we '
       'respect your privacy and are committed to protecting your data.',
 
   // Home
@@ -670,7 +670,7 @@ const Map<String, String> stringsEn = {
   'register.alreadyHaveAccount': 'Already have an account? ',
   'register.loginLink': 'Log in',
   'register.emptyFieldsError': 'Please fill in all fields',
-  'register.successMessage': 'Registration successful! You can log in now.',
+  'register.successMessage': 'Registration successful! Enter the code sent to your email.',
 
   // Verify
   'verify.title': 'Verify Your Email',

@@ -5,6 +5,7 @@ import '../services/auth_service.dart';
 import '../services/storage_service.dart';
 import '../widgets/error_view.dart';
 import '../l10n/app_strings.dart';
+import 'verify_screen.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -45,7 +46,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
       );
       if (mounted) {
         final message = context.tr('register.successMessage');
-        Navigator.pushReplacementNamed(context, '/login');
+        final email = _emailController.text.trim();
+        Navigator.pushReplacement(context, MaterialPageRoute(
+            builder: (context) => VerifyScreen(email: email)));
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
             content: Text(message)));
       }

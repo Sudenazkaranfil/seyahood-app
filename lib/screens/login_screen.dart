@@ -5,6 +5,7 @@ import '../services/auth_service.dart';
 import '../services/storage_service.dart';
 import '../widgets/error_view.dart';
 import '../l10n/app_strings.dart';
+import 'verify_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -43,7 +44,14 @@ class _LoginScreenState extends State<LoginScreen> {
       await StorageService.saveUsername(result['username']);
       if (mounted) Navigator.pushReplacementNamed(context, '/home');
     } catch (e) {
-      setState(() => _errorMessage = context.trError(e));
+      if (e is AccountNotVerifiedException) {
+        if (mounted) {
+          Navigator.push(context, MaterialPageRoute(
+              builder: (context) => VerifyScreen(email: e.email)));
+        }
+      } else {
+        setState(() => _errorMessage = context.trError(e));
+      }
     } finally {
       setState(() => _isLoading = false);
     }
