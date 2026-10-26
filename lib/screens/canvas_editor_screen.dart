@@ -406,12 +406,17 @@ class _CanvasEditorScreenState extends State<CanvasEditorScreen> {
       duration: const Duration(seconds: 3),
     ));
     try {
-      final guess = await PhotoService.estimateLocation(filePath);
+      final guess = await PhotoService.estimateLocation(filePath, journalId: widget.journalId);
       if (!mounted) return;
+      if (guess.isUnknown) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text(context.tr('canvas.locationUnknown'))));
+        return;
+      }
       setState(() => _locations.add(
-          _LocationItem(name: guess.name, lat: guess.lat, lng: guess.lng)));
+          _LocationItem(name: guess.name!, lat: guess.lat, lng: guess.lng)));
       ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(context.trf('canvas.locationAdded', {'name': guess.name}))));
+          SnackBar(content: Text(context.trf('canvas.locationAdded', {'name': guess.name!}))));
     } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(

@@ -497,6 +497,7 @@ const Map<String, String> stringsTr = {
   'canvas.estimatingLocation': '🔍 Konum tahmin ediliyor...',
   'canvas.locationAdded': '📍 "{name}" eklendi',
   'canvas.locationEstimateFailed': 'Konum tahmin edilemedi, tekrar dene.',
+  'canvas.locationUnknown': '🤔 Bu fotoğraf için belirli bir konum tahmin edemedim.',
   'canvas.addText.title': 'Anı / Not Yazısı',
   'canvas.addText.sizeLabel': 'Boyut: {size}px',
   'canvas.addText.hint': 'Şimdi hissettiklerin, mekanın kokusu, aldığın bir not...',

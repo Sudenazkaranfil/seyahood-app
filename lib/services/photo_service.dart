@@ -13,10 +13,13 @@ class LocationEstimationException implements Exception {
 }
 
 class LocationGuess {
-  final String name;
+  final String? name;
   final double? lat;
   final double? lng;
   LocationGuess({required this.name, this.lat, this.lng});
+
+  /// AI, fotoğrafta konumu belirleyecek görsel ipucu bulamadığında true olur.
+  bool get isUnknown => name == null;
 }
 
 class PhotoService {
@@ -64,7 +67,7 @@ class PhotoService {
     throw const ApiException('apiError.cloudinaryUploadFailed');
   }
 
-  static Future<LocationGuess> estimateLocation(String filePath) async {
+  static Future<LocationGuess> estimateLocation(String filePath, {int? journalId}) async {
     final token = await StorageService.getToken();
     final request = http.MultipartRequest(
       'POST',
@@ -72,6 +75,9 @@ class PhotoService {
     );
     request.headers['Authorization'] = 'Bearer $token';
     request.files.add(await http.MultipartFile.fromPath('file', filePath));
+    if (journalId != null) {
+      request.fields['journalId'] = journalId.toString();
+    }
 
     final response = await request.send();
     final body = await response.stream.bytesToString();

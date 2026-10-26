@@ -496,6 +496,7 @@ const Map<String, String> stringsEn = {
   'canvas.estimatingLocation': '🔍 Estimating location...',
   'canvas.locationAdded': '📍 "{name}" added',
   'canvas.locationEstimateFailed': "Couldn't estimate the location, try again.",
+  'canvas.locationUnknown': "🤔 Couldn't identify a specific location for this photo.",
   'canvas.addText.title': 'Memory / Note',
   'canvas.addText.sizeLabel': 'Size: {size}px',
   'canvas.addText.hint': 'What you feel right now, the scent of the place, a note you took...',
