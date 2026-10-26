@@ -6,6 +6,7 @@ import '../models/journal.dart';
 import '../config/api_config.dart';
 import 'storage_service.dart';
 import 'subscription_service.dart';
+import 'api_exception.dart';
 
 class JournalService {
   static const String baseUrl = ApiConfig.baseUrl;
@@ -20,7 +21,7 @@ class JournalService {
       final List<dynamic> data = jsonDecode(response.body);
       return data.map((json) => Journal.fromJson(json)).toList();
     } else {
-      throw Exception('Ajandalar yüklenemedi');
+      throw const ApiException('apiError.journalsLoadFailed');
     }
   }
 
@@ -39,7 +40,7 @@ class JournalService {
       final List<dynamic> data = jsonDecode(response.body);
       return data.map((json) => Journal.fromJson(json)).toList();
     } else {
-      throw Exception('Ajandalar yüklenemedi');
+      throw const ApiException('apiError.journalsLoadFailed');
     }
   }
 
@@ -53,7 +54,7 @@ class JournalService {
       final List<dynamic> data = jsonDecode(response.body);
       return data.map((json) => Journal.fromJson(json)).toList();
     } else {
-      throw Exception('Kaydedilen ajandalar yüklenemedi');
+      throw const ApiException('apiError.savedJournalsLoadFailed');
     }
   }
 
@@ -67,7 +68,7 @@ class JournalService {
       final data = jsonDecode(response.body);
       return data['saved'];
     } else {
-      throw Exception('İşlem başarısız');
+      throw const ApiException('apiError.actionFailed');
     }
   }
 
@@ -105,7 +106,7 @@ class JournalService {
     if (response.statusCode == 200) {
       return jsonDecode(body)['coverImageUrl'];
     } else {
-      throw Exception('Kapak fotoğrafı yüklenemedi');
+      throw const ApiException('apiError.coverUploadFailed');
     }
   }
 
@@ -122,7 +123,7 @@ class JournalService {
         jsonDecode(response.body)['error'] == 'JOURNAL_LIMIT_REACHED') {
       throw const LimitReachedException('journal');
     } else {
-      throw Exception('Ajanda oluşturulamadı');
+      throw const ApiException('apiError.journalCreateFailed');
     }
   }
 
@@ -136,7 +137,7 @@ class JournalService {
     if (response.statusCode == 200) {
       return Journal.fromJson(jsonDecode(response.body));
     } else {
-      throw Exception('Ajanda güncellenemedi');
+      throw const ApiException('apiError.journalUpdateFailed');
     }
   }
 

@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import '../theme/app_theme.dart';
 import '../config/api_config.dart';
 import '../widgets/error_view.dart';
+import '../l10n/app_strings.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
   const ForgotPasswordScreen({super.key});
@@ -42,7 +43,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
 
   Future<void> _sendCode() async {
     if (_emailController.text.trim().isEmpty) {
-      setState(() => _errorMessage = 'E-posta adresinizi girin');
+      setState(() => _errorMessage = context.tr('forgotPassword.emptyEmailError'));
       return;
     }
     setState(() { _isLoading = true; _errorMessage = null; });
@@ -56,10 +57,12 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
         setState(() => _step = 2);
       } else {
         final data = jsonDecode(response.body);
-        setState(() => _errorMessage = data['error'] ?? 'Bir hata oluştu');
+        setState(() => _errorMessage = context.trAuthErrorCode(
+            data['error'] as String?,
+            fallbackKey: 'forgotPassword.genericServerError'));
       }
     } catch (e) {
-      setState(() => _errorMessage = 'Bağlantı hatası');
+      setState(() => _errorMessage = context.tr('forgotPassword.connectionError'));
     } finally {
       setState(() => _isLoading = false);
     }
@@ -67,7 +70,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
 
   Future<void> _verifyCode() async {
     if (_code.length < 6) {
-      setState(() => _errorMessage = '6 haneli kodu girin');
+      setState(() => _errorMessage = context.tr('forgotPassword.incompleteCodeError'));
       return;
     }
     setState(() { _isLoading = true; _errorMessage = null; });
@@ -84,10 +87,12 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
         setState(() => _step = 3);
       } else {
         final data = jsonDecode(response.body);
-        setState(() => _errorMessage = data['error'] ?? 'Geçersiz kod');
+        setState(() => _errorMessage = context.trAuthErrorCode(
+            data['error'] as String?,
+            fallbackKey: 'forgotPassword.invalidCodeError'));
       }
     } catch (e) {
-      setState(() => _errorMessage = 'Bağlantı hatası');
+      setState(() => _errorMessage = context.tr('forgotPassword.connectionError'));
     } finally {
       setState(() => _isLoading = false);
     }
@@ -95,11 +100,11 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
 
   Future<void> _resetPassword() async {
     if (_newPasswordController.text.length < 6) {
-      setState(() => _errorMessage = 'Şifre en az 6 karakter olmalı');
+      setState(() => _errorMessage = context.tr('forgotPassword.passwordTooShortError'));
       return;
     }
     if (_newPasswordController.text != _confirmPasswordController.text) {
-      setState(() => _errorMessage = 'Şifreler eşleşmiyor');
+      setState(() => _errorMessage = context.tr('forgotPassword.passwordMismatchError'));
       return;
     }
     setState(() { _isLoading = true; _errorMessage = null; });
@@ -115,16 +120,19 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
       );
       if (response.statusCode == 200) {
         if (mounted) {
+          final message = context.tr('forgotPassword.successMessage');
           Navigator.pop(context);
-          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-              content: Text('Şifreniz başarıyla güncellendi!')));
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text(message)));
         }
       } else {
         final data = jsonDecode(response.body);
-        setState(() => _errorMessage = data['error'] ?? 'Bir hata oluştu');
+        setState(() => _errorMessage = context.trAuthErrorCode(
+            data['error'] as String?,
+            fallbackKey: 'forgotPassword.genericServerError'));
       }
     } catch (e) {
-      setState(() => _errorMessage = 'Bağlantı hatası');
+      setState(() => _errorMessage = context.tr('forgotPassword.connectionError'));
     } finally {
       setState(() => _isLoading = false);
     }
@@ -183,17 +191,19 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                 ),
                 const SizedBox(height: 20),
                 Text(
-                    _step == 1 ? 'Şifreni sıfırla'
-                        : _step == 2 ? 'Kodu gir' : 'Yeni şifre',
+                    _step == 1 ? context.tr('forgotPassword.step1Title')
+                        : _step == 2 ? context.tr('forgotPassword.step2Title')
+                        : context.tr('forgotPassword.step3Title'),
                     style: GoogleFonts.playfairDisplay(
                         fontSize: 26, fontWeight: FontWeight.w900,
                         color: Colors.white, letterSpacing: -0.5)),
                 const SizedBox(height: 4),
                 Text(
-                    _step == 1 ? 'E-posta adresini gir, kod gönderelim'
+                    _step == 1 ? context.tr('forgotPassword.step1Subtitle')
                         : _step == 2
-                        ? '${_emailController.text} adresine gönderdik'
-                        : 'Yeni şifreni belirle',
+                        ? context.trf('forgotPassword.step2Subtitle',
+                            {'email': _emailController.text})
+                        : context.tr('forgotPassword.step3Subtitle'),
                     style: AppTheme.sansBody(
                         size: 13, color: Colors.white.withOpacity(0.8))),
               ]),
@@ -222,11 +232,11 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
       key: const ValueKey('email'),
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildLabel('E-posta adresi'),
+        _buildLabel(context.tr('forgotPassword.emailLabel')),
         const SizedBox(height: 8),
         _buildTextField(
           controller: _emailController,
-          hint: 'ornek@mail.com',
+          hint: context.tr('forgotPassword.emailHint'),
           keyboardType: TextInputType.emailAddress,
           prefixIcon: Icons.mail_outline_rounded,
           autofocus: true,
@@ -236,7 +246,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
           ErrorCard(message: _errorMessage),
         ],
         const SizedBox(height: 24),
-        _buildButton('Kod gönder', _isLoading ? null : _sendCode),
+        _buildButton(context.tr('forgotPassword.sendCodeButton'), _isLoading ? null : _sendCode),
       ],
     );
   }
@@ -290,12 +300,12 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
           ErrorCard(message: _errorMessage),
         ],
         const SizedBox(height: 24),
-        _buildButton('Doğrula', _isLoading ? null : _verifyCode),
+        _buildButton(context.tr('forgotPassword.verifyButton'), _isLoading ? null : _verifyCode),
         const SizedBox(height: 12),
         Center(
           child: TextButton(
             onPressed: _sendCode,
-            child: Text('Kodu tekrar gönder', style: AppTheme.sansBody(
+            child: Text(context.tr('forgotPassword.resendCode'), style: AppTheme.sansBody(
                 size: 13, weight: FontWeight.w800,
                 color: AppTheme.terracotta)),
           ),
@@ -309,11 +319,11 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
       key: const ValueKey('password'),
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildLabel('Yeni şifre'),
+        _buildLabel(context.tr('forgotPassword.newPasswordLabel')),
         const SizedBox(height: 8),
         _buildTextField(
           controller: _newPasswordController,
-          hint: 'En az 6 karakter',
+          hint: context.tr('forgotPassword.newPasswordHint'),
           obscure: _obscurePassword,
           prefixIcon: Icons.lock_outline_rounded,
           suffixIcon: IconButton(
@@ -327,11 +337,11 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
           ),
         ),
         const SizedBox(height: 16),
-        _buildLabel('Şifre tekrar'),
+        _buildLabel(context.tr('forgotPassword.confirmPasswordLabel')),
         const SizedBox(height: 8),
         _buildTextField(
           controller: _confirmPasswordController,
-          hint: 'Şifreni tekrar gir',
+          hint: context.tr('forgotPassword.confirmPasswordHint'),
           obscure: _obscureConfirm,
           prefixIcon: Icons.lock_outline_rounded,
           suffixIcon: IconButton(
@@ -350,7 +360,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
         ],
         const SizedBox(height: 24),
         _buildButton(
-            'Şifremi güncelle', _isLoading ? null : _resetPassword),
+            context.tr('forgotPassword.updateButton'), _isLoading ? null : _resetPassword),
       ],
     );
   }

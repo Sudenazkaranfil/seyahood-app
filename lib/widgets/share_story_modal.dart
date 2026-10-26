@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:path_provider/path_provider.dart';
 import '../screens/premium_screen.dart';
+import '../l10n/app_strings.dart';
 
 /// Kart Şablon Tipleri
 enum CardTemplate {
@@ -145,10 +146,10 @@ class _ShareStoryModalState extends State<ShareStoryModal> {
               child: const Icon(Icons.workspace_premium_rounded, color: Color(0xFFFFD5C2), size: 30),
             ),
             const SizedBox(height: 16),
-            const Text(
-              'Seyahood Gezgin Kulübü (PRO)',
+            Text(
+              context.tr('share.proDialog.title'),
               textAlign: TextAlign.center,
-              style: TextStyle(
+              style: const TextStyle(
                 fontFamily: 'Serif',
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
@@ -156,10 +157,10 @@ class _ShareStoryModalState extends State<ShareStoryModal> {
               ),
             ),
             const SizedBox(height: 8),
-            const Text(
-              '35mm Film Şeridi, Gazete Küpürü ve Filigransız paylaşım için Gezgin Kulübü üyesi olun.',
+            Text(
+              context.tr('share.proDialog.content'),
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 12, color: Color(0xFF7C6A59), height: 1.4),
+              style: const TextStyle(fontSize: 12, color: Color(0xFF7C6A59), height: 1.4),
             ),
             const SizedBox(height: 20),
             Container(
@@ -170,14 +171,14 @@ class _ShareStoryModalState extends State<ShareStoryModal> {
                 border: Border.all(color: const Color(0xFFEADBCE)),
               ),
               child: Column(
-                children: const [
-                  _ProFeatureRow(icon: Icons.check_circle_rounded, text: 'Tamamen Filigransız Temiz Çıktı'),
-                  SizedBox(height: 8),
-                  _ProFeatureRow(icon: Icons.movie_filter_rounded, text: '35mm Analog Film Şeridi'),
-                  SizedBox(height: 8),
-                  _ProFeatureRow(icon: Icons.newspaper_rounded, text: 'The Chronicle Gazete Manşeti'),
-                  SizedBox(height: 8),
-                  _ProFeatureRow(icon: Icons.approval_rounded, text: 'Konsolosluk Pasaport Damgası'),
+                children: [
+                  _ProFeatureRow(icon: Icons.check_circle_rounded, text: context.tr('share.proDialog.feature1')),
+                  const SizedBox(height: 8),
+                  _ProFeatureRow(icon: Icons.movie_filter_rounded, text: context.tr('share.proDialog.feature2')),
+                  const SizedBox(height: 8),
+                  _ProFeatureRow(icon: Icons.newspaper_rounded, text: context.tr('share.proDialog.feature3')),
+                  const SizedBox(height: 8),
+                  _ProFeatureRow(icon: Icons.approval_rounded, text: context.tr('share.proDialog.feature4')),
                 ],
               ),
             ),
@@ -196,9 +197,9 @@ class _ShareStoryModalState extends State<ShareStoryModal> {
                   Navigator.push(context, MaterialPageRoute(
                       builder: (context) => const PremiumScreen()));
                 },
-                child: const Text(
-                  "PRO'ya Geç",
-                  style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 13),
+                child: Text(
+                  context.tr('common.goProAction'),
+                  style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 13),
                 ),
               ),
             ),
@@ -230,13 +231,16 @@ class _ShareStoryModalState extends State<ShareStoryModal> {
       await file.writeAsBytes(bytes);
       await Share.shareXFiles(
         [XFile(file.path)],
-        text: '✈️ ${widget.journalTitle} — ${widget.locationName}\n'
-            '@${widget.username} · Seyahood',
+        text: context.trf('share.shareText', {
+          'title': widget.journalTitle,
+          'location': widget.locationName,
+          'username': widget.username,
+        }),
       );
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Paylaşılamadı, tekrar dene!')),
+          SnackBar(content: Text(context.tr('share.shareFailed'))),
         );
       }
     } finally {
@@ -273,9 +277,9 @@ class _ShareStoryModalState extends State<ShareStoryModal> {
                       child: const Icon(Icons.share_rounded, color: Colors.white, size: 16),
                     ),
                     const SizedBox(width: 8),
-                    const Text(
-                      'Paylaşım Stüdyosu',
-                      style: TextStyle(
+                    Text(
+                      context.tr('share.studioTitle'),
+                      style: const TextStyle(
                         fontFamily: 'Serif',
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
@@ -307,7 +311,8 @@ class _ShareStoryModalState extends State<ShareStoryModal> {
                         ),
                         const SizedBox(width: 4),
                         Text(
-                          _isPro ? 'PRO Aktif' : (_isPlus ? 'Plus Aktif' : 'Ücretsiz Mod'),
+                          _isPro ? context.tr('share.planChip.pro')
+                              : (_isPlus ? context.tr('share.planChip.plus') : context.tr('share.planChip.free')),
                           style: TextStyle(
                             fontSize: 11,
                             fontWeight: FontWeight.bold,
@@ -341,9 +346,9 @@ class _ShareStoryModalState extends State<ShareStoryModal> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            const Text(
-                              'CANLI KART ÖNİZLEME',
-                              style: TextStyle(
+                            Text(
+                              context.tr('share.livePreview'),
+                              style: const TextStyle(
                                 fontSize: 10,
                                 fontWeight: FontWeight.bold,
                                 letterSpacing: 1.2,
@@ -358,10 +363,10 @@ class _ShareStoryModalState extends State<ShareStoryModal> {
                               ),
                               child: Text(
                                 _format == ShareFormat.story
-                                    ? '9:16 Hikaye'
+                                    ? context.tr('share.formatLabel.story')
                                     : _format == ShareFormat.square
-                                    ? '1:1 Kare'
-                                    : '3:4 Portre',
+                                    ? context.tr('share.formatLabel.square')
+                                    : context.tr('share.formatLabel.portrait'),
                                 style: const TextStyle(
                                   fontSize: 10,
                                   fontWeight: FontWeight.bold,
@@ -381,9 +386,9 @@ class _ShareStoryModalState extends State<ShareStoryModal> {
                   ),
                   const SizedBox(height: 20),
 
-                  const Text(
-                    '1. PAYLAŞIM FORMATI',
-                    style: TextStyle(
+                  Text(
+                    context.tr('share.section.format'),
+                    style: const TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.bold,
                       letterSpacing: 1,
@@ -393,11 +398,17 @@ class _ShareStoryModalState extends State<ShareStoryModal> {
                   const SizedBox(height: 8),
                   Row(
                     children: [
-                      _buildFormatBtn(ShareFormat.story, '📱 9:16', 'Hikaye'),
+                      _buildFormatBtn(ShareFormat.story,
+                          context.tr('share.format.story.title'),
+                          context.tr('share.format.story.subtitle')),
                       const SizedBox(width: 8),
-                      _buildFormatBtn(ShareFormat.square, '🖼️ 1:1', 'Kare Post'),
+                      _buildFormatBtn(ShareFormat.square,
+                          context.tr('share.format.square.title'),
+                          context.tr('share.format.square.subtitle')),
                       const SizedBox(width: 8),
-                      _buildFormatBtn(ShareFormat.portrait, '📸 3:4', 'Portre'),
+                      _buildFormatBtn(ShareFormat.portrait,
+                          context.tr('share.format.portrait.title'),
+                          context.tr('share.format.portrait.subtitle')),
                     ],
                   ),
                   const SizedBox(height: 20),
@@ -405,9 +416,9 @@ class _ShareStoryModalState extends State<ShareStoryModal> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text(
-                        '2. KART ŞABLONU (6 SEÇENEK)',
-                        style: TextStyle(
+                      Text(
+                        context.tr('share.section.template'),
+                        style: const TextStyle(
                           fontSize: 11,
                           fontWeight: FontWeight.bold,
                           letterSpacing: 1,
@@ -415,7 +426,9 @@ class _ShareStoryModalState extends State<ShareStoryModal> {
                         ),
                       ),
                       Text(
-                        _isTemplatePro(_selectedTemplate) ? '👑 PRO Tasarım' : '🌿 Ücretsiz',
+                        _isTemplatePro(_selectedTemplate)
+                            ? context.tr('share.templateProBadge')
+                            : context.tr('share.templateFreeBadge'),
                         style: const TextStyle(
                           fontSize: 11,
                           fontWeight: FontWeight.bold,
@@ -431,47 +444,47 @@ class _ShareStoryModalState extends State<ShareStoryModal> {
                     children: [
                       _buildTemplateCard(
                         template: CardTemplate.classicParchment,
-                        title: 'Klasik Parşömen',
-                        subtitle: 'Defter sayfası',
+                        title: context.tr('share.template.classicParchment.title'),
+                        subtitle: context.tr('share.template.classicParchment.subtitle'),
                         isPro: false,
                       ),
                       _buildTemplateCard(
                         template: CardTemplate.polaroidMinimal,
-                        title: 'Polaroid Çerçeve',
-                        subtitle: 'Minimalist anı',
+                        title: context.tr('share.template.polaroidMinimal.title'),
+                        subtitle: context.tr('share.template.polaroidMinimal.subtitle'),
                         isPro: false,
                       ),
                       _buildTemplateCard(
                         template: CardTemplate.cityCollector,
-                        title: 'Koleksiyoner Şehir',
-                        subtitle: 'Rozet & edisyon',
+                        title: context.tr('share.template.cityCollector.title'),
+                        subtitle: context.tr('share.template.cityCollector.subtitle'),
                         isPro: false,
                       ),
                       _buildTemplateCard(
                         template: CardTemplate.filmStrip,
-                        title: '35mm Film Şeridi',
-                        subtitle: 'Sinematik negatif',
+                        title: context.tr('share.template.filmStrip.title'),
+                        subtitle: context.tr('share.template.filmStrip.subtitle'),
                         isPro: true,
                       ),
                       _buildTemplateCard(
                         template: CardTemplate.vintageGazette,
-                        title: 'Gazete Küpürü',
-                        subtitle: 'The Chronicle',
+                        title: context.tr('share.template.vintageGazette.title'),
+                        subtitle: context.tr('share.template.vintageGazette.subtitle'),
                         isPro: true,
                       ),
                       _buildTemplateCard(
                         template: CardTemplate.vintagePassport,
-                        title: 'Pasaport Damgası',
-                        subtitle: 'Konsolosluk vizesi',
+                        title: context.tr('share.template.vintagePassport.title'),
+                        subtitle: context.tr('share.template.vintagePassport.subtitle'),
                         isPro: true,
                       ),
                     ],
                   ),
                   const SizedBox(height: 20),
 
-                  const Text(
-                    '3. KART DETAYLARI',
-                    style: TextStyle(
+                  Text(
+                    context.tr('share.section.details'),
+                    style: const TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.bold,
                       letterSpacing: 1,
@@ -481,24 +494,24 @@ class _ShareStoryModalState extends State<ShareStoryModal> {
                   const SizedBox(height: 8),
                   _buildToggleTile(
                     icon: Icons.bookmark_added_rounded,
-                    title: 'Rozet & Seri Bilgileri',
+                    title: context.tr('share.toggle.badge.title'),
                     value: _showCollectorBadge,
                     onChanged: (val) => setState(() => _showCollectorBadge = val),
                   ),
                   const SizedBox(height: 6),
                   _buildToggleTile(
                     icon: Icons.location_on_rounded,
-                    title: 'Şehir & Konum Başlığı',
+                    title: context.tr('share.toggle.location.title'),
                     value: _showLocationPill,
                     onChanged: (val) => setState(() => _showLocationPill = val),
                   ),
                   const SizedBox(height: 6),
                   _buildToggleTile(
                     icon: Icons.auto_awesome_rounded,
-                    title: 'Seyahood Filigranı',
+                    title: context.tr('share.toggle.watermark.title'),
                     subtitle: (_isPro || _isPlus)
-                        ? 'Plus/PRO ile kaldırılabilir'
-                        : 'Kaldırmak için Plus veya PRO gereklidir 🔒',
+                        ? context.tr('share.toggle.watermark.removable')
+                        : context.tr('share.toggle.watermark.locked'),
                     value: _showWatermark,
                     isLocked: !(_isPro || _isPlus),
                     onChanged: (val) {
@@ -541,10 +554,10 @@ class _ShareStoryModalState extends State<ShareStoryModal> {
                           : const Icon(Icons.download_rounded, color: Colors.white, size: 20),
                       label: Text(
                         _isProcessing
-                            ? 'Kart Hazırlanıyor...'
+                            ? context.tr('share.downloadButton.preparing')
                             : _isTemplatePro(_selectedTemplate) && !_isPro
-                            ? 'PRO ile Paylaş & İndir'
-                            : 'Seyahat Kartını İndir / Paylaş',
+                            ? context.tr('share.downloadButton.proShare')
+                            : context.tr('share.downloadButton.download'),
                         style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 13),
                       ),
                     ),
@@ -554,10 +567,13 @@ class _ShareStoryModalState extends State<ShareStoryModal> {
                 IconButton(
                   onPressed: () {
                     Clipboard.setData(ClipboardData(
-                      text: '✈️ ${widget.journalTitle} - ${widget.locationName} | Seyahood Seyahat Günlüğü',
+                      text: context.trf('share.clipboardText', {
+                        'title': widget.journalTitle,
+                        'location': widget.locationName,
+                      }),
                     ));
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Bağlantı panoya kopyalandı!')),
+                      SnackBar(content: Text(context.tr('share.linkCopied'))),
                     );
                   },
                   icon: const Icon(Icons.copy_rounded, color: Color(0xFF7C6A59)),
@@ -650,11 +666,11 @@ class _ShareStoryModalState extends State<ShareStoryModal> {
                   const SizedBox(width: 6),
                   Text(
                     _selectedTemplate == CardTemplate.filmStrip
-                        ? '35MM KODACHROME'
+                        ? context.tr('share.cardHeader.filmStrip')
                         : _selectedTemplate == CardTemplate.vintageGazette
-                        ? 'THE WANDERLUST'
+                        ? context.tr('share.cardHeader.vintageGazette')
                         : _selectedTemplate == CardTemplate.cityCollector
-                        ? 'ŞEHİR KOLEKSİYONU'
+                        ? context.tr('share.cardHeader.cityCollector')
                         : 'Seyahood',
                     style: TextStyle(
                       fontSize: 10,
@@ -670,7 +686,7 @@ class _ShareStoryModalState extends State<ShareStoryModal> {
                 ],
               ),
               Text(
-                'S.${widget.pageIndex + 1}',
+                context.trf('share.pageLabel', {'number': (widget.pageIndex + 1).toString()}),
                 style: TextStyle(fontSize: 9, fontWeight: FontWeight.bold, color: textColor.withOpacity(0.6)),
               ),
             ],
@@ -687,10 +703,10 @@ class _ShareStoryModalState extends State<ShareStoryModal> {
                 color: const Color(0xFFC46B4E),
                 borderRadius: BorderRadius.circular(6),
               ),
-              child: const Center(
+              child: Center(
                 child: Text(
-                  '✈️  Seyahood Seyahat Günlüğü',
-                  style: TextStyle(color: Colors.white, fontSize: 8, fontWeight: FontWeight.bold),
+                  context.tr('share.watermarkText'),
+                  style: const TextStyle(color: Colors.white, fontSize: 8, fontWeight: FontWeight.bold),
                 ),
               ),
             ),
@@ -810,7 +826,7 @@ class _ShareStoryModalState extends State<ShareStoryModal> {
                   Expanded(
                     flex: 5,
                     child: Text(
-                      widget.textContent ?? 'Yeni rotalar ve unutulmaz hatıralar.',
+                      widget.textContent ?? context.tr('share.gazetteFallbackText'),
                       maxLines: 6,
                       overflow: TextOverflow.ellipsis,
                       style: const TextStyle(
@@ -889,9 +905,9 @@ class _ShareStoryModalState extends State<ShareStoryModal> {
                     color: const Color(0xFFD4AF37),
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  child: const Text(
-                    '★ ROZET',
-                    style: TextStyle(color: Color(0xFF18110D), fontSize: 7, fontWeight: FontWeight.bold),
+                  child: Text(
+                    context.tr('share.collectorBadge'),
+                    style: const TextStyle(color: Color(0xFF18110D), fontSize: 7, fontWeight: FontWeight.bold),
                   ),
                 ),
             ],

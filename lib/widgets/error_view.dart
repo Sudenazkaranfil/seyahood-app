@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../theme/app_theme.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../l10n/app_strings.dart';
 
 class ErrorView extends StatelessWidget {
   final String? message;
@@ -16,12 +17,14 @@ class ErrorView extends StatelessWidget {
   });
 
   void _sendFeedback(BuildContext context) async {
+    final body = context.trf('errorView.feedbackEmailBody',
+        {'message': message ?? context.tr('errorView.unknownError')});
     final uri = Uri(
       scheme: 'mailto',
       path: 'destek@seyahood.app',
       queryParameters: {
-        'subject': 'Seyahood - Hata Bildirimi',
-        'body': 'Merhaba,\n\nUygulama kullanırken şu sorunla karşılaştım:\n\n[Lütfen sorunu açıklayın]\n\nHata mesajı: ${message ?? 'Bilinmiyor'}',
+        'subject': context.tr('errorView.feedbackEmailSubject'),
+        'body': body,
       },
     );
     if (await canLaunchUrl(uri)) {
@@ -30,7 +33,7 @@ class ErrorView extends StatelessWidget {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: const Text('Mail uygulaması bulunamadı'),
+            content: Text(context.tr('errorView.noMailApp')),
             backgroundColor: AppTheme.navDark,
             behavior: SnackBarBehavior.floating,
             shape: RoundedRectangleBorder(
@@ -61,13 +64,13 @@ class ErrorView extends StatelessWidget {
           ),
           const SizedBox(height: 20),
 
-          Text('Bir şeyler ters gitti',
+          Text(context.tr('errorView.title'),
               style: GoogleFonts.playfairDisplay(
                   fontSize: 20, fontWeight: FontWeight.w800,
                   color: AppTheme.textPrimary)),
           const SizedBox(height: 8),
           Text(
-              message ?? 'Bağlantı kurulamadı. Lütfen internet bağlantını kontrol et.',
+              message ?? context.tr('errorView.defaultMessage'),
               textAlign: TextAlign.center,
               style: AppTheme.sansBody(
                   size: 13, color: AppTheme.textSecondary)),
@@ -80,7 +83,7 @@ class ErrorView extends StatelessWidget {
               child: ElevatedButton.icon(
                 onPressed: onRetry,
                 icon: const Icon(Icons.refresh_rounded, size: 18),
-                label: const Text('Tekrar Dene'),
+                label: Text(context.tr('errorView.retryButton')),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppTheme.navDark,
                   foregroundColor: Colors.white,
@@ -102,7 +105,7 @@ class ErrorView extends StatelessWidget {
               child: OutlinedButton.icon(
                 onPressed: () => _sendFeedback(context),
                 icon: const Icon(Icons.mail_outline_rounded, size: 18),
-                label: const Text('Geri Bildirim Gönder'),
+                label: Text(context.tr('errorView.sendFeedbackButton')),
                 style: OutlinedButton.styleFrom(
                   foregroundColor: AppTheme.terracotta,
                   padding: const EdgeInsets.symmetric(vertical: 14),
@@ -128,8 +131,9 @@ class ErrorCard extends StatelessWidget {
       scheme: 'mailto',
       path: 'destek@seyahood.app',
       queryParameters: {
-        'subject': 'Seyahood - Hata Bildirimi',
-        'body': 'Hata: ${message ?? 'Bilinmiyor'}',
+        'subject': context.tr('errorView.feedbackEmailSubject'),
+        'body': context.trf('errorView.feedbackEmailBodyShort',
+            {'message': message ?? context.tr('errorView.unknownError')}),
       },
     );
     if (await canLaunchUrl(uri)) {
@@ -153,7 +157,7 @@ class ErrorCard extends StatelessWidget {
               color: Color(0xFFD9534F), size: 18),
           const SizedBox(width: 8),
           Expanded(child: Text(
-              message ?? 'Bir hata oluştu, lütfen tekrar dene.',
+              message ?? context.tr('errorView.cardDefaultMessage'),
               style: const TextStyle(color: Color(0xFFD9534F),
                   fontSize: 13, fontWeight: FontWeight.w600))),
         ]),
@@ -169,8 +173,8 @@ class ErrorCard extends StatelessWidget {
                   color: const Color(0xFFD9534F),
                   borderRadius: BorderRadius.circular(10),
                 ),
-                child: const Text('Tekrar Dene',
-                    style: TextStyle(color: Colors.white,
+                child: Text(context.tr('errorView.retryButton'),
+                    style: const TextStyle(color: Colors.white,
                         fontSize: 11, fontWeight: FontWeight.w700)),
               ),
             ),
@@ -186,12 +190,12 @@ class ErrorCard extends StatelessWidget {
                 borderRadius: BorderRadius.circular(10),
                 border: Border.all(color: const Color(0xFFFBD5D5)),
               ),
-              child: Row(mainAxisSize: MainAxisSize.min, children: const [
-                Icon(Icons.mail_outline_rounded,
+              child: Row(mainAxisSize: MainAxisSize.min, children: [
+                const Icon(Icons.mail_outline_rounded,
                     size: 13, color: Color(0xFFD9534F)),
-                SizedBox(width: 4),
-                Text('Geri Bildirim',
-                    style: TextStyle(color: Color(0xFFD9534F),
+                const SizedBox(width: 4),
+                Text(context.tr('errorView.feedbackLabel'),
+                    style: const TextStyle(color: Color(0xFFD9534F),
                         fontSize: 11, fontWeight: FontWeight.w700)),
               ]),
             ),

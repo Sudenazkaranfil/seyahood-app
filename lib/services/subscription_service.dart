@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import '../config/api_config.dart';
 import 'storage_service.dart';
+import 'api_exception.dart';
 
 /// Backend'in JOURNAL_LIMIT_REACHED / PAGE_LIMIT_REACHED hatalarına karşılık
 /// gelir; UI bunu yakalayıp genel bir hata yerine premium yönlendirmesi
@@ -83,16 +84,16 @@ class SubscriptionService extends ChangeNotifier {
       notifyListeners();
       return _status!;
     }
-    throw Exception('Abonelik bilgisi alınamadı');
+    throw const ApiException('apiError.subscriptionStatusFailed');
   }
 
-  static const Map<String, String> _redeemErrorMessages = {
-    'CODE_NOT_FOUND': 'Böyle bir kod bulunamadı',
-    'CODE_INACTIVE': 'Bu kod artık aktif değil',
-    'CODE_EXPIRED': 'Bu kodun süresi dolmuş',
-    'CODE_LIMIT_REACHED': 'Bu kod kullanım limitine ulaşmış',
-    'CODE_ALREADY_USED': 'Bu kodu daha önce kullandın',
-    'CODE_REQUIRED': 'Lütfen bir kod gir',
+  static const Map<String, String> _redeemErrorKeys = {
+    'CODE_NOT_FOUND': 'apiError.codeNotFound',
+    'CODE_INACTIVE': 'apiError.codeInactive',
+    'CODE_EXPIRED': 'apiError.codeExpired',
+    'CODE_LIMIT_REACHED': 'apiError.codeLimitReached',
+    'CODE_ALREADY_USED': 'apiError.codeAlreadyUsed',
+    'CODE_REQUIRED': 'apiError.codeRequired',
   };
 
   /// Bir promosyon kodunu kullanıcı adına kullanır; başarılı olursa
@@ -112,7 +113,7 @@ class SubscriptionService extends ChangeNotifier {
       return getStatus(forceRefresh: true);
     }
     final error = jsonDecode(response.body)['error'] as String?;
-    throw Exception(_redeemErrorMessages[error] ?? 'Kod kullanılamadı');
+    throw ApiException(_redeemErrorKeys[error] ?? 'apiError.codeRedeemFailed');
   }
 
   Future<void> registerCustomer(String customerId) async {

@@ -5,6 +5,7 @@ import 'package:exif_reader/exif_reader.dart';
 import 'dart:convert';
 import '../config/api_config.dart';
 import 'storage_service.dart';
+import 'api_exception.dart';
 
 class LocationEstimationException implements Exception {
   final String code;
@@ -12,10 +13,13 @@ class LocationEstimationException implements Exception {
 }
 
 class LocationGuess {
-  final String name;
+  final String? name;
   final double? lat;
   final double? lng;
   LocationGuess({required this.name, this.lat, this.lng});
+
+  /// AI, fotoğrafta konumu belirleyecek görsel ipucu bulamadığında true olur.
+  bool get isUnknown => name == null;
 }
 
 class PhotoService {
@@ -45,7 +49,7 @@ class PhotoService {
       final data = jsonDecode(responseBody);
       return data['url'];
     } else {
-      throw Exception('Fotoğraf yüklenemedi');
+      throw const ApiException('apiError.photoUploadFailed');
     }
   }
 
@@ -60,10 +64,10 @@ class PhotoService {
       final data = jsonDecode(body);
       return data['secure_url'];
     }
-    throw Exception('Cloudinary yükleme başarısız');
+    throw const ApiException('apiError.cloudinaryUploadFailed');
   }
 
-  static Future<LocationGuess> estimateLocation(String filePath) async {
+  static Future<LocationGuess> estimateLocation(String filePath, {int? journalId}) async {
     final token = await StorageService.getToken();
     final request = http.MultipartRequest(
       'POST',
@@ -71,6 +75,9 @@ class PhotoService {
     );
     request.headers['Authorization'] = 'Bearer $token';
     request.files.add(await http.MultipartFile.fromPath('file', filePath));
+    if (journalId != null) {
+      request.fields['journalId'] = journalId.toString();
+    }
 
     final response = await request.send();
     final body = await response.stream.bytesToString();
@@ -121,11 +128,12 @@ class PhotoService {
   }
 
   /// Koordinatı Nominatim ile insan-okunur bir yer adına çevirir.
-  static Future<String?> reverseGeocode(double lat, double lng) async {
+  static Future<String?> reverseGeocode(double lat, double lng,
+      {String languageCode = 'tr'}) async {
     try {
       final response = await http.get(
         Uri.parse('https://nominatim.openstreetmap.org/reverse'
-            '?lat=$lat&lon=$lng&format=json&accept-language=tr'),
+            '?lat=$lat&lon=$lng&format=json&accept-language=$languageCode'),
         headers: {'User-Agent': 'Seyahood/1.0'},
       );
       if (response.statusCode != 200) return null;

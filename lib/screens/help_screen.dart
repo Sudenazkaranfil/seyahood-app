@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../theme/app_theme.dart';
+import '../l10n/app_strings.dart';
 
 class HelpScreen extends StatelessWidget {
   const HelpScreen({super.key});
@@ -38,11 +39,11 @@ class HelpScreen extends StatelessWidget {
                 const SizedBox(width: 8),
                 Column(crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Yardım & Destek',
+                      Text(context.tr('help.header.title'),
                           style: GoogleFonts.playfairDisplay(
                               fontSize: 17, fontWeight: FontWeight.w800,
                               color: Colors.white, letterSpacing: -0.3)),
-                      Text('Gezgin Kılavuzu & SSS',
+                      Text(context.tr('help.header.subtitle'),
                           style: AppTheme.sansBody(
                               size: 11, weight: FontWeight.w600,
                               color: AppTheme.terracotta)),
@@ -57,36 +58,26 @@ class HelpScreen extends StatelessWidget {
           child: ListView(
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
             children: [
-              _buildSection('Başlarken', Icons.explore_outlined, [
-                _buildFaq('Nasıl ajanda oluştururum?',
-                    'Ana ekranda "Anını Bırak" butonuna bas, ajanda adını ve gizlilik ayarını seç.'),
-                _buildFaq('Sayfama nasıl içerik eklerim?',
-                    'Ajandana gir, + butonuna bas. Fotoğraf, yazı, emoji, konum veya çizim ekleyebilirsin.'),
-                _buildFaq('Sayfamı nasıl kaydederim?',
-                    'Canvas editörde sağ üstteki "Kaydet" butonuna bas.'),
+              _buildSection(context.tr('help.section.gettingStarted'), Icons.explore_outlined, [
+                _buildFaq(context.tr('help.faq1.q'), context.tr('help.faq1.a')),
+                _buildFaq(context.tr('help.faq2.q'), context.tr('help.faq2.a')),
+                _buildFaq(context.tr('help.faq3.q'), context.tr('help.faq3.a')),
               ]),
               const SizedBox(height: 20),
-              _buildSection('Gizlilik & Paylaşım', Icons.lock_outline_rounded, [
-                _buildFaq('Ajandamı herkese açık yapabilir miyim?',
-                    'Evet! Ajandana gir, sağ üstteki üç nokta menüsünden "Herkese aç" seç.'),
-                _buildFaq('Özel ajandamı kimler görebilir?',
-                    'Özel ajandanı sadece sen görebilirsin.'),
-                _buildFaq('Herkese açık ajandamı kim görebilir?',
-                    'Herkese açık ajandalar Keşfet ekranında ve haritada görünür.'),
+              _buildSection(context.tr('help.section.privacySharing'), Icons.lock_outline_rounded, [
+                _buildFaq(context.tr('help.faq4.q'), context.tr('help.faq4.a')),
+                _buildFaq(context.tr('help.faq5.q'), context.tr('help.faq5.a')),
+                _buildFaq(context.tr('help.faq6.q'), context.tr('help.faq6.a')),
               ]),
               const SizedBox(height: 20),
-              _buildSection('Harita & Konum', Icons.map_outlined, [
-                _buildFaq('Haritada konumum neden görünmüyor?',
-                    'Sayfa eklerken konum eklediğinden emin ol. Konum olmadan haritada görünmez.'),
-                _buildFaq('Haritam ve Keşfet haritası arasındaki fark nedir?',
-                    'Haritam sadece senin konumlarını gösterir. Keşfet haritası herkese açık konumları gösterir.'),
+              _buildSection(context.tr('help.section.mapLocation'), Icons.map_outlined, [
+                _buildFaq(context.tr('help.faq7.q'), context.tr('help.faq7.a')),
+                _buildFaq(context.tr('help.faq8.q'), context.tr('help.faq8.a')),
               ]),
               const SizedBox(height: 20),
-              _buildSection('Hesap Ayarları', Icons.person_outline_rounded, [
-                _buildFaq('Şifremi nasıl değiştiririm?',
-                    'Giriş ekranında "Şifreni mi unuttun?" linkine tıkla, e-posta ile sıfırlayabilirsin.'),
-                _buildFaq('Hesabımı nasıl silebilirim?',
-                    'Hesap silme özelliği yakında eklenecek. Şimdilik destek için bize ulaşabilirsin.'),
+              _buildSection(context.tr('help.section.accountSettings'), Icons.person_outline_rounded, [
+                _buildFaq(context.tr('help.faq9.q'), context.tr('help.faq9.a')),
+                _buildFaq(context.tr('help.faq10.q'), context.tr('help.faq10.a')),
               ]),
               const SizedBox(height: 22),
 
@@ -118,11 +109,11 @@ class HelpScreen extends StatelessWidget {
                       Expanded(child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text('Bize Ulaşın', style: GoogleFonts.playfairDisplay(
+                            Text(context.tr('help.contact.title'), style: GoogleFonts.playfairDisplay(
                                 fontSize: 15, fontWeight: FontWeight.w800,
                                 color: AppTheme.textPrimary)),
                             const SizedBox(height: 4),
-                            Text('Sorunların, önerilerin veya yolculuk hikayelerin için:',
+                            Text(context.tr('help.contact.subtitle'),
                                 style: AppTheme.sansBody(
                                     size: 12, color: const Color(0xFF523F31))),
                             const SizedBox(height: 6),
@@ -143,7 +134,7 @@ class HelpScreen extends StatelessWidget {
                     Icon(Icons.shield_outlined,
                         size: 11, color: AppTheme.terracotta),
                     const SizedBox(width: 6),
-                    Text('YASAL & GÜVENCE',
+                    Text(context.tr('help.legalSection'),
                         style: AppTheme.sansBody(
                             size: 11, weight: FontWeight.w700,
                             color: AppTheme.terracotta)),
@@ -172,11 +163,11 @@ class HelpScreen extends StatelessWidget {
                         child: const Icon(Icons.shield_outlined,
                             color: AppTheme.terracotta, size: 20),
                       ),
-                      title: Text('Gizlilik Politikası',
+                      title: Text(context.tr('help.privacyPolicy.title'),
                           style: AppTheme.sansBody(
                               size: 14, weight: FontWeight.w700,
                               color: AppTheme.textPrimary)),
-                      subtitle: Text('Kişisel veri koruma ve saklama kuralları',
+                      subtitle: Text(context.tr('help.privacyPolicy.subtitle'),
                           style: AppTheme.sansBody(
                               size: 11, color: AppTheme.textSecondary)),
                       trailing: Icon(Icons.arrow_forward_ios_rounded,

@@ -14,6 +14,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../widgets/skeleton_loader.dart';
 import '../widgets/error_view.dart';
 import '../widgets/share_story_modal.dart';
+import '../l10n/app_strings.dart';
 
 class JournalDetailScreen extends StatefulWidget {
   final Journal journal;
@@ -99,10 +100,11 @@ class _JournalDetailScreenState extends State<JournalDetailScreen> {
       final url = await JournalService.uploadCover(widget.journal.id, savedFile.path);
       setState(() => _coverImageUrl = url);
       if (mounted) ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Kapak fotoğrafı güncellendi!')));
+          SnackBar(content: Text(context.tr('journal.coverUpdated'))));
     } catch (e) {
       if (mounted) ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Kapak fotoğrafı yüklenemedi: $e')));
+          SnackBar(content: Text(context.trf('journal.coverUploadFailed',
+              {'error': context.trError(e)}))));
     }
   }
 
@@ -112,16 +114,16 @@ class _JournalDetailScreenState extends State<JournalDetailScreen> {
       builder: (context) => AlertDialog(
         backgroundColor: AppTheme.background,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-        title: Text('Sayfayı sil',
+        title: Text(context.tr('journal.deletePage.title'),
             style: GoogleFonts.playfairDisplay(
                 fontSize: 18, fontWeight: FontWeight.w700,
                 color: AppTheme.textPrimary)),
-        content: Text('Bu sayfa ve içerisindeki anılar kalıcı olarak silinecek.',
+        content: Text(context.tr('journal.deletePage.content'),
             style: AppTheme.sansBody(size: 14, color: AppTheme.textSecondary)),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: Text('İptal',
+            child: Text(context.tr('journal.deletePage.cancel'),
                 style: AppTheme.sansBody(
                     color: AppTheme.textSecondary, weight: FontWeight.w600)),
           ),
@@ -133,8 +135,8 @@ class _JournalDetailScreenState extends State<JournalDetailScreen> {
                 elevation: 0,
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(14))),
-            child: const Text('Sil',
-                style: TextStyle(fontWeight: FontWeight.w700)),
+            child: Text(context.tr('journal.deletePage.confirm'),
+                style: const TextStyle(fontWeight: FontWeight.w700)),
           ),
         ],
       ),
@@ -165,13 +167,13 @@ class _JournalDetailScreenState extends State<JournalDetailScreen> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
             content: Text(newVisibility == 'PUBLIC'
-                ? 'Ajanda herkese açık yapıldı 🌍'
-                : 'Ajanda gizliye alındı 🔒')));
+                ? context.tr('journal.madePublic')
+                : context.tr('journal.madePrivate'))));
         Navigator.pop(context, true);
       }
     } catch (e) {
       if (mounted) ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Güncellenemedi, tekrar dene!')));
+          SnackBar(content: Text(context.tr('journal.updateFailed'))));
     }
   }
 
@@ -272,7 +274,9 @@ class _JournalDetailScreenState extends State<JournalDetailScreen> {
                           ),
                         ),
                         child: Text(
-                          widget.journal.visibility == 'PUBLIC' ? 'Açık' : 'Özel',
+                          widget.journal.visibility == 'PUBLIC'
+                              ? context.tr('home.visibility.publicShort')
+                              : context.tr('home.visibility.privateShort'),
                           style: TextStyle(
                               fontSize: 9, fontWeight: FontWeight.w700,
                               color: widget.journal.visibility == 'PUBLIC'
@@ -281,7 +285,7 @@ class _JournalDetailScreenState extends State<JournalDetailScreen> {
                         ),
                       ),
                     ]),
-                    Text('${_entries.length} Anı Sayfası',
+                    Text(context.trf('journal.pageCount', {'count': _entries.length.toString()}),
                         style: AppTheme.sansBody(
                             size: 11, color: Colors.white.withOpacity(0.6))),
                   ]),
@@ -326,13 +330,13 @@ class _JournalDetailScreenState extends State<JournalDetailScreen> {
                 PopupMenuItem(value: 'share', child: Row(children: [
                   Icon(Icons.share_outlined, color: AppTheme.textPrimary, size: 18),
                   const SizedBox(width: 10),
-                  Text('Hikaye Paylaş', style: AppTheme.sansBody()),
+                  Text(context.tr('journal.menu.shareStory'), style: AppTheme.sansBody()),
                 ])),
                 PopupMenuItem(value: 'cover', child: Row(children: [
                   Icon(Icons.photo_camera_outlined,
                       color: AppTheme.textPrimary, size: 18),
                   const SizedBox(width: 10),
-                  Text('Kapak Fotoğrafı', style: AppTheme.sansBody()),
+                  Text(context.tr('journal.menu.coverPhoto'), style: AppTheme.sansBody()),
                 ])),
                 PopupMenuItem(value: 'visibility', child: Row(children: [
                   Icon(
@@ -341,13 +345,14 @@ class _JournalDetailScreenState extends State<JournalDetailScreen> {
                       color: AppTheme.textPrimary, size: 18),
                   const SizedBox(width: 10),
                   Text(widget.journal.visibility == 'PUBLIC'
-                      ? 'Özel yap' : 'Herkese aç',
+                      ? context.tr('journal.menu.makePrivate')
+                      : context.tr('journal.menu.makePublic'),
                       style: AppTheme.sansBody()),
                 ])),
                 PopupMenuItem(value: 'delete', child: Row(children: [
                   Icon(Icons.delete_outline, color: Colors.red.shade400, size: 18),
                   const SizedBox(width: 10),
-                  Text('Sayfayı sil',
+                  Text(context.tr('journal.deletePage.title'),
                       style: AppTheme.sansBody(color: Colors.red.shade400)),
                 ])),
               ],
@@ -374,12 +379,12 @@ class _JournalDetailScreenState extends State<JournalDetailScreen> {
               color: Colors.white, size: 38),
         ),
         const SizedBox(height: 18),
-        Text('İlk sayfanı ekle',
+        Text(context.tr('journal.emptyState.title'),
             style: GoogleFonts.playfairDisplay(
                 fontSize: 20, fontWeight: FontWeight.w700,
                 color: AppTheme.textPrimary)),
         const SizedBox(height: 6),
-        Text('Sağ alttaki + butonuna tıkla',
+        Text(context.tr('journal.emptyState.subtitle'),
             style: AppTheme.sansBody(size: 13, color: AppTheme.textSecondary)),
       ]),
     );
@@ -561,7 +566,7 @@ class _JournalDetailScreenState extends State<JournalDetailScreen> {
                     bottom: 12, right: 16,
                     child: Text(
                       entry.date != null
-                          ? '${entry.date!.day} ${_getMonth(entry.date!.month)}'
+                          ? '${entry.date!.day} ${_getMonth(context, entry.date!.month)}'
                           : '',
                       style: AppTheme.sansBody(
                           size: 11, weight: FontWeight.w500,
@@ -621,7 +626,7 @@ class _JournalDetailScreenState extends State<JournalDetailScreen> {
                   ),
                 ),
                 child: Center(
-                  child: Text('S.${index + 1}',
+                  child: Text(context.trf('share.pageLabel', {'number': (index + 1).toString()}),
                       style: TextStyle(
                           fontSize: 11, fontWeight: FontWeight.w700,
                           color: isSelected
@@ -825,10 +830,13 @@ class _JournalDetailScreenState extends State<JournalDetailScreen> {
     }
   }
 
-  String _getMonth(int month) {
-    const months = ['Oca', 'Şub', 'Mar', 'Nis', 'May', 'Haz',
-      'Tem', 'Ağu', 'Eyl', 'Eki', 'Kas', 'Ara'];
-    return months[month - 1];
+  String _getMonth(BuildContext context, int month) {
+    const monthKeys = ['common.month.short.jan', 'common.month.short.feb',
+      'common.month.short.mar', 'common.month.short.apr', 'common.month.short.may',
+      'common.month.short.jun', 'common.month.short.jul', 'common.month.short.aug',
+      'common.month.short.sep', 'common.month.short.oct', 'common.month.short.nov',
+      'common.month.short.dec'];
+    return context.tr(monthKeys[month - 1]);
   }
 }
 

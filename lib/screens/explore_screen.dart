@@ -16,6 +16,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../services/storage_service.dart';
 import '../services/interstitial_ad_service.dart';
+import '../l10n/app_strings.dart';
 
 class ExploreScreen extends StatefulWidget {
   const ExploreScreen({super.key});
@@ -35,13 +36,13 @@ class _ExploreScreenState extends State<ExploreScreen> {
   bool _hasError = false;
   List<Map<String, dynamic>> _popularUsers = [];
 
-  final List<Map<String, String>> _vibes = [
-    {'id': 'all', 'label': '🗺️ Tüm Rotalar'},
-    {'id': 'europe', 'label': '🏛️ Kültür & Tarih'},
-    {'id': 'nature', 'label': '🏔️ Doğa & Kamp'},
-    {'id': 'sea', 'label': '🌊 Akdeniz & Sahil'},
-    {'id': 'food', 'label': '☕ Kafe & Lezzet'},
-    {'id': 'backpack', 'label': '🎒 Sırt Çantalı'},
+  List<Map<String, String>> _vibes(BuildContext context) => [
+    {'id': 'all', 'label': context.tr('explore.vibe.all')},
+    {'id': 'europe', 'label': context.tr('explore.vibe.europe')},
+    {'id': 'nature', 'label': context.tr('explore.vibe.nature')},
+    {'id': 'sea', 'label': context.tr('explore.vibe.sea')},
+    {'id': 'food', 'label': context.tr('explore.vibe.food')},
+    {'id': 'backpack', 'label': context.tr('explore.vibe.backpack')},
   ];
 
   @override
@@ -64,7 +65,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
         child: Row(children: [
           const Icon(Icons.people_rounded, size: 16, color: AppTheme.terracotta),
           const SizedBox(width: 6),
-          Text('Öne Çıkan Gezginler', style: GoogleFonts.playfairDisplay(
+          Text(context.tr('explore.featuredTravelers'), style: GoogleFonts.playfairDisplay(
               fontSize: 16, fontWeight: FontWeight.w800,
               color: AppTheme.textPrimary)),
         ]),
@@ -114,7 +115,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
                       style: AppTheme.sansBody(
                           size: 10, weight: FontWeight.w700,
                           color: AppTheme.textPrimary)),
-                  Text('$followerCount takipçi',
+                  Text(context.trf('explore.followerCount', {'count': followerCount.toString()}),
                       maxLines: 1, overflow: TextOverflow.ellipsis,
                       textAlign: TextAlign.center,
                       style: AppTheme.sansBody(
@@ -186,7 +187,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
               children: [
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
                   Row(children: [
-                    Text('Keşfet',
+                    Text(context.tr('explore.title'),
                         style: GoogleFonts.playfairDisplay(
                             fontSize: 28, fontWeight: FontWeight.w800,
                             color: const Color(0xFF1C110A), letterSpacing: -0.6)),
@@ -198,14 +199,14 @@ class _ExploreScreenState extends State<ExploreScreen> {
                         color: AppTheme.terracotta.withOpacity(0.15),
                         borderRadius: BorderRadius.circular(20),
                       ),
-                      child: Text('Ajanda',
+                      child: Text(context.tr('explore.journalBadge'),
                           style: AppTheme.sansBody(
                               size: 10, weight: FontWeight.w700,
                               color: AppTheme.terracotta)),
                     ),
                   ]),
                   const SizedBox(height: 2),
-                  Text('Dünyanın dört bir yanından yol hikayeleri',
+                  Text(context.tr('explore.subtitle'),
                       style: AppTheme.sansBody(
                           size: 13, color: AppTheme.textSecondary)),
                 ]),
@@ -226,7 +227,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
                       Icon(Icons.tune_rounded, size: 15,
                           color: AppTheme.terracotta),
                       const SizedBox(width: 6),
-                      Text('Sırala', style: AppTheme.sansBody(
+                      Text(context.tr('explore.sort'), style: AppTheme.sansBody(
                           size: 12, weight: FontWeight.w700,
                           color: AppTheme.textPrimary)),
                     ]),
@@ -258,7 +259,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
                 },
                 style: AppTheme.sansBody(size: 14),
                 decoration: InputDecoration(
-                  hintText: 'Şehir, mekan veya gezgin ara...',
+                  hintText: context.tr('explore.searchHint'),
                   hintStyle: AppTheme.sansBody(
                       size: 13, color: AppTheme.textMuted),
                   border: InputBorder.none,
@@ -289,9 +290,9 @@ class _ExploreScreenState extends State<ExploreScreen> {
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
               padding: const EdgeInsets.symmetric(horizontal: 20),
-              itemCount: _vibes.length,
+              itemCount: _vibes(context).length,
               itemBuilder: (context, index) {
-                final vibe = _vibes[index];
+                final vibe = _vibes(context)[index];
                 final isSelected = _selectedVibe == vibe['id'];
                 return GestureDetector(
                   onTap: () {
@@ -404,14 +405,14 @@ class _ExploreScreenState extends State<ExploreScreen> {
                   const SizedBox(height: 14),
                   Text(
                       _searchController.text.isNotEmpty
-                          ? '"${_searchController.text}" ile eşleşen ajanda bulunamadı'
-                          : 'Henüz paylaşılan ajanda yok',
+                          ? context.trf('explore.noResultsFor', {'query': _searchController.text})
+                          : context.tr('explore.noSharedJournalsYet'),
                       textAlign: TextAlign.center,
                       style: AppTheme.sansBody(
                           size: 14, weight: FontWeight.w600,
                           color: AppTheme.textPrimary)),
                   const SizedBox(height: 4),
-                  Text('Farklı bir arama yapmayı deneyin.',
+                  Text(context.tr('explore.tryDifferentSearch'),
                       style: AppTheme.sansBody(
                           size: 12, color: AppTheme.textSecondary)),
                 ],
@@ -451,16 +452,16 @@ class _ExploreScreenState extends State<ExploreScreen> {
                   margin: const EdgeInsets.only(bottom: 16),
                   decoration: BoxDecoration(color: AppTheme.border,
                       borderRadius: BorderRadius.circular(2)))),
-              Text('Ajandaları Sırala',
+              Text(context.tr('explore.sortSheet.title'),
                   style: GoogleFonts.playfairDisplay(
                       fontSize: 18, fontWeight: FontWeight.w800,
                       color: AppTheme.textPrimary)),
               const SizedBox(height: 16),
-              _buildFilterChip('✨ En Yeni Eklenenler', 'newest'),
+              _buildFilterChip(context.tr('explore.sortSheet.newest'), 'newest'),
               const SizedBox(height: 10),
-              _buildFilterChip('🔥 En Popüler & Beğenilenler', 'popular'),
+              _buildFilterChip(context.tr('explore.sortSheet.popular'), 'popular'),
               const SizedBox(height: 10),
-              _buildFilterChip('👁️ En Çok Okunanlar', 'most_views'),
+              _buildFilterChip(context.tr('explore.sortSheet.mostViewed'), 'most_views'),
               SizedBox(height: MediaQuery.of(context).padding.bottom + 10),
             ]),
       ),
@@ -564,11 +565,11 @@ class _ExploreScreenState extends State<ExploreScreen> {
                   boxShadow: [BoxShadow(
                       color: Colors.black.withOpacity(0.2), blurRadius: 4)],
                 ),
-                child: const Row(mainAxisSize: MainAxisSize.min, children: [
-                  Icon(Icons.star_rounded, color: Colors.white, size: 14),
-                  SizedBox(width: 4),
-                  Text('Haftanın Ajandası',
-                      style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700,
+                child: Row(mainAxisSize: MainAxisSize.min, children: [
+                  const Icon(Icons.star_rounded, color: Colors.white, size: 14),
+                  const SizedBox(width: 4),
+                  Text(context.tr('explore.featuredBadge'),
+                      style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700,
                           color: Colors.white)),
                 ]),
               ),
@@ -606,7 +607,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
                                 color: journal.coverImageUrl != null
                                     ? Colors.white : AppTheme.terracotta),
                             const SizedBox(width: 4),
-                            Text('@${journal.username ?? 'gezgin'}',
+                            Text('@${journal.username ?? context.tr('map.unknownUsername')}',
                                 style: AppTheme.sansBody(
                                     size: 11, weight: FontWeight.w600,
                                     color: journal.coverImageUrl != null
@@ -770,7 +771,7 @@ class _SaveButtonState extends State<_SaveButton> {
           Icon(_saved ? Icons.bookmark_rounded : Icons.bookmark_border_rounded,
               size: 14, color: Colors.white),
           const SizedBox(width: 4),
-          Text(_saved ? 'Kaydedildi' : 'Kaydet',
+          Text(_saved ? context.tr('explore.saveButton.saved') : context.tr('explore.saveButton.save'),
               style: const TextStyle(fontSize: 11,
                   fontWeight: FontWeight.bold, color: Colors.white)),
         ]),
@@ -850,7 +851,7 @@ class _ExploreJournalScreenState extends State<ExploreJournalScreen> {
                   fontSize: 16, fontWeight: FontWeight.w700,
                   color: const Color(0xFFFAF7F2))),
           if (widget.journal.username != null)
-            Text('@${widget.journal.username} • Ajandası',
+            Text(context.trf('explore.journalByUsername', {'username': widget.journal.username!}),
                 style: AppTheme.sansBody(
                     size: 11, color: AppTheme.terracotta)),
         ]),
@@ -863,7 +864,7 @@ class _ExploreJournalScreenState extends State<ExploreJournalScreen> {
       body: _isLoading
           ? Center(child: CircularProgressIndicator(color: AppTheme.terracotta))
           : _entries.isEmpty
-          ? Center(child: Text('Bu ajandada henüz sayfa yok',
+          ? Center(child: Text(context.tr('explore.noPagesYet'),
           style: AppTheme.sansBody(
               size: 14, color: const Color(0xFFEADBCE))))
           : Column(children: [
@@ -1005,7 +1006,7 @@ class _ExploreJournalScreenState extends State<ExploreJournalScreen> {
                   ),
                   child: Text(
                       entry.date != null
-                          ? '${entry.date!.day} ${_getMonth(entry.date!.month)}'
+                          ? '${entry.date!.day} ${_getMonth(context, entry.date!.month)}'
                           : '',
                       style: AppTheme.sansBody(
                           size: 10, weight: FontWeight.w700,
@@ -1193,10 +1194,13 @@ class _ExploreJournalScreenState extends State<ExploreJournalScreen> {
     );
   }
 
-  String _getMonth(int month) {
-    const months = ['Oca', 'Şub', 'Mar', 'Nis', 'May', 'Haz',
-      'Tem', 'Ağu', 'Eyl', 'Eki', 'Kas', 'Ara'];
-    return months[month - 1];
+  String _getMonth(BuildContext context, int month) {
+    const monthKeys = ['common.month.short.jan', 'common.month.short.feb',
+      'common.month.short.mar', 'common.month.short.apr', 'common.month.short.may',
+      'common.month.short.jun', 'common.month.short.jul', 'common.month.short.aug',
+      'common.month.short.sep', 'common.month.short.oct', 'common.month.short.nov',
+      'common.month.short.dec'];
+    return context.tr(monthKeys[month - 1]);
   }
 }
 

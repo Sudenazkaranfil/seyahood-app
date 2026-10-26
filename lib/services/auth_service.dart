@@ -1,6 +1,15 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../config/api_config.dart';
+import '../l10n/auth_error_keys.dart';
+import 'api_exception.dart';
+
+/// Şifre doğru ama hesap henüz e-posta ile doğrulanmamış; kullanıcıyı
+/// doğrulama ekranına yönlendirebilmek için e-postayı da taşır.
+class AccountNotVerifiedException implements Exception {
+  final String email;
+  const AccountNotVerifiedException(this.email);
+}
 
 class AuthService {
   static const String baseUrl = ApiConfig.baseUrl;
@@ -15,12 +24,15 @@ class AuthService {
       }),
     );
 
-    if(response.statusCode == 200) {
+    if (response.statusCode == 200) {
       return jsonDecode(response.body);
-    } else {
-      final error = jsonDecode(response.body);
-      throw Exception(error['error'] ?? 'Giriş başarısız');
     }
+    final body = jsonDecode(response.body);
+    final error = body['error'] as String?;
+    if (error == 'ACCOUNT_NOT_VERIFIED') {
+      throw AccountNotVerifiedException(body['email'] as String? ?? email);
+    }
+    throw ApiException(authErrorKeys[error] ?? 'common.genericError');
   }
   static Future<void> register(
       String username, String email, String password) async {
@@ -35,8 +47,8 @@ class AuthService {
     );
 
     if (response.statusCode != 200) {
-      final error = jsonDecode(response.body);
-      throw Exception(error['error'] ?? 'Kayıt başarısız');
+      final error = jsonDecode(response.body)['error'] as String?;
+      throw ApiException(authErrorKeys[error] ?? 'common.genericError');
     }
   }
 }

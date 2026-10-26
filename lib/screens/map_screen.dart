@@ -16,6 +16,7 @@ import 'package:http/http.dart' as http;
 import '../services/storage_service.dart';
 import '../config/api_config.dart';
 import '../widgets/ad_banner.dart';
+import '../l10n/app_strings.dart';
 
 class MapScreen extends StatefulWidget {
   const MapScreen({super.key});
@@ -40,11 +41,11 @@ class _MapScreenState extends State<MapScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  Text('Harita',
+                  Text(context.tr('map.title'),
                       style: GoogleFonts.playfairDisplay(
                           fontSize: 28, fontWeight: FontWeight.w800,
                           color: AppTheme.textPrimary, letterSpacing: -0.6)),
-                  Text('Gezdiğin ve keşfedilen yerler',
+                  Text(context.tr('map.subtitle'),
                       style: AppTheme.sansBody(
                           size: 13, color: AppTheme.textSecondary)),
                 ]),
@@ -59,8 +60,8 @@ class _MapScreenState extends State<MapScreen> {
                         blurRadius: 8, offset: const Offset(0, 2))],
                   ),
                   child: Row(mainAxisSize: MainAxisSize.min, children: [
-                    _buildTab('Haritam', 0),
-                    _buildTab('Keşfet', 1),
+                    _buildTab(context.tr('map.tab.mine'), 0),
+                    _buildTab(context.tr('map.tab.explore'), 1),
                   ]),
                 ),
               ],
@@ -242,14 +243,14 @@ class _MyMapTabState extends State<MyMapTab> {
                     color: Color(0xFFC46B4E), size: 32),
               ),
               const SizedBox(height: 16),
-              const Text('Henüz Rota Eklenmedi',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800,
+              Text(context.tr('map.myMap.empty.title'),
+                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w800,
                       color: Color(0xFF1C110A), letterSpacing: -0.4)),
               const SizedBox(height: 8),
-              const Text(
-                  'Ajandana sayfa eklerken konum eklediğinde seyahat rotan otomatik olarak burada haritalanır.',
+              Text(
+                  context.tr('map.myMap.empty.subtitle'),
                   textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 13,
+                  style: const TextStyle(fontSize: 13,
                       color: Color(0xFF7C6A59), height: 1.5)),
             ]),
           ),
@@ -286,7 +287,7 @@ class _MyMapTabState extends State<MyMapTab> {
                       const Icon(Icons.place_rounded,
                           size: 13, color: Color(0xFFC46B4E)),
                       const SizedBox(width: 4),
-                      Text(loc.entry.locationName ?? 'Konum ${idx + 1}',
+                      Text(loc.entry.locationName ?? context.trf('map.unknownLocationChip', {'index': (idx + 1).toString()}),
                           style: const TextStyle(fontSize: 12,
                               fontWeight: FontWeight.w700,
                               color: Color(0xFF1C110A))),
@@ -323,7 +324,7 @@ class _MyMapTabState extends State<MyMapTab> {
             const Icon(Icons.explore_rounded,
                 color: Color(0xFFC46B4E), size: 16),
             const SizedBox(width: 6),
-            Text('${_locations.length} Seyahat Noktası',
+            Text(context.trf('map.travelPointsCount', {'count': _locations.length.toString()}),
                 style: const TextStyle(fontSize: 12,
                     color: Colors.white, fontWeight: FontWeight.w800)),
           ]),
@@ -390,7 +391,7 @@ class _MyMapTabState extends State<MyMapTab> {
                 const SizedBox(width: 14),
                 Expanded(child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  Text(item.entry.locationName ?? 'Konum Bilgisi',
+                  Text(item.entry.locationName ?? context.tr('map.locationInfoFallback'),
                       style: GoogleFonts.playfairDisplay(
                           fontSize: 17, fontWeight: FontWeight.w800,
                           color: AppTheme.textPrimary, letterSpacing: -0.4)),
@@ -430,7 +431,7 @@ class _MyMapTabState extends State<MyMapTab> {
                   child: OutlinedButton.icon(
                     onPressed: () => Navigator.pop(context),
                     icon: const Icon(Icons.map_outlined, size: 16),
-                    label: const Text('Haritaya Dön'),
+                    label: Text(context.tr('map.backToMap')),
                     style: OutlinedButton.styleFrom(
                       foregroundColor: AppTheme.textPrimary,
                       side: BorderSide(color: AppTheme.border),
@@ -450,7 +451,7 @@ class _MyMapTabState extends State<MyMapTab> {
                               JournalDetailScreen(journal: item.journal)));
                     },
                     icon: const Icon(Icons.auto_stories_rounded, size: 16),
-                    label: const Text('Ajandaya Git'),
+                    label: Text(context.tr('map.goToJournal')),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppTheme.terracotta,
                       foregroundColor: Colors.white, elevation: 0,
@@ -632,14 +633,14 @@ class _ExploreMapTabState extends State<ExploreMapTab> {
                     color: AppTheme.sage, size: 32),
               ),
               const SizedBox(height: 16),
-              const Text('Henüz Paylaşılan Rota Yok',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800,
+              Text(context.tr('map.explore.empty.title'),
+                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w800,
                       color: Color(0xFF1C110A), letterSpacing: -0.4)),
               const SizedBox(height: 8),
-              const Text(
-                  'Gezginlerin paylaştığı ajandalar herkese açık konumlara dönüştüğünde burada listelenecek.',
+              Text(
+                  context.tr('map.explore.empty.subtitle'),
                   textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 13,
+                  style: const TextStyle(fontSize: 13,
                       color: Color(0xFF7C6A59), height: 1.5)),
             ]),
           ),
@@ -669,7 +670,7 @@ class _ExploreMapTabState extends State<ExploreMapTab> {
           child: Row(mainAxisSize: MainAxisSize.min, children: [
             Icon(Icons.public_rounded, color: AppTheme.sage, size: 16),
             const SizedBox(width: 6),
-            Text('${_locations.length} Keşif Rotası',
+            Text(context.trf('map.discoveryRouteCount', {'count': _locations.length.toString()}),
                 style: const TextStyle(fontSize: 12,
                     color: Colors.white, fontWeight: FontWeight.w800)),
           ]),
@@ -736,7 +737,7 @@ class _ExploreMapTabState extends State<ExploreMapTab> {
                 const SizedBox(width: 14),
                 Expanded(child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  Text(item.entry.locationName ?? 'Keşfedilen Konum',
+                  Text(item.entry.locationName ?? context.tr('map.discoveredLocationFallback'),
                       style: GoogleFonts.playfairDisplay(
                           fontSize: 17, fontWeight: FontWeight.w800,
                           color: AppTheme.textPrimary, letterSpacing: -0.4)),
@@ -746,7 +747,7 @@ class _ExploreMapTabState extends State<ExploreMapTab> {
                           size: 13, weight: FontWeight.w600,
                           color: AppTheme.textSecondary)),
                   const SizedBox(height: 2),
-                  Text('@${item.journal.username ?? 'gezgin'}',
+                  Text('@${item.journal.username ?? context.tr('map.unknownUsername')}',
                       style: AppTheme.sansBody(
                           size: 12, weight: FontWeight.w700,
                           color: AppTheme.terracotta)),
@@ -776,7 +777,7 @@ class _ExploreMapTabState extends State<ExploreMapTab> {
                   child: OutlinedButton.icon(
                     onPressed: () => Navigator.pop(context),
                     icon: const Icon(Icons.map_outlined, size: 16),
-                    label: const Text('Haritaya Dön'),
+                    label: Text(context.tr('map.backToMap')),
                     style: OutlinedButton.styleFrom(
                       foregroundColor: AppTheme.textPrimary,
                       side: BorderSide(color: AppTheme.border),
@@ -796,7 +797,7 @@ class _ExploreMapTabState extends State<ExploreMapTab> {
                               ExploreJournalScreen(journal: item.journal)));
                     },
                     icon: const Icon(Icons.auto_stories_rounded, size: 16),
-                    label: const Text('Ajandaya Git'),
+                    label: Text(context.tr('map.goToJournal')),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppTheme.terracotta,
                       foregroundColor: Colors.white, elevation: 0,

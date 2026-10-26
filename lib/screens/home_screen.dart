@@ -18,6 +18,9 @@ import 'premium_screen.dart';
 import '../widgets/skeleton_loader.dart';
 import '../widgets/error_view.dart';
 import '../widgets/ad_banner.dart';
+import '../services/notification_service.dart';
+import 'notifications_screen.dart';
+import '../l10n/app_strings.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -36,6 +39,7 @@ class _HomeScreenState extends State<HomeScreen> {
   bool _isLoading = true;
   bool _hasError = false;
   bool _isFreePlan = true;
+  int _unreadNotificationCount = 0;
 
   static const String baseUrl = ApiConfig.baseUrl;
 
@@ -43,12 +47,20 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     _loadData();
+    _loadUnreadNotificationCount();
+  }
+
+  Future<void> _loadUnreadNotificationCount() async {
+    try {
+      final count = await NotificationService.getUnreadCount();
+      if (mounted) setState(() => _unreadNotificationCount = count);
+    } catch (e) {}
   }
 
   Future<void> _loadData() async {
     final username = await StorageService.getUsername();
     final token = await StorageService.getToken();
-    setState(() => _username = username ?? 'Gezgin');
+    setState(() => _username = username ?? context.tr('common.travelerFallback'));
 
     try {
       final response = await http.get(
@@ -107,7 +119,7 @@ class _HomeScreenState extends State<HomeScreen> {
       if (mounted) showLimitReachedSheet(context, limitType: 'journal');
     } catch (e) {
       if (mounted) ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Ajanda oluşturulamadı')));
+          SnackBar(content: Text(context.tr('home.createJournalFailed'))));
     }
   }
 
@@ -117,16 +129,16 @@ class _HomeScreenState extends State<HomeScreen> {
       builder: (context) => AlertDialog(
         backgroundColor: AppTheme.background,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        title: Text('Ajandayı sil',
+        title: Text(context.tr('home.deleteJournal.title'),
             style: GoogleFonts.playfairDisplay(
                 fontSize: 16, fontWeight: FontWeight.w700)),
         content: Text(
-            'Bu ajanda ve içindeki tüm sayfalar kalıcı olarak silinecek.',
+            context.tr('home.deleteJournal.content'),
             style: AppTheme.sansBody(size: 14, color: AppTheme.textSecondary)),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: Text('İptal',
+            child: Text(context.tr('home.deleteJournal.cancel'),
                 style: AppTheme.sansBody(color: AppTheme.textSecondary)),
           ),
           ElevatedButton(
@@ -135,7 +147,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 backgroundColor: Colors.red.shade400,
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12))),
-            child: const Text('Sil'),
+            child: Text(context.tr('home.deleteJournal.confirm')),
           ),
         ],
       ),
@@ -177,7 +189,7 @@ class _HomeScreenState extends State<HomeScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text('Yeni Seyahat Ajandası',
+                  Text(context.tr('home.newJournal.title'),
                       style: GoogleFonts.playfairDisplay(
                           fontSize: 20, fontWeight: FontWeight.w700,
                           color: AppTheme.textPrimary)),
@@ -193,7 +205,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 autofocus: true,
                 style: AppTheme.sansBody(),
                 decoration: InputDecoration(
-                  labelText: 'Ajanda Başlığı (örn: Roma Gezisi)',
+                  labelText: context.tr('home.newJournal.titleFieldLabel'),
                   labelStyle: AppTheme.sansBody(color: AppTheme.textSecondary),
                   filled: true,
                   fillColor: Colors.white,
@@ -223,7 +235,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 ? AppTheme.terracotta : AppTheme.border),
                       ),
                       alignment: Alignment.center,
-                      child: Text('🌍 Herkese Açık',
+                      child: Text(context.tr('home.newJournal.public'),
                           style: AppTheme.sansBody(
                               size: 13, weight: FontWeight.w700,
                               color: selectedVisibility == 'PUBLIC'
@@ -246,7 +258,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 ? AppTheme.navDark : AppTheme.border),
                       ),
                       alignment: Alignment.center,
-                      child: Text('🔒 Kişisel (Gizli)',
+                      child: Text(context.tr('home.newJournal.private'),
                           style: AppTheme.sansBody(
                               size: 13, weight: FontWeight.w700,
                               color: selectedVisibility == 'PRIVATE'
@@ -273,8 +285,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(16)),
                   ),
-                  child: const Text('Ajandayı Başlat ✨',
-                      style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
+                  child: Text(context.tr('home.newJournal.startButton'),
+                      style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
                 ),
               ),
             ],
@@ -294,20 +306,23 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  String _getGreeting() {
+  String _getGreeting(BuildContext context) {
     final hour = DateTime.now().toLocal().hour;
-    if (hour < 12) return 'Günaydın,';
-    if (hour < 18) return 'İyi günler,';
-    return 'İyi akşamlar,';
+    if (hour < 12) return context.tr('home.greeting.morning');
+    if (hour < 18) return context.tr('home.greeting.afternoon');
+    return context.tr('home.greeting.evening');
   }
 
-  String _getDate() {
-    const days = ['Pazartesi', 'Salı', 'Çarşamba', 'Perşembe',
-      'Cuma', 'Cumartesi', 'Pazar'];
-    const months = ['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran',
-      'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık'];
+  String _getDate(BuildContext context) {
+    final dayKeys = ['common.day.mon', 'common.day.tue', 'common.day.wed',
+      'common.day.thu', 'common.day.fri', 'common.day.sat', 'common.day.sun'];
+    final monthKeys = ['common.month.jan', 'common.month.feb', 'common.month.mar',
+      'common.month.apr', 'common.month.may', 'common.month.jun',
+      'common.month.jul', 'common.month.aug', 'common.month.sep',
+      'common.month.oct', 'common.month.nov', 'common.month.dec'];
     final now = DateTime.now();
-    return '${now.day} ${months[now.month - 1]}, ${days[now.weekday - 1]}';
+    return '${now.day} ${context.tr(monthKeys[now.month - 1])}, '
+        '${context.tr(dayKeys[now.weekday - 1])}';
   }
 
   Widget _buildJournalsTab() {
@@ -389,17 +404,17 @@ class _HomeScreenState extends State<HomeScreen> {
             const SizedBox(width: 12),
             Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Row(children: [
-                Text(_getGreeting(),
+                Text(_getGreeting(context),
                     style: GoogleFonts.playfairDisplay(
                         fontSize: 13, fontStyle: FontStyle.italic,
                         color: AppTheme.textSecondary)),
                 const SizedBox(width: 4),
-                Text(_firstName ?? _username ?? 'Gezgin',
+                Text(_firstName ?? _username ?? context.tr('common.travelerFallback'),
                     style: GoogleFonts.playfairDisplay(
                         fontSize: 15, fontWeight: FontWeight.w700,
                         color: AppTheme.textPrimary)),
               ]),
-              Text(_getDate(),
+              Text(_getDate(context),
                   style: AppTheme.sansBody(
                       size: 11, weight: FontWeight.w600,
                       color: AppTheme.textSecondary)),
@@ -423,7 +438,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: Row(mainAxisSize: MainAxisSize.min, children: [
                     const Text('👑', style: TextStyle(fontSize: 12)),
                     const SizedBox(width: 4),
-                    Text("PRO'ya Geç", style: TextStyle(
+                    Text(context.tr('common.goProAction'), style: const TextStyle(
                         fontSize: 11, fontWeight: FontWeight.w800,
                         color: Colors.white)),
                   ]),
@@ -431,22 +446,39 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               const SizedBox(width: 8),
             ],
-            Container(
-              width: 40, height: 40,
-              decoration: BoxDecoration(
-                color: AppTheme.navDark,
-                shape: BoxShape.circle,
-                boxShadow: [BoxShadow(
-                    color: Colors.black.withOpacity(0.12),
-                    blurRadius: 8, offset: const Offset(0, 2))],
+            Stack(children: [
+              Container(
+                width: 40, height: 40,
+                decoration: BoxDecoration(
+                  color: AppTheme.navDark,
+                  shape: BoxShape.circle,
+                  boxShadow: [BoxShadow(
+                      color: Colors.black.withOpacity(0.12),
+                      blurRadius: 8, offset: const Offset(0, 2))],
+                ),
+                child: IconButton(
+                  icon: const Icon(Icons.notifications_none_rounded,
+                      color: Color(0xFFEADBCE), size: 20),
+                  onPressed: () async {
+                    await Navigator.push(context, MaterialPageRoute(
+                        builder: (context) => const NotificationsScreen()));
+                    _loadUnreadNotificationCount();
+                  },
+                ),
               ),
-              child: IconButton(
-                icon: const Icon(Icons.notifications_none_rounded,
-                    color: Color(0xFFEADBCE), size: 20),
-                onPressed: () => ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Henüz bildirim yok.'))),
-              ),
-            ),
+              if (_unreadNotificationCount > 0)
+                Positioned(
+                  right: 2, top: 2,
+                  child: Container(
+                    width: 10, height: 10,
+                    decoration: BoxDecoration(
+                      color: AppTheme.terracotta,
+                      shape: BoxShape.circle,
+                      border: Border.all(color: AppTheme.navDark, width: 1.5),
+                    ),
+                  ),
+                ),
+            ]),
           ]),
         ],
       ),
@@ -503,7 +535,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   const Icon(Icons.auto_awesome, size: 13,
                       color: Color(0xFFC46B4E)),
                   const SizedBox(width: 4),
-                  Text('Son Gezin', style: AppTheme.sansBody(
+                  Text(context.tr('home.lastTripBadge'), style: AppTheme.sansBody(
                       size: 11, weight: FontWeight.w800,
                       color: AppTheme.textPrimary)),
                 ]),
@@ -533,7 +565,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Text(
-                    journal.visibility == 'PUBLIC' ? 'HERKESE AÇIK' : 'KİŞİSEL',
+                    journal.visibility == 'PUBLIC'
+                        ? context.tr('home.visibility.publicLong')
+                        : context.tr('home.visibility.privateLong'),
                     style: TextStyle(
                         fontSize: 9, fontWeight: FontWeight.w800, letterSpacing: 0.5,
                         color: journal.visibility == 'PUBLIC'
@@ -556,13 +590,15 @@ class _HomeScreenState extends State<HomeScreen> {
                       color: journal.coverImageUrl != null
                           ? const Color(0xFFFFDCBF) : AppTheme.terracotta),
                   const SizedBox(width: 4),
-                  Text('Seyahat', style: AppTheme.sansBody(
+                  Text(context.tr('home.travelLabel'), style: AppTheme.sansBody(
                       size: 12, weight: FontWeight.w600,
                       color: journal.coverImageUrl != null
                           ? const Color(0xFFFFDCBF) : AppTheme.terracotta)),
                   const SizedBox(width: 10),
                   Text(
-                      '• ${journal.visibility == 'PUBLIC' ? 'Toplulukla Paylaşıldı' : 'Kişisel'}',
+                      journal.visibility == 'PUBLIC'
+                          ? context.tr('home.visibility.sharedSuffix')
+                          : context.tr('home.visibility.privateSuffix'),
                       style: AppTheme.sansBody(size: 11,
                           color: journal.coverImageUrl != null
                               ? Colors.white.withOpacity(0.85)
@@ -616,11 +652,11 @@ class _HomeScreenState extends State<HomeScreen> {
           const SizedBox(width: 12),
           Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Günün Anısını Bırak',
+                Text(context.tr('home.quickPrompt.title'),
                     style: AppTheme.sansBody(
                         size: 13, weight: FontWeight.w700, color: Colors.white)),
                 const SizedBox(height: 2),
-                Text('Yeni bir ajanda oluştur, anını kaydet...',
+                Text(context.tr('home.quickPrompt.subtitle'),
                     style: AppTheme.sansBody(
                         size: 11, color: Colors.white.withOpacity(0.6))),
               ])),
@@ -630,7 +666,7 @@ class _HomeScreenState extends State<HomeScreen> {
               color: AppTheme.terracotta,
               borderRadius: BorderRadius.circular(16),
             ),
-            child: Text('Başlat',
+            child: Text(context.tr('home.quickPrompt.startButton'),
                 style: AppTheme.sansBody(
                     size: 12, weight: FontWeight.w700, color: Colors.white)),
           ),
@@ -644,7 +680,7 @@ class _HomeScreenState extends State<HomeScreen> {
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
         child: Row(children: [
-          Text('Ajandalarım',
+          Text(context.tr('home.myJournals'),
               style: GoogleFonts.playfairDisplay(
                   fontSize: 18, fontWeight: FontWeight.w700,
                   color: AppTheme.textPrimary)),
@@ -664,7 +700,7 @@ class _HomeScreenState extends State<HomeScreen> {
           GestureDetector(
             onTap: _showCreateJournalDialog,
             child: Row(children: [
-              Text('Yeni Ekle',
+              Text(context.tr('home.addNew'),
                   style: AppTheme.sansBody(
                       size: 12, weight: FontWeight.w700,
                       color: AppTheme.terracotta)),
@@ -768,7 +804,9 @@ class _HomeScreenState extends State<HomeScreen> {
                         borderRadius: BorderRadius.circular(6),
                       ),
                       child: Text(
-                          journal.visibility == 'PUBLIC' ? 'Açık' : 'Özel',
+                          journal.visibility == 'PUBLIC'
+                              ? context.tr('home.visibility.publicShort')
+                              : context.tr('home.visibility.privateShort'),
                           style: AppTheme.sansBody(
                               size: 9, weight: FontWeight.w700,
                               color: AppTheme.textPrimary)),
@@ -792,7 +830,8 @@ class _HomeScreenState extends State<HomeScreen> {
                           Text('${journal.createdAt.day}.${journal.createdAt.month}.${journal.createdAt.year}',
                               style: AppTheme.sansBody(
                                   size: 10, color: AppTheme.textSecondary)),
-                          Text('${journal.saveCount} kayıt',
+                          Text(context.trf('home.saveCountLabel',
+                              {'count': journal.saveCount.toString()}),
                               style: AppTheme.sansBody(
                                   size: 10, color: AppTheme.textSecondary)),
                         ],
@@ -810,7 +849,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: 16),
-        child: Text('Kaydettiklerim',
+        child: Text(context.tr('home.savedJournals'),
             style: GoogleFonts.playfairDisplay(
                 fontSize: 18, fontWeight: FontWeight.w700,
                 color: AppTheme.textPrimary)),
@@ -919,19 +958,19 @@ class _HomeScreenState extends State<HomeScreen> {
             child: const Icon(Icons.book_outlined, color: Colors.white, size: 32),
           ),
           const SizedBox(height: 16),
-          Text('İlk ajandanı oluştur',
+          Text(context.tr('home.empty.title'),
               style: GoogleFonts.playfairDisplay(
                   fontSize: 18, fontWeight: FontWeight.w700,
                   color: AppTheme.textPrimary)),
           const SizedBox(height: 8),
-          Text('Gezi anılarını kaydetmeye başla',
+          Text(context.tr('home.empty.subtitle'),
               textAlign: TextAlign.center,
               style: AppTheme.sansBody(color: AppTheme.textSecondary)),
           const SizedBox(height: 16),
           ElevatedButton.icon(
             onPressed: _showCreateJournalDialog,
             icon: const Icon(Icons.add, size: 16),
-            label: const Text('Yeni Ajanda Oluştur'),
+            label: Text(context.tr('home.empty.createButton')),
             style: ElevatedButton.styleFrom(
               backgroundColor: AppTheme.terracotta,
               foregroundColor: Colors.white,

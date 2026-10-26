@@ -23,6 +23,9 @@ import 'premium_screen.dart';
 import '../widgets/skeleton_loader.dart';
 import '../widgets/error_view.dart';
 import '../widgets/plan_badge.dart';
+import 'notifications_screen.dart';
+import '../l10n/app_strings.dart';
+import '../l10n/locale_controller.dart';
 import '../widgets/ad_banner.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -54,19 +57,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   static const String baseUrl = ApiConfig.baseUrl;
 
-  final List<Map<String, dynamic>> _coverColors = [
-    {'color': const Color(0xFFF5EFE8), 'label': 'Krem'},
-    {'color': const Color(0xFFEAF3EE), 'label': 'Adaçayı'},
-    {'color': const Color(0xFFF0EBE3), 'label': 'Kum'},
-    {'color': const Color(0xFFE8EDF5), 'label': 'Sis'},
-    {'color': const Color(0xFFF5EAF0), 'label': 'Gül'},
-    {'color': const Color(0xFFEAE8F5), 'label': 'Lavanta'},
-    {'color': const Color(0xFFF5F0E8), 'label': 'Vanilya'},
-    {'color': const Color(0xFFE8F5F0), 'label': 'Nane'},
-    {'color': const Color(0xFFF5EDE8), 'label': 'Şeftali'},
-    {'color': const Color(0xFFE8EEF5), 'label': 'Gökyüzü'},
-    {'color': const Color(0xFFF0F5E8), 'label': 'Fıstık'},
-    {'color': const Color(0xFFF5E8EE), 'label': 'Pudra'},
+  List<Map<String, dynamic>> _coverColors(BuildContext context) => [
+    {'color': const Color(0xFFF5EFE8), 'label': context.tr('profile.coverColor.cream')},
+    {'color': const Color(0xFFEAF3EE), 'label': context.tr('profile.coverColor.sage')},
+    {'color': const Color(0xFFF0EBE3), 'label': context.tr('profile.coverColor.sand')},
+    {'color': const Color(0xFFE8EDF5), 'label': context.tr('profile.coverColor.mist')},
+    {'color': const Color(0xFFF5EAF0), 'label': context.tr('profile.coverColor.rose')},
+    {'color': const Color(0xFFEAE8F5), 'label': context.tr('profile.coverColor.lavender')},
+    {'color': const Color(0xFFF5F0E8), 'label': context.tr('profile.coverColor.vanilla')},
+    {'color': const Color(0xFFE8F5F0), 'label': context.tr('profile.coverColor.mint')},
+    {'color': const Color(0xFFF5EDE8), 'label': context.tr('profile.coverColor.peach')},
+    {'color': const Color(0xFFE8EEF5), 'label': context.tr('profile.coverColor.sky')},
+    {'color': const Color(0xFFF0F5E8), 'label': context.tr('profile.coverColor.pistachio')},
+    {'color': const Color(0xFFF5E8EE), 'label': context.tr('profile.coverColor.powder')},
   ];
 
   Color _getColor(int index) {
@@ -78,34 +81,34 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return colors[index % colors.length];
   }
 
-  Map<String, dynamic> _getLevelInfo(int journalCount) {
+  Map<String, dynamic> _getLevelInfo(BuildContext context, int journalCount) {
     if (journalCount <= 3) {
       return {
-        'emoji': '🌱', 'title': 'Yeni Gezgin', 'next': 4,
+        'emoji': '🌱', 'title': context.tr('profile.level.newTraveler'), 'next': 4,
         'current': journalCount, 'min': 0, 'max': 3,
         'color': const Color(0xFF7BAE7F),
       };
     } else if (journalCount <= 10) {
       return {
-        'emoji': '🗺️', 'title': 'Kaşif', 'next': 11,
+        'emoji': '🗺️', 'title': context.tr('profile.level.explorer'), 'next': 11,
         'current': journalCount, 'min': 4, 'max': 10,
         'color': const Color(0xFFC46B4E),
       };
     } else if (journalCount <= 20) {
       return {
-        'emoji': '✈️', 'title': 'Seyyah', 'next': 21,
+        'emoji': '✈️', 'title': context.tr('profile.level.voyager'), 'next': 21,
         'current': journalCount, 'min': 11, 'max': 20,
         'color': const Color(0xFF5B8A6F),
       };
     } else if (journalCount <= 50) {
       return {
-        'emoji': '🌍', 'title': 'Dünya Gezgini', 'next': 51,
+        'emoji': '🌍', 'title': context.tr('profile.level.worldTraveler'), 'next': 51,
         'current': journalCount, 'min': 21, 'max': 50,
         'color': const Color(0xFF3D6B9E),
       };
     } else {
       return {
-        'emoji': '🏆', 'title': 'Efsane Gezgin', 'next': null,
+        'emoji': '🏆', 'title': context.tr('profile.level.legendaryTraveler'), 'next': null,
         'current': journalCount, 'min': 50, 'max': null,
         'color': const Color(0xFFD4A017),
       };
@@ -209,7 +212,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     } catch (e) {}
 
     setState(() {
-      _username = username ?? 'Gezgin';
+      _username = username ?? context.tr('common.travelerFallback');
       _journalCount = journals.length;
       _journals = journals;
       _isLoading = false;
@@ -233,18 +236,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
             child: Icon(Icons.logout_rounded, color: Colors.red.shade400, size: 20),
           ),
           const SizedBox(width: 12),
-          const Text('Çıkış Yap', style: TextStyle(fontSize: 18,
+          Text(context.tr('profile.logout.title'), style: const TextStyle(fontSize: 18,
               fontWeight: FontWeight.w800, color: Color(0xFF1C110A),
               letterSpacing: -0.4)),
         ]),
-        content: const Text('Hesabından çıkış yapmak istediğine emin misin?',
-            style: TextStyle(fontSize: 14, color: Color(0xFF7C6A59), height: 1.5)),
+        content: Text(context.tr('profile.logout.content'),
+            style: const TextStyle(fontSize: 14, color: Color(0xFF7C6A59), height: 1.5)),
         actionsPadding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: const Text('Vazgeç',
-                style: TextStyle(color: Color(0xFF7C6A59), fontWeight: FontWeight.w700)),
+            child: Text(context.tr('profile.logout.cancel'),
+                style: const TextStyle(color: Color(0xFF7C6A59), fontWeight: FontWeight.w700)),
           ),
           ElevatedButton(
             onPressed: () => Navigator.pop(context, true),
@@ -252,8 +255,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 backgroundColor: Colors.red.shade400,
                 foregroundColor: Colors.white, elevation: 0,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14))),
-            child: const Text('Çıkış Yap',
-                style: TextStyle(fontWeight: FontWeight.w800)),
+            child: Text(context.tr('profile.logout.confirm'),
+                style: const TextStyle(fontWeight: FontWeight.w800)),
           ),
         ],
       ),
@@ -282,11 +285,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   decoration: BoxDecoration(color: AppTheme.border,
                       borderRadius: BorderRadius.circular(2)))),
               const SizedBox(height: 16),
-              Text('Kapak Rengi', style: GoogleFonts.playfairDisplay(
+              Text(context.tr('profile.coverPicker.title'), style: GoogleFonts.playfairDisplay(
                   fontSize: 18, fontWeight: FontWeight.w800,
                   color: AppTheme.textPrimary)),
               const SizedBox(height: 4),
-              Text('Uzun basarak değiştir',
+              Text(context.tr('profile.coverPicker.hint'),
                   style: AppTheme.sansBody(size: 12, color: AppTheme.textSecondary)),
               const SizedBox(height: 16),
 
@@ -328,11 +331,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                     const SizedBox(width: 12),
                     Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                      Text('Galeriden Fotoğraf Seç',
+                      Text(context.tr('profile.coverPicker.galleryTitle'),
                           style: AppTheme.sansBody(
                               size: 13, weight: FontWeight.w700,
                               color: AppTheme.textPrimary)),
-                      Text('Kendi fotoğrafını kapak yap',
+                      Text(context.tr('profile.coverPicker.gallerySubtitle'),
                           style: AppTheme.sansBody(
                               size: 11, color: AppTheme.textSecondary)),
                     ]),
@@ -348,9 +351,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   crossAxisCount: 4, crossAxisSpacing: 10, mainAxisSpacing: 10,
                   childAspectRatio: 1.6,
                 ),
-                itemCount: _coverColors.length,
+                itemCount: _coverColors(context).length,
                 itemBuilder: (context, index) {
-                  final item = _coverColors[index];
+                  final item = _coverColors(context)[index];
                   final color = item['color'] as Color;
                   final isSelected = _coverImagePath == null &&
                       _coverColor == color;
@@ -406,20 +409,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
       final file = File('${dir.path}/seyahood_profile_$theme.png');
       await file.writeAsBytes(bytes);
       await Share.shareXFiles([XFile(file.path)],
-          text: 'Seyahood\'da beni takip et! seyahood.app/@${_username ?? ''}');
+          text: context.trf('profile.share.followMeMessage',
+              {'username': _username ?? ''}));
     } catch (e) {
       if (mounted) ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Paylaşılamadı!')));
+          SnackBar(content: Text(context.tr('profile.share.failed'))));
     }
   }
 
   void _showShareOptions() {
-    final level = _getLevelInfo(_journalCount);
-    final inviteMessage =
-        '✈️ Seyahood\'dayım!\n\n'
-        'Seyahat anılarımı dijital ajandamda saklıyorum. '
-        'Sen de katıl, kendi yolculuğunu kaydet:\n\n'
-        'seyahood.app/@${_username ?? ''}';
+    final level = _getLevelInfo(context, _journalCount);
+    final inviteMessage = context.trf(
+        'profile.share.inviteMessage', {'username': _username ?? ''});
 
     showModalBottomSheet(
       context: context,
@@ -438,7 +439,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   decoration: BoxDecoration(color: AppTheme.border,
                       borderRadius: BorderRadius.circular(2)))),
               const SizedBox(height: 16),
-              Text('Profili Paylaş', style: GoogleFonts.playfairDisplay(
+              Text(context.tr('profile.share.title'), style: GoogleFonts.playfairDisplay(
                   fontSize: 18, fontWeight: FontWeight.w800,
                   color: AppTheme.textPrimary)),
               const SizedBox(height: 16),
@@ -446,12 +447,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
               // Bağlantı kopyala
               _buildShareOption(
                 icon: Icons.link_rounded,
-                title: 'Bağlantıyı Kopyala',
-                subtitle: 'Profil linkini panoya kopyala',
+                title: context.tr('profile.share.copyLinkTitle'),
+                subtitle: context.tr('profile.share.copyLinkSubtitle'),
                 onTap: () {
                   Navigator.pop(context);
-                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                      content: Text('Profil bağlantısı kopyalandı! 🔗')));
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      content: Text(context.tr('profile.share.linkCopied'))));
                 },
               ),
               const SizedBox(height: 10),
@@ -459,8 +460,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
               // Davet mesajı
               _buildShareOption(
                 icon: Icons.chat_bubble_outline_rounded,
-                title: 'Davet Mesajı Gönder',
-                subtitle: 'Arkadaşlarını Seyahood\'a davet et',
+                title: context.tr('profile.share.inviteTitle'),
+                subtitle: context.tr('profile.share.inviteSubtitle'),
                 onTap: () {
                   Navigator.pop(context);
                   Share.share(inviteMessage);
@@ -469,12 +470,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
               const SizedBox(height: 14),
 
               // Profil kartı başlığı
-              Text('Profil Kartı Paylaş',
+              Text(context.tr('profile.share.cardTitle'),
                   style: AppTheme.sansBody(
                       size: 13, weight: FontWeight.w700,
                       color: AppTheme.textSecondary)),
               const SizedBox(height: 8),
-              Text('Tema seç ve paylaş:',
+              Text(context.tr('profile.share.chooseTheme'),
                   style: AppTheme.sansBody(size: 11, color: AppTheme.textMuted)),
               const SizedBox(height: 10),
 
@@ -504,7 +505,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               style: const TextStyle(fontSize: 20))),
                         ),
                         const SizedBox(height: 6),
-                        Text('Açık', style: AppTheme.sansBody(
+                        Text(context.tr('profile.share.lightTheme'), style: AppTheme.sansBody(
                             size: 11, weight: FontWeight.w700,
                             color: AppTheme.textPrimary)),
                       ]),
@@ -537,7 +538,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               style: const TextStyle(fontSize: 20))),
                         ),
                         const SizedBox(height: 6),
-                        Text('Koyu', style: AppTheme.sansBody(
+                        Text(context.tr('profile.share.darkTheme'), style: AppTheme.sansBody(
                             size: 11, weight: FontWeight.w700,
                             color: Colors.white)),
                       ]),
@@ -551,7 +552,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   void _showProfileCardPreview(String theme) {
-    final level = _getLevelInfo(_journalCount);
+    final level = _getLevelInfo(context, _journalCount);
     final isDark = theme == 'dark';
 
     showModalBottomSheet(
@@ -590,8 +591,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 _shareProfileCard(theme);
               },
               icon: const Icon(Icons.share_rounded, size: 18),
-              label: const Text('Paylaş',
-                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.w800)),
+              label: Text(context.tr('profile.share.shareButton'),
+                  style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w800)),
               style: ElevatedButton.styleFrom(
                   backgroundColor: AppTheme.terracotta,
                   foregroundColor: Colors.white, elevation: 0,
@@ -662,7 +663,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start, children: [
               Text(
                   _firstName != null && _lastName != null
-                      ? '$_firstName $_lastName' : _username ?? 'Gezgin',
+                      ? '$_firstName $_lastName'
+                      : _username ?? context.tr('common.travelerFallback'),
                   style: GoogleFonts.playfairDisplay(
                       fontSize: 17, fontWeight: FontWeight.w800,
                       color: textColor, letterSpacing: -0.4)),
@@ -702,13 +704,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 14),
           child: Row(children: [
-            _buildCardStat(_journalCount.toString(), 'Ajanda',
+            _buildCardStat(_journalCount.toString(), context.tr('profile.stat.journals'),
                 textColor, subColor),
             Container(width: 1, height: 30, color: divColor),
-            _buildCardStat(_followerCount.toString(), 'Takipçi',
+            _buildCardStat(_followerCount.toString(), context.tr('profile.stat.followers'),
                 textColor, subColor),
             Container(width: 1, height: 30, color: divColor),
-            _buildCardStat(_followingCount.toString(), 'Takip',
+            _buildCardStat(_followingCount.toString(), context.tr('profile.stat.following'),
                 textColor, subColor),
           ]),
         ),
@@ -848,7 +850,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     Icon(Icons.touch_app_outlined, size: 11,
                         color: AppTheme.textMuted.withOpacity(0.5)),
                     const SizedBox(width: 3),
-                    Text('Değiştirmek için uzun bas',
+                    Text(context.tr('profile.changeCoverHint'),
                         style: TextStyle(fontSize: 9,
                             color: AppTheme.textMuted.withOpacity(0.5),
                             fontWeight: FontWeight.w500)),
@@ -866,8 +868,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       color: Colors.black.withOpacity(0.5),
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    child: const Text('Kaldır',
-                        style: TextStyle(fontSize: 10,
+                    child: Text(context.tr('profile.removeCover'),
+                        style: const TextStyle(fontSize: 10,
                             color: Colors.white,
                             fontWeight: FontWeight.w600)),
                   ),
@@ -932,7 +934,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
             Row(mainAxisAlignment: MainAxisAlignment.center, children: [
               Text(
                   _firstName != null && _lastName != null
-                      ? '$_firstName $_lastName' : _username ?? 'Gezgin',
+                      ? '$_firstName $_lastName'
+                      : _username ?? context.tr('common.travelerFallback'),
                   style: GoogleFonts.playfairDisplay(
                       fontSize: 22, fontWeight: FontWeight.w800,
                       color: const Color(0xFF1C110A), letterSpacing: -0.5)),
@@ -940,20 +943,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                 decoration: BoxDecoration(
-                  color: (_getLevelInfo(_journalCount)['color'] as Color)
+                  color: (_getLevelInfo(context, _journalCount)['color'] as Color)
                       .withOpacity(0.15),
                   borderRadius: BorderRadius.circular(20),
                   border: Border.all(
-                      color: (_getLevelInfo(_journalCount)['color'] as Color)
+                      color: (_getLevelInfo(context, _journalCount)['color'] as Color)
                           .withOpacity(0.3)),
                 ),
                 child: Row(mainAxisSize: MainAxisSize.min, children: [
-                  Text(_getLevelInfo(_journalCount)['emoji'],
+                  Text(_getLevelInfo(context, _journalCount)['emoji'],
                       style: const TextStyle(fontSize: 11)),
                   const SizedBox(width: 4),
-                  Text(_getLevelInfo(_journalCount)['title'],
+                  Text(_getLevelInfo(context, _journalCount)['title'],
                       style: TextStyle(fontSize: 10, fontWeight: FontWeight.w800,
-                          color: _getLevelInfo(_journalCount)['color'] as Color)),
+                          color: _getLevelInfo(context, _journalCount)['color'] as Color)),
                 ]),
               ),
               if (_isPlus || _isPro) ...[
@@ -1017,7 +1020,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           Icon(Icons.edit_note_rounded,
                               color: AppTheme.terracotta, size: 18),
                           const SizedBox(width: 8),
-                          Text('Profili Düzenle', style: AppTheme.sansBody(
+                          Text(context.tr('profile.editProfile'), style: AppTheme.sansBody(
                               size: 13, weight: FontWeight.w700,
                               color: AppTheme.terracotta)),
                         ]),
@@ -1075,17 +1078,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
             blurRadius: 12, offset: const Offset(0, 2))],
       ),
       child: Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-        _buildStatItem('Ajanda', _journalCount.toString(),
+        _buildStatItem(context.tr('profile.stat.journals'), _journalCount.toString(),
             Icons.auto_stories_rounded, null),
         Container(width: 1, height: 36, color: const Color(0xFFEADBCE)),
-        _buildStatItem('Takipçi', _followerCount.toString(),
+        _buildStatItem(context.tr('profile.stat.followers'), _followerCount.toString(),
             Icons.groups_rounded, () {
               Navigator.push(context, MaterialPageRoute(
                   builder: (context) => FollowListScreen(
                       username: _username ?? '', type: 'followers')));
             }),
         Container(width: 1, height: 36, color: const Color(0xFFEADBCE)),
-        _buildStatItem('Takip', _followingCount.toString(),
+        _buildStatItem(context.tr('profile.stat.following'), _followingCount.toString(),
             Icons.person_add_alt_rounded, () {
               Navigator.push(context, MaterialPageRoute(
                   builder: (context) => FollowListScreen(
@@ -1118,7 +1121,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Widget _buildLevelCard() {
-    final level = _getLevelInfo(_journalCount);
+    final level = _getLevelInfo(context, _journalCount);
     final bool isMax = level['next'] == null;
     final double progress = isMax
         ? 1.0
@@ -1162,7 +1165,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   color: levelColor.withOpacity(0.15),
                   borderRadius: BorderRadius.circular(10),
                 ),
-                child: Text('Seviyeniz', style: TextStyle(
+                child: Text(context.tr('profile.level.yourLevelBadge'), style: TextStyle(
                     fontSize: 9, fontWeight: FontWeight.w700,
                     color: levelColor)),
               ),
@@ -1170,8 +1173,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
             const SizedBox(height: 2),
             Text(
                 isMax
-                    ? '🏆 Tüm seviyeleri tamamladınız!'
-                    : 'Bir sonraki seviyeye $remaining ajanda kaldı',
+                    ? context.tr('profile.level.allCompleted')
+                    : context.trf('profile.level.remainingToNext',
+                        {'remaining': remaining.toString()}),
                 style: const TextStyle(
                     fontSize: 11, color: Color(0xFF7C6A59))),
           ])),
@@ -1188,9 +1192,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ),
           const SizedBox(height: 6),
           Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-            Text('${level['min']} ajanda',
+            Text(context.trf('profile.level.journalCountUnit',
+                {'count': level['min'].toString()}),
                 style: const TextStyle(fontSize: 10, color: Color(0xFF7C6A59))),
-            Text('${level['max']} ajanda',
+            Text(context.trf('profile.level.journalCountUnit',
+                {'count': level['max'].toString()}),
                 style: const TextStyle(fontSize: 10, color: Color(0xFF7C6A59))),
           ]),
         ],
@@ -1204,20 +1210,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
       builder: (context) => AlertDialog(
         backgroundColor: AppTheme.background,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-        title: Text('Ajandayı sil',
+        title: Text(context.tr('profile.deleteJournal.title'),
             style: GoogleFonts.playfairDisplay(
                 fontSize: 18, fontWeight: FontWeight.w700,
                 color: AppTheme.textPrimary)),
         content: Text(
-            '"${journal.title}" ve içerisindeki tüm sayfalar kalıcı olarak silinecek.',
+            context.trf('profile.deleteJournal.content', {'title': journal.title}),
             style: AppTheme.sansBody(size: 14, color: AppTheme.textSecondary)),
         actions: [
           TextButton(
               onPressed: () => Navigator.pop(context, false),
-              child: const Text('Vazgeç')),
+              child: Text(context.tr('profile.deleteJournal.cancel'))),
           TextButton(
               onPressed: () => Navigator.pop(context, true),
-              child: const Text('Sil', style: TextStyle(color: Colors.red))),
+              child: Text(context.tr('profile.deleteJournal.confirm'), style: const TextStyle(color: Colors.red))),
         ],
       ),
     );
@@ -1231,7 +1237,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     } catch (e) {
       setState(() => _journals.insert(idx, removed));
       if (mounted) ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Ajanda silinemedi, tekrar dene.')));
+          SnackBar(content: Text(context.tr('profile.deleteJournal.failed'))));
     }
   }
 
@@ -1256,13 +1262,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 color: Color(0xFFC46B4E), size: 26),
           ),
           const SizedBox(height: 12),
-          const Text('Henüz Ajanda Yok',
-              style: TextStyle(fontSize: 15, fontWeight: FontWeight.w700,
+          Text(context.tr('profile.emptyJournals.title'),
+              style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w700,
                   color: Color(0xFF1C110A))),
           const SizedBox(height: 4),
-          const Text('Yeni bir ajanda oluşturup anılarını kaydetmeye başla.',
+          Text(context.tr('profile.emptyJournals.subtitle'),
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 12, color: Color(0xFF7C6A59))),
+              style: const TextStyle(fontSize: 12, color: Color(0xFF7C6A59))),
         ]),
       );
     }
@@ -1271,7 +1277,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       margin: const EdgeInsets.symmetric(horizontal: 20),
       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
         Row(children: [
-          Text('Ajandalarım', style: GoogleFonts.playfairDisplay(
+          Text(context.tr('profile.myJournals'), style: GoogleFonts.playfairDisplay(
               fontSize: 17, fontWeight: FontWeight.w800,
               color: const Color(0xFF1C110A), letterSpacing: -0.4)),
           const SizedBox(width: 8),
@@ -1411,27 +1417,30 @@ class _ProfileScreenState extends State<ProfileScreen> {
       ),
       child: Column(children: [
         _buildMenuItem(Icons.workspace_premium_rounded,
-            'Seyahood Premium', () {
+            context.tr('profile.menu.premium'), () {
               Navigator.push(context, MaterialPageRoute(
                   builder: (context) => const PremiumScreen()));
             }),
         _buildMenuDivider(),
         _buildMenuItem(Icons.notifications_active_outlined,
-            'Bildirimler & Hatırlatıcılar', () {
-              ScaffoldMessenger.of(context)
-                  .showSnackBar(const SnackBar(content: Text('Yakında!')));
+            context.tr('profile.menu.notifications'), () {
+              Navigator.push(context, MaterialPageRoute(
+                  builder: (context) => const NotificationsScreen()));
             }),
         _buildMenuDivider(),
-        _buildMenuItem(Icons.help_center_outlined, 'Yardım', () {
+        _buildMenuItem(Icons.language_rounded, context.tr('common.language'),
+            () => _showLanguagePicker(context)),
+        _buildMenuDivider(),
+        _buildMenuItem(Icons.help_center_outlined, context.tr('profile.menu.help'), () {
           Navigator.push(context,
               MaterialPageRoute(builder: (context) => const HelpScreen()));
         }),
         _buildMenuDivider(),
-        _buildMenuItem(Icons.shield_outlined, 'Gizlilik & Veri Güvenliği', () {
+        _buildMenuItem(Icons.shield_outlined, context.tr('profile.menu.privacy'), () {
           Navigator.pushNamed(context, '/privacy');
         }),
         _buildMenuDivider(),
-        _buildMenuItem(Icons.logout_rounded, 'Hesaptan Çıkış Yap', _logout,
+        _buildMenuItem(Icons.logout_rounded, context.tr('profile.menu.logout'), _logout,
             isDestructive: true),
       ]),
     );
@@ -1479,6 +1488,59 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   Widget _buildMenuDivider() => const Divider(
       height: 1, color: Color(0xFFF0EAE1), indent: 20, endIndent: 20);
+
+  void _showLanguagePicker(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.white,
+      shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(24))),
+      builder: (sheetContext) {
+        return SafeArea(
+          child: ValueListenableBuilder<Locale>(
+            valueListenable: LocaleController.notifier,
+            builder: (context, currentLocale, _) {
+              return Column(mainAxisSize: MainAxisSize.min, children: [
+                const SizedBox(height: 16),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Text(context.tr('common.language'),
+                      style: const TextStyle(
+                          fontSize: 16, fontWeight: FontWeight.w800,
+                          color: Color(0xFF1C110A))),
+                ),
+                const SizedBox(height: 8),
+                _buildLanguageOption(
+                    'Türkçe', const Locale('tr'), currentLocale),
+                _buildLanguageOption(
+                    'English', const Locale('en'), currentLocale),
+                const SizedBox(height: 12),
+              ]);
+            },
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildLanguageOption(
+      String label, Locale locale, Locale currentLocale) {
+    final selected = locale.languageCode == currentLocale.languageCode;
+    return ListTile(
+      title: Text(label, style: TextStyle(
+          fontSize: 14,
+          fontWeight: selected ? FontWeight.w800 : FontWeight.w600,
+          color: const Color(0xFF1C110A))),
+      trailing: selected
+          ? const Icon(Icons.check_circle_rounded,
+              color: Color(0xFFC46B4E), size: 20)
+          : null,
+      onTap: () async {
+        await LocaleController.setLocale(locale);
+        if (mounted) Navigator.pop(context);
+      },
+    );
+  }
 }
 
 class _DotGridPainter extends CustomPainter {

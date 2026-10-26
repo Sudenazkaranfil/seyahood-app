@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../screens/premium_screen.dart';
 import '../theme/app_theme.dart';
+import '../l10n/app_strings.dart';
 
 /// Ajanda ya da sayfa limiti dolduğunda gösterilen, kullanıcıyı premium
 /// ekranına yönlendiren bottom sheet.
@@ -10,12 +11,12 @@ Future<void> showLimitReachedSheet(
   required String limitType, // 'journal' | 'page'
 }) {
   final isJournal = limitType == 'journal';
-  final title = isJournal ? 'Ajanda limitine ulaştın' : 'Sayfa limitine ulaştın';
+  final title = isJournal
+      ? context.tr('limitReached.titleJournal')
+      : context.tr('limitReached.titlePage');
   final message = isJournal
-      ? 'Ücretsiz planda en fazla 5 ajanda oluşturabilirsin. '
-          'Plus ile 20, PRO ile sınırsız ajanda oluşturabilirsin.'
-      : 'Ücretsiz planda bir ajandaya en fazla 15 sayfa ekleyebilirsin. '
-          'Plus ile 40, PRO ile sınırsız sayfa ekleyebilirsin.';
+      ? context.tr('limitReached.messageJournal')
+      : context.tr('limitReached.messagePage');
 
   return showModalBottomSheet(
     context: context,
@@ -63,14 +64,14 @@ Future<void> showLimitReachedSheet(
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(16)),
             ),
-            child: const Text('Planları Gör',
-                style: TextStyle(fontSize: 14, fontWeight: FontWeight.w800)),
+            child: Text(context.tr('limitReached.seePlans'),
+                style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w800)),
           ),
         ),
         const SizedBox(height: 8),
         TextButton(
           onPressed: () => Navigator.pop(context),
-          child: const Text('Vazgeç'),
+          child: Text(context.tr('limitReached.cancel')),
         ),
       ]),
     ),

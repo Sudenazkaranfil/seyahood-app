@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../theme/app_theme.dart';
+import '../l10n/app_strings.dart';
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
@@ -70,7 +71,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         color: Colors.white.withOpacity(0.15)),
                   ),
                 ),
-                child: Text('Atla',
+                child: Text(context.tr('onboarding.skip'),
                     style: TextStyle(
                         color: Colors.white.withOpacity(0.8),
                         fontSize: 12.5, fontWeight: FontWeight.w700,
@@ -113,10 +114,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 children: [
                   Text(
                     _currentPage == 0
-                        ? 'Dijital seyahat ajandan'
+                        ? context.tr('onboarding.title1')
                         : _currentPage == 1
-                        ? 'Haritanda izlerini gör'
-                        : 'Gezginleri keşfet',
+                        ? context.tr('onboarding.title2')
+                        : context.tr('onboarding.title3'),
                     textAlign: TextAlign.center,
                     style: const TextStyle(
                         fontSize: 24, fontWeight: FontWeight.w900,
@@ -126,10 +127,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   const SizedBox(height: 10),
                   Text(
                     _currentPage == 0
-                        ? 'Gezilerini sayfa sayfa scrapbook tarzında kaydet. Fotoğraf, yazı ve anılarınla unutulmaz sayfalar yarat.'
+                        ? context.tr('onboarding.desc1')
                         : _currentPage == 1
-                        ? 'Gezdiğin her rotayı haritanda işaretle. Kendi seyahat haritanı oluştur, anılarını konumlarla ilişkilendir.'
-                        : 'Dünyanın dört bir yanındaki gezginlerin rotalarını keşfet. Beğendiklerini ajandana ekle, ilham al.',
+                        ? context.tr('onboarding.desc2')
+                        : context.tr('onboarding.desc3'),
                     textAlign: TextAlign.center,
                     style: const TextStyle(
                         fontSize: 13.5, color: Color(0xFF6B5848),
@@ -163,7 +164,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      _currentPage < 2 ? 'Devam et' : 'Maceraya Başla',
+                      _currentPage < 2
+                          ? context.tr('onboarding.continueButton')
+                          : context.tr('onboarding.startButton'),
                       style: const TextStyle(
                           fontSize: 15, fontWeight: FontWeight.w800,
                           letterSpacing: 0.2),
@@ -227,8 +230,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 border: Border.all(
                     color: Colors.white.withOpacity(0.15)),
               ),
-              child: const Text('senin yolculuğun, senin hikayen',
-                  style: TextStyle(
+              child: Text(context.tr('common.tagline'),
+                  style: const TextStyle(
                       fontSize: 12, fontWeight: FontWeight.w600,
                       color: Color(0xFFFFD5C2))),
             ),
@@ -284,8 +287,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       borderRadius: BorderRadius.circular(10),
                       border: Border.all(color: AppTheme.border),
                     ),
-                    child: const Text('Tokyo ✨',
-                        style: TextStyle(fontSize: 10,
+                    child: Text(context.tr('onboarding.mockCity'),
+                        style: const TextStyle(fontSize: 10,
                             fontWeight: FontWeight.w800,
                             color: Color(0xFF1C110A))),
                   ),
@@ -299,8 +302,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       color: AppTheme.terracotta,
                       borderRadius: BorderRadius.circular(14),
                     ),
-                    child: const Text('📍 Shinjuku Hatırası',
-                        style: TextStyle(fontSize: 9,
+                    child: Text(context.tr('onboarding.mockCaption'),
+                        style: const TextStyle(fontSize: 9,
                             color: Colors.white,
                             fontWeight: FontWeight.w700)),
                   ),
